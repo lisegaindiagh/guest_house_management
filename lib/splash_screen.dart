@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'Common/app_common.dart';
-import 'screens/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,8 +10,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>     with SingleTickerProviderStateMixin {
-
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<Offset> _slideAnimation;
@@ -28,16 +27,15 @@ class _SplashScreenState extends State<SplashScreen>     with SingleTickerProvid
       duration: Duration(seconds: 2),
     );
 
-    _scaleAnimation = Tween<double>(begin: 0.4, end: 1.2).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.4,
+      end: 1.2,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _slideAnimation = Tween<Offset>(
       begin: Offset(0, 1.2),
       end: Offset(0, 0),
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
 
@@ -53,7 +51,6 @@ class _SplashScreenState extends State<SplashScreen>     with SingleTickerProvid
     });
   }
 
-
   @override
   void dispose() {
     _controller.dispose();
@@ -68,11 +65,7 @@ class _SplashScreenState extends State<SplashScreen>     with SingleTickerProvid
         height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.white,
-              Colors.white70,
-              Colors.transparent,
-            ],
+            colors: [Colors.white, Colors.white70, Colors.transparent],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -84,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>     with SingleTickerProvid
               scale: _scaleAnimation,
               child: Image.asset(
                 "assets/images/lisega_logo.png",
-                width: 250,   // LARGE LOGO
+                width: 250, // LARGE LOGO
                 height: 250,
                 fit: BoxFit.contain,
               ),

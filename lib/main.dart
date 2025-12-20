@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:guest_house_management/splash_screen.dart';
 
 import 'Common/app_common.dart';
-import 'screens/login_screen.dart';
+import 'splash_screen.dart';
 import 'ui/booking_screen.dart';
 import 'ui/guest_house_list.dart';
+import 'ui/login_screen.dart';
 import 'ui/room_list_screen.dart';
 import 'ui/setting_screen.dart';
 
@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: AppCommon.navigatorKey,
       title: 'Guest House Management',
-      theme: ThemeData(primarySwatch: Colors.blue,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
         primaryColor: Colors.blue,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
 
         appBarTheme: AppBarTheme(
@@ -42,16 +42,17 @@ class MyApp extends StatelessWidget {
           ),
           backgroundColor: Colors.blue,
           elevation: 0,
-        ),),
+        ),
+      ),
 
       initialRoute: '/',
       routes: {
-        '/': (_) =>  SplashScreen(),
-        '/login': (_) =>  LoginScreen(),
+        '/': (_) => SplashScreen(),
+        '/login': (_) => LoginScreen(),
         '/home': (_) => const RoomListScreen(),
-        '/guestHouseList': (_) =>  GuestHouseListScreen(),
-        "/setting":(_) => SettingsScreen(),
-        "/booking":(_)=> BookingScreen()
+        '/guestHouseList': (_) => GuestHouseListScreen(),
+        "/setting": (_) => SettingsScreen(),
+        "/booking": (_) => BookingScreen(),
         // '/about': (_) => const AboutScreen(),
       },
     );
