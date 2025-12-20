@@ -36,6 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   # for google Sign In
   google_sign_in: ^6.1.0
+  dio: ^5.8.0+1
+  # Check internet connectivity status
+  connectivity_plus: ^6.1.4
+  # Show toast messages
+  fluttertoast: ^8.2.12
+  shared_preferences: ^2.5.3
+
   http:
   intl:
   #  for send sms
