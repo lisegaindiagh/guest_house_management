@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guest_house_management/Api/api_provider.dart';
 import '../Common/app_common.dart';
-
 
 class RoomListScreen extends StatefulWidget {
   const RoomListScreen({super.key});
@@ -18,22 +16,18 @@ class _RoomListScreenState extends State<RoomListScreen> {
     {"roomNo": "104", "type": "Double", "isBooked": true},
   ];
 
-
   @override
   void initState() {
     super.initState();
-   // getReminderCount();
+    // getReminderCount();
   }
 
   Future<dynamic> getRoomList() async {
-    var res = await ApiProvider.getServerResponse(
-     "getRooms",
-      "GET",
-    );
-
+    var res = await AppCommon.apiProvider.getServerResponse("getRooms", "GET");
 
     return res;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,20 +44,11 @@ class _RoomListScreenState extends State<RoomListScreen> {
               }
             },
             itemBuilder: (context) => const [
-              PopupMenuItem(
-                value: "Setting",
-                child: Text("Setting"),
-              ),
-              PopupMenuItem(
-                value: "bookings",
-                child: Text("View Bookings"),
-              ),
-              PopupMenuItem(
-                value: "addRoom",
-                child: Text("Add Room"),
-              ),
+              PopupMenuItem(value: "Setting", child: Text("Setting")),
+              PopupMenuItem(value: "bookings", child: Text("View Bookings")),
+              PopupMenuItem(value: "addRoom", child: Text("Add Room")),
             ],
-          )
+          ),
         ],
       ),
 
@@ -113,7 +98,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
                               ),
                               onPressed: () {
                                 if (room["isBooked"]) {

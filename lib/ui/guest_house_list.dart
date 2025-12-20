@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:guest_house_management/Api/api_provider.dart';
 import '../common/app_common.dart';
 
 class GuestHouseListScreen extends StatefulWidget {
@@ -9,25 +7,14 @@ class GuestHouseListScreen extends StatefulWidget {
   @override
   State<GuestHouseListScreen> createState() => _GuestHouseListState();
 }
+
 class _GuestHouseListState extends State<GuestHouseListScreen> {
   bool isLoading = true;
 
   final List<Map<String, dynamic>> guestHouses = [
-    {
-      "name": "Guest House-1 (Akota)",
-      "location": "Baroda",
-      "rooms": 12,
-    },
-    {
-      "name": "Guest House-2 (Gotri)",
-      "location": "Baroda",
-      "rooms": 8,
-    },
-    {
-      "name": "Guest House-3 (Alkapuri)",
-      "location": "Baroda",
-      "rooms": 5,
-    },
+    {"name": "Guest House-1 (Akota)", "location": "Baroda", "rooms": 12},
+    {"name": "Guest House-2 (Gotri)", "location": "Baroda", "rooms": 8},
+    {"name": "Guest House-3 (Alkapuri)", "location": "Baroda", "rooms": 5},
   ];
 
   @override
@@ -36,13 +23,8 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     getGuestHouseList();
   }
 
-  Future<void> getGuestHouseList()async {
-
-    var res = await ApiProvider.getServerResponse(
-        "auth.php",
-        "POST",
-
-    );
+  Future<void> getGuestHouseList() async {
+    var res = await AppCommon.apiProvider.getServerResponse("auth.php", "POST");
     res;
   }
 
@@ -89,10 +71,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14),
                         gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF56CCF2),
-                            Color(0xFF2F80ED)
-                          ],
+                          colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -143,7 +122,9 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                             alignment: Alignment.bottomRight,
                             child: Container(
                               height: 28,
-                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                              ),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 gradient: const LinearGradient(
@@ -166,7 +147,6 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                               ),
                             ),
                           ),
-
                         ],
                       ),
                     ),
@@ -186,7 +166,3 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     );
   }
 }
-
-
-
-

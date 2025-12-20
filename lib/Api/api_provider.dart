@@ -6,11 +6,11 @@ import '../Common/app_common.dart';
 * set Base url
 * */
 class ApiProvider {
-  static final Dio _dio = Dio();
+  final Dio _dio = Dio();
 
-  static String baseUrl = "";
+  String baseUrl = "";
 
-  static Future<dynamic> getServerResponse(
+  Future<dynamic> getServerResponse(
     String url,
     String method, {
     var params,
