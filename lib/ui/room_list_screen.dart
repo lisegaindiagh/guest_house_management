@@ -54,10 +54,10 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
-        itemCount: rooms.length,
+        itemCount: roomList.length,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          final room = rooms[index];
+          final room = roomList[index];
           return buildRoomCard(
             roomName: room["room_name"],
             occupancyType: room["occupancy_type"],
