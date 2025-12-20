@@ -23,25 +23,29 @@ class MyApp extends StatelessWidget {
       navigatorKey: AppCommon.navigatorKey,
       title: 'Guest House Management',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Colors.blue,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        primarySwatch: Colors.teal,
+        primaryColor: AppCommon.colors.primaryColor,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppCommon.colors.primaryColor,
+        ),
         useMaterial3: true,
-
+        scaffoldBackgroundColor: AppCommon.colors.backgroundColor,
         appBarTheme: AppBarTheme(
-          centerTitle: false,
-          iconTheme: IconThemeData(color: Colors.white, size: 25.0),
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: AppCommon.colors.primaryColor,
+          iconTheme: IconThemeData(color: AppCommon.colors.white, size: 25.0),
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.blue.shade200,
+            statusBarColor: AppCommon.colors.primaryColor.withValues(
+              alpha: 0.2,
+            ),
           ),
           titleTextStyle: TextStyle(
-            fontSize: 18,
-            color: Colors.white,
+            fontSize: 20,
+            color: AppCommon.colors.white,
             overflow: TextOverflow.ellipsis,
             fontWeight: FontWeight.bold,
           ),
-          backgroundColor: Colors.blue,
-          elevation: 0,
         ),
       ),
 

@@ -12,7 +12,6 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
   bool isLoading = true;
   dynamic guestHousesList = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -20,153 +19,154 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
   }
 
   Future<void> getGuestHouseList() async {
-    var res = await AppCommon.apiProvider.getServerResponse("api.php?action=getGuestHouses", "POST");
-  /*  if(AppCommon.isEmpty(res["error"])){
-
-    }*/
-    guestHousesList = res;
-    isLoading = false;
+    isLoading = true;
     setState(() {});
-    res;
+
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php?action=getGuestHouses",
+        "POST",
+      );
+
+      /// ✅ Success response is a LIST
+      if (res is List) {
+        guestHousesList = List<Map<String, dynamic>>.from(res);
+      }
+      /// ❌ Error response is a MAP
+      else if (res is Map && res.containsKey("error")) {
+        AppCommon.displayToast(res["error"]);
+        guestHousesList = [];
+      }
+      /// ❌ Unexpected response
+      else {
+        AppCommon.displayToast("Something went wrong");
+        guestHousesList = [];
+      }
+    } catch (e) {
+      AppCommon.displayToast("Server error");
+    } finally {
+      isLoading = false;
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F5FA),
-
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: const Color(0xFF2F80ED),
-        title: const Text(
-          "Guest Houses",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-
+      appBar: AppBar(title: const Text("Guest Houses")),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: guestHousesList.length,
-        itemBuilder: (context, index) {
-          final house = guestHousesList[index];
+          : ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: guestHousesList.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final guestHouse = guestHousesList[index];
+                final bool isActive = guestHouse["is_active"] == "1";
 
-          return InkWell(
-            borderRadius: BorderRadius.circular(18),
-            onTap: () {
-              Navigator.pushNamed(context, '/home');
-            },
-            child: Card(
-              margin: const EdgeInsets.all(14),
-              elevation: 3,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 64,
-                      width: 64,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.apartment,
-                        color: Colors.white,
-                        size: 36,
-                      ),
-                    ),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/home');
+                  },
+                  child: buildGestHouseCard(
+                    name: guestHouse["name"],
+                    address: guestHouse["address"],
+                    isActive: isActive,
+                  ),
+                );
+              },
+            ),
+    );
+  }
 
-                    const SizedBox(width: 14),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            house["name"],
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 14,
-                                color: Colors.black,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                house["address"],
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Container(
-                              height: 28,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF7ED321), // light green (left)
-                                    Color(0xFF4CAF1D), // dark green (right)
-                                  ],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                              ),
-                              alignment: Alignment.center,
-                              //todo need to add in api
-                              child: Text(
-                                "5 Rooms Available",
-                                style: const TextStyle(
-                                  fontSize: 12.5,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Icon(
-                      Icons.chevron_right,
-                      size: 26,
-                      color: Colors.grey,
-                    ),
+  Widget buildGestHouseCard({
+    required String name,
+    required String address,
+    required bool isActive,
+  }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Row(
+          spacing: 12,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: 64,
+              width: 64,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                gradient: LinearGradient(
+                  colors: [
+                    AppCommon.colors.primaryColor.withValues(alpha: 0.4),
+                    AppCommon.colors.primaryColor.withValues(alpha: 0.7),
+                    AppCommon.colors.primaryColor,
                   ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
+              child: const Icon(Icons.apartment, color: Colors.white, size: 36),
             ),
-          );
-        },
+            Expanded(
+              child: Column(
+                spacing: 8,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      buildStatusChip(isActive: isActive),
+                    ],
+                  ),
+                  Row(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.location_on_outlined, size: 18),
+                      Expanded(
+                        child: Text(
+                          address,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildStatusChip({required bool isActive}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: isActive ? Colors.green.shade100 : Colors.red.shade100,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        isActive ? "Active" : "Inactive",
+        style: TextStyle(
+          color: isActive ? Colors.green : Colors.red,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
