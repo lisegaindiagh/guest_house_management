@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'Common/app_common.dart';
 import 'screens/login_screen.dart';
@@ -10,10 +11,36 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>     with SingleTickerProviderStateMixin {
+
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<Offset> _slideAnimation;
+
   @override
   void initState() {
     super.initState();
+    // FULL SCREEN (hide status bar)
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.4, end: 1.2).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 1.2),
+      end: Offset(0, 0),
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+
+    _controller.forward();
+
     AppCommon.displayNetworkPopup();
     navigateToLogin();
   }
@@ -29,8 +56,45 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: FlutterLogo()));
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              Colors.white70,
+              Colors.transparent,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Image.asset(
+                "assets/images/lisega_logo.png",
+                width: 250,   // LARGE LOGO
+                height: 250,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
