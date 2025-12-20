@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../Common/app_common.dart';
+import '../Common/session_key.dart';
 import '../service/sign_with_google.dart';
 import 'home_screen.dart';
 
@@ -37,10 +38,15 @@ class LoginScreen extends StatelessWidget {
       params: {"email": "admin@mail.com"},
     );
     if (res["success"]) {
+      await AppCommon.sharePref.setString(
+        AppCommon.sessionKey.token,
+        res["token"],
+      );
       Navigator.pushReplacementNamed(
         AppCommon.navigatorKey.currentContext!,
         '/guestHouseList',
       );
+
     }
     // return res;
   }

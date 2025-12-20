@@ -10,12 +10,8 @@ class GuestHouseListScreen extends StatefulWidget {
 
 class _GuestHouseListState extends State<GuestHouseListScreen> {
   bool isLoading = true;
+  dynamic guestHousesList = [];
 
-  final List<Map<String, dynamic>> guestHouses = [
-    {"name": "Guest House-1 (Akota)", "location": "Baroda", "rooms": 12},
-    {"name": "Guest House-2 (Gotri)", "location": "Baroda", "rooms": 8},
-    {"name": "Guest House-3 (Alkapuri)", "location": "Baroda", "rooms": 5},
-  ];
 
   @override
   void initState() {
@@ -24,7 +20,13 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
   }
 
   Future<void> getGuestHouseList() async {
-    var res = await AppCommon.apiProvider.getServerResponse("auth.php", "POST");
+    var res = await AppCommon.apiProvider.getServerResponse("api.php?action=getGuestHouses", "POST");
+  /*  if(AppCommon.isEmpty(res["error"])){
+
+    }*/
+    guestHousesList = res;
+    isLoading = false;
+    setState(() {});
     res;
   }
 
@@ -48,10 +50,12 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
 
-      body: ListView.builder(
-        itemCount: guestHouses.length,
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+        itemCount: guestHousesList.length,
         itemBuilder: (context, index) {
-          final house = guestHouses[index];
+          final house = guestHousesList[index];
 
           return InkWell(
             borderRadius: BorderRadius.circular(18),
@@ -107,7 +111,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                house["location"],
+                                house["address"],
                                 style: const TextStyle(
                                   fontSize: 13,
                                   color: Colors.black,
@@ -137,8 +141,9 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                                 ),
                               ),
                               alignment: Alignment.center,
+                              //todo need to add in api
                               child: Text(
-                                "${house["rooms"]} Rooms Available",
+                                "5 Rooms Available",
                                 style: const TextStyle(
                                   fontSize: 12.5,
                                   color: Colors.white,
