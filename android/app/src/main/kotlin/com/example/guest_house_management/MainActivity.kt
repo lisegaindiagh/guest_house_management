@@ -1,4 +1,4 @@
-package com.example.guest_house_management
+package com.lisegaindia.ghm
 
 import io.flutter.embedding.android.FlutterActivity
 
