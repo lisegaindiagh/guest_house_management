@@ -24,25 +24,13 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
 
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
-        "api.php?action=getGuestHouses",
+        "api.php",
         "POST",
+        queryParams: {"action": "getGuestHouses"},
       );
-
-      /// ✅ Success response is a LIST
-      if (res is List) {
-        guestHousesList = List<Map<String, dynamic>>.from(res);
-      }
-      /// ❌ Error response is a MAP
-      else if (res is Map && res.containsKey("error")) {
-        AppCommon.displayToast(res["error"]);
-        guestHousesList = [];
-      }
-      /// ❌ Unexpected response
-      else {
-        AppCommon.displayToast("Something went wrong");
-        guestHousesList = [];
-      }
+      guestHousesList = AppCommon.apiProvider.handleListResponse(res);
     } catch (e) {
+      guestHousesList = [];
       AppCommon.displayToast("Server error");
     } finally {
       isLoading = false;
@@ -66,7 +54,11 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
 
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/home',arguments: int.parse(guestHouse["id"]) );
+                    Navigator.pushNamed(
+                      context,
+                      '/home',
+                      arguments: int.parse(guestHouse["id"]),
+                    );
                   },
                   child: buildGestHouseCard(
                     name: guestHouse["name"],

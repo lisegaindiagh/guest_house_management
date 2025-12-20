@@ -13,24 +13,28 @@ class _RoomListScreenState extends State<RoomListScreen> {
   dynamic roomList = [];
   bool isFirstTime = true;
 
-
   Future<void> getGuestHouseRoomList(int roomId) async {
-    var res = await AppCommon.apiProvider.getServerResponse("api.php?action=getRooms&guest_house_id=${roomId}", "POST");
-    /*  if(AppCommon.isEmpty(res["error"])){
-
-    }*/
-    roomList = res;
-    isLoading = false;
-    isFirstTime = false;
-    setState(() {});
-    res;
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php",
+        "POST",
+        queryParams: {"action": "getRooms", "guest_house_id": roomId},
+      );
+      roomList = AppCommon.apiProvider.handleListResponse(res);
+    } catch (e) {
+      roomList = [];
+      AppCommon.displayToast("Server error");
+    } finally {
+      isLoading = false;
+      isFirstTime = false;
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final int roomId =
-    ModalRoute.of(context)!.settings.arguments as int;
-    if(isFirstTime){
+    final int roomId = ModalRoute.of(context)!.settings.arguments as int;
+    if (isFirstTime) {
       getGuestHouseRoomList(roomId);
     }
     return Scaffold(
@@ -52,21 +56,23 @@ class _RoomListScreenState extends State<RoomListScreen> {
         ],
       ),
 
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: roomList.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          final room = roomList[index];
-          return buildRoomCard(
-            roomName: room["room_name"],
-            occupancyType: room["occupancy_type"],
-            maxOccupancy: room["max_occupancy"],
-            isActive: room["is_active"] == 1,
-            isBooked: room["is_booked"] == 1,
-          );
-        },
-      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: roomList.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final room = roomList[index];
+                return buildRoomCard(
+                  roomName: room["room_name"],
+                  occupancyType: room["occupancy_type"],
+                  maxOccupancy: room["max_occupancy"],
+                  isActive: room["is_active"] == 1,
+                  isBooked: room["is_booked"] == 1,
+                );
+              },
+            ),
     );
   }
 
