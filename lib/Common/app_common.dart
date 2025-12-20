@@ -4,11 +4,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../screens/login_screen.dart';
+import 'colors.dart';
 import 'session_key.dart';
 import 'session_manager.dart';
 
 class AppCommon {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static AppColors colors = AppColors();
   static SharePref sharePref = SharePref();
   static SessionKey sessionKey = SessionKey();
 
@@ -42,6 +45,12 @@ class AppCommon {
                 onPressed: () async {
                   if (await AppCommon.isOnline()) {
                     Navigator.pop(AppCommon.navigatorKey.currentContext!, true);
+                    Navigator.pushReplacement(
+                      navigatorKey.currentContext!,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
                   }
                 },
                 child: Text("Retry"),
