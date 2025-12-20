@@ -9,27 +9,30 @@ class RoomListScreen extends StatefulWidget {
 }
 
 class _RoomListScreenState extends State<RoomListScreen> {
-  List<Map<String, dynamic>> rooms = [
-    {"roomNo": "101", "type": "Single", "isBooked": false},
-    {"roomNo": "102", "type": "Single", "isBooked": false},
-    {"roomNo": "103", "type": "Single", "isBooked": false},
-    {"roomNo": "104", "type": "Double", "isBooked": true},
-  ];
+  bool isLoading = true;
+  dynamic roomList = [];
+  bool isFirstTime = true;
 
-  @override
-  void initState() {
-    super.initState();
-    // getReminderCount();
-  }
 
-  Future<dynamic> getRoomList() async {
-    var res = await AppCommon.apiProvider.getServerResponse("getRooms", "GET");
+  Future<void> getGuestHouseRoomList(int roomId) async {
+    var res = await AppCommon.apiProvider.getServerResponse("api.php?action=getRooms&guest_house_id=${roomId}", "POST");
+    /*  if(AppCommon.isEmpty(res["error"])){
 
-    return res;
+    }*/
+    roomList = res;
+    isLoading = false;
+    isFirstTime = false;
+    setState(() {});
+    res;
   }
 
   @override
   Widget build(BuildContext context) {
+    final int roomId =
+    ModalRoute.of(context)!.settings.arguments as int;
+    if(isFirstTime){
+      getGuestHouseRoomList(roomId);
+    }
     return Scaffold(
       backgroundColor: const Color(0xFFF2F5FA),
 
@@ -54,9 +57,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: rooms.length,
+        itemCount: roomList.length,
         itemBuilder: (context, index) {
-          final room = rooms[index];
+          final room = roomList[index];
 
           return Container(
             margin: const EdgeInsets.only(bottom: 16),
@@ -82,7 +85,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Room ${room["roomNo"]}",
+                            "Room ${room["room_name"]}",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -92,9 +95,11 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             height: 34,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: room["isBooked"]
-                                    ? Colors.red
-                                    : const Color(0xFF2F80ED),
+                                backgroundColor: room["is_booked"] == 0
+                                    ?
+                                     const Color(0xFF2F80ED)
+                                      :Colors.red,
+
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
@@ -103,16 +108,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                if (room["isBooked"]) {
-                                  setState(() {
-                                    room["isBooked"] = false;
-                                  });
-                                } else {
+                                if (room["is_booked"] == 0) {
                                   Navigator.pushNamed(context, '/booking');
+                                } else {
+
                                 }
                               },
                               child: Text(
-                                room["isBooked"] ? "Cancel" : "Book",
+                                room["is_booked"] == 0 ? "Book" : "Cancel",
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -125,7 +128,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        room["type"],
+                        room["occupancy_type"],
                         style: const TextStyle(
                           fontSize: 15,
                           color: Colors.black,
@@ -134,7 +137,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        room["isBooked"] ? "Booked" : "Available",
+                        room["is_booked"] == 0 ? "Available":"Booked",
                         style: const TextStyle(
                           fontSize: 15,
                           color: Colors.black,
