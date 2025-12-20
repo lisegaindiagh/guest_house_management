@@ -9,53 +9,30 @@ class RoomListScreen extends StatefulWidget {
 }
 
 class _RoomListScreenState extends State<RoomListScreen> {
-  final List<Map<String, dynamic>> rooms = const [
-    {
-      "id": 1,
-      "guest_house_id": 1,
-      "room_name": "101",
-      "occupancy_type": "single",
-      "max_occupancy": 1,
-      "is_active": 1,
-      "created_at": "2025-12-20 06:01:59",
-      "is_booked": 0,
-    },
-    {
-      "id": 2,
-      "guest_house_id": 1,
-      "room_name": "102",
-      "occupancy_type": "double",
-      "max_occupancy": 2,
-      "is_active": 1,
-      "created_at": "2025-12-20 06:01:59",
-      "is_booked": 1,
-    },
-    {
-      "id": 3,
-      "guest_house_id": 1,
-      "room_name": "103",
-      "occupancy_type": "single",
-      "max_occupancy": 1,
-      "is_active": 0,
-      "created_at": "2025-12-20 06:01:59",
-      "is_booked": 0,
-    },
-  ];
+  bool isLoading = true;
+  dynamic roomList = [];
+  bool isFirstTime = true;
 
-  @override
-  void initState() {
-    super.initState();
-    // getReminderCount();
-  }
 
-  Future<dynamic> getRoomList() async {
-    var res = await AppCommon.apiProvider.getServerResponse("getRooms", "GET");
+  Future<void> getGuestHouseRoomList(int roomId) async {
+    var res = await AppCommon.apiProvider.getServerResponse("api.php?action=getRooms&guest_house_id=${roomId}", "POST");
+    /*  if(AppCommon.isEmpty(res["error"])){
 
-    return res;
+    }*/
+    roomList = res;
+    isLoading = false;
+    isFirstTime = false;
+    setState(() {});
+    res;
   }
 
   @override
   Widget build(BuildContext context) {
+    final int roomId =
+    ModalRoute.of(context)!.settings.arguments as int;
+    if(isFirstTime){
+      getGuestHouseRoomList(roomId);
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Guest House Rooms"),

@@ -66,7 +66,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
 
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/home');
+                    Navigator.pushNamed(context, '/home',arguments: int.parse(guestHouse["id"]) );
                   },
                   child: buildGestHouseCard(
                     name: guestHouse["name"],
