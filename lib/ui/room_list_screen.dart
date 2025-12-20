@@ -9,11 +9,37 @@ class RoomListScreen extends StatefulWidget {
 }
 
 class _RoomListScreenState extends State<RoomListScreen> {
-  List<Map<String, dynamic>> rooms = [
-    {"roomNo": "101", "type": "Single", "isBooked": false},
-    {"roomNo": "102", "type": "Single", "isBooked": false},
-    {"roomNo": "103", "type": "Single", "isBooked": false},
-    {"roomNo": "104", "type": "Double", "isBooked": true},
+  final List<Map<String, dynamic>> rooms = const [
+    {
+      "id": 1,
+      "guest_house_id": 1,
+      "room_name": "101",
+      "occupancy_type": "single",
+      "max_occupancy": 1,
+      "is_active": 1,
+      "created_at": "2025-12-20 06:01:59",
+      "is_booked": 0,
+    },
+    {
+      "id": 2,
+      "guest_house_id": 1,
+      "room_name": "102",
+      "occupancy_type": "double",
+      "max_occupancy": 2,
+      "is_active": 1,
+      "created_at": "2025-12-20 06:01:59",
+      "is_booked": 1,
+    },
+    {
+      "id": 3,
+      "guest_house_id": 1,
+      "room_name": "103",
+      "occupancy_type": "single",
+      "max_occupancy": 1,
+      "is_active": 0,
+      "created_at": "2025-12-20 06:01:59",
+      "is_booked": 0,
+    },
   ];
 
   @override
@@ -31,11 +57,8 @@ class _RoomListScreenState extends State<RoomListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F5FA),
-
       appBar: AppBar(
         title: const Text("Guest House Rooms"),
-        backgroundColor: Colors.blue,
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
@@ -52,102 +75,135 @@ class _RoomListScreenState extends State<RoomListScreen> {
         ],
       ),
 
-      body: ListView.builder(
+      body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: rooms.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final room = rooms[index];
-
-          return Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Room ${room["roomNo"]}",
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 34,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: room["isBooked"]
-                                    ? Colors.red
-                                    : const Color(0xFF2F80ED),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                              ),
-                              onPressed: () {
-                                if (room["isBooked"]) {
-                                  setState(() {
-                                    room["isBooked"] = false;
-                                  });
-                                } else {
-                                  Navigator.pushNamed(context, '/booking');
-                                }
-                              },
-                              child: Text(
-                                room["isBooked"] ? "Cancel" : "Book",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        room["type"],
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        room["isBooked"] ? "Booked" : "Available",
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          return buildRoomCard(
+            roomName: room["room_name"],
+            occupancyType: room["occupancy_type"],
+            maxOccupancy: room["max_occupancy"],
+            isActive: room["is_active"] == 1,
+            isBooked: room["is_booked"] == 1,
           );
         },
+      ),
+    );
+  }
+
+  Widget buildRoomCard({
+    required String roomName,
+    required String occupancyType,
+    required int maxOccupancy,
+    required bool isActive,
+    required bool isBooked,
+  }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 🛏️ Room name & status
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Room $roomName",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                buildRoomStatusChip(isActive: isActive, isBooked: isBooked),
+              ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // 👥 Occupancy info
+            Row(
+              children: [
+                const Icon(Icons.person_outline, size: 16),
+                const SizedBox(width: 6),
+                Text(
+                  "${occupancyType[0].toUpperCase()}${occupancyType.substring(1)} • Max $maxOccupancy",
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // 🔘 Action buttons (only if room is active)
+            if (isActive)
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () {
+                    if (isBooked) {
+                      // 👉 Navigate to booking details screen
+                    } else {
+                      Navigator.pushNamed(context, '/booking');
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppCommon.colors.btnColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      isBooked ? "View Booking" : "Book Room",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildRoomStatusChip({required bool isActive, required bool isBooked}) {
+    if (!isActive) {
+      return _buildChip(
+        label: "Inactive",
+        bgColor: Colors.grey.shade300,
+        textColor: Colors.grey.shade700,
+      );
+    }
+
+    return _buildChip(
+      label: isBooked ? "Booked" : "Available",
+      bgColor: isBooked ? Colors.orange.shade100 : Colors.green.shade100,
+      textColor: isBooked ? Colors.orange : Colors.green,
+    );
+  }
+
+  Widget _buildChip({
+    required String label,
+    required Color bgColor,
+    required Color textColor,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: textColor,
+        ),
       ),
     );
   }
