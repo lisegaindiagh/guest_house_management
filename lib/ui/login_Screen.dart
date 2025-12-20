@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../Common/app_common.dart';
 import '../service/sign_with_google.dart';
 import 'home_screen.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -28,13 +30,29 @@ class LoginScreen extends StatelessWidget {
       MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
+  Future<void> getLoginDetails() async {
 
+    var res = await AppCommon.apiProvider.getServerResponse(
+        "auth.php",
+        "POST",
+        params: {
+          "email": "admin@mail.com"
+        }
+    );
+    if(res["success"]){
+      Navigator.pushReplacementNamed(AppCommon.navigatorKey.currentContext!, '/guestHouseList');
+    }
+    // return res;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ElevatedButton.icon(
-          onPressed: () => _signIn(context),
+          onPressed: () {
+            getLoginDetails();
+          },
+              //_signIn(context),
           icon: const Icon(Icons.login),
           label: const Text(
             "Sign in with Google",
@@ -50,4 +68,6 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
+
+
 }

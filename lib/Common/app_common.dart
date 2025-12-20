@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../Api/api_provider.dart';
 import '../screens/login_screen.dart';
 import 'colors.dart';
