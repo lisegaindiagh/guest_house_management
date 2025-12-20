@@ -8,7 +8,7 @@ import '../Common/app_common.dart';
 class ApiProvider {
   final Dio _dio = Dio();
 
-  String baseUrl = "";
+  String baseUrl = "https://mediumvioletred-wallaby-126857.hostingersite.com/api/";
 
   Future<dynamic> getServerResponse(
     String url,

@@ -48,10 +48,7 @@ class _SplashScreenState extends State<SplashScreen>     with SingleTickerProvid
   void navigateToLogin() {
     Future.delayed(const Duration(seconds: 3), () async {
       if (await AppCommon.isOnline()) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }
