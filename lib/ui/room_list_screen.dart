@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../Common/app_common.dart';
+import 'add_room_screen.dart';
 
 class RoomListScreen extends StatefulWidget {
   const RoomListScreen({super.key});
@@ -74,6 +75,17 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 );
               },
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddRoomScreen(guestHouseId: roomId),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 

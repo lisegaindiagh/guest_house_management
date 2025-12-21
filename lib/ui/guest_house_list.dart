@@ -28,7 +28,11 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
         "POST",
         queryParams: {"action": "getGuestHouses"},
       );
-      guestHousesList = AppCommon.apiProvider.handleListResponse(res);
+      if (res["success"]) {
+        guestHousesList = res["data"];
+      } else {
+        AppCommon.displayToast(res["error"]);
+      }
     } catch (e) {
       guestHousesList = [];
       AppCommon.displayToast("Server error");
