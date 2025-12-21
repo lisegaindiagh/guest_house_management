@@ -37,6 +37,13 @@ class LoginScreen extends StatelessWidget {
         AppCommon.sessionKey.token,
         res["token"],
       );
+
+      Map user = res["user"];
+      AppCommon.canBook = user["can_book"] == 1;
+      AppCommon.canViewBooking = user["can_view_bookings"] == 1;
+      AppCommon.canManageRooms = user["can_manage_rooms"] == 1;
+      AppCommon.canMangeUsers = user["can_manage_users"] == 1;
+
       Navigator.pushReplacementNamed(
         AppCommon.navigatorKey.currentContext!,
         '/guestHouseList',

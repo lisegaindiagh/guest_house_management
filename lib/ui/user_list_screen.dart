@@ -17,7 +17,7 @@ class UserListScreen extends StatefulWidget {
 }
 
 class _UserListScreenState extends State<UserListScreen> {
-  List<Map<String, dynamic>> users = [];
+  List users = [];
   bool isLoading = true;
 
   @override

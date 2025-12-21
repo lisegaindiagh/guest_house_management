@@ -16,6 +16,11 @@ class AppCommon {
   static SessionKey sessionKey = SessionKey();
   static ApiProvider apiProvider = ApiProvider();
 
+  static bool canBook = false;
+  static bool canViewBooking = false;
+  static bool canManageRooms = false;
+  static bool canMangeUsers = false;
+
   /*
   * Method is used to listen the internet connectivity changes
   * This method is called from Build of MyApp class

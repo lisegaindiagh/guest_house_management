@@ -55,9 +55,10 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 Navigator.pushNamed(context, '/users');
               }
             },
-            itemBuilder: (context) => const [
+            itemBuilder: (context) => [
               PopupMenuItem(value: "Setting", child: Text("Setting")),
-              PopupMenuItem(value: "User Rights", child: Text("User Rights")),
+              if (AppCommon.canMangeUsers)
+                PopupMenuItem(value: "User Rights", child: Text("User Rights")),
             ],
           ),
         ],
@@ -81,17 +82,19 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddRoomScreen(guestHouseId: roomId),
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: AppCommon.canManageRooms
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddRoomScreen(guestHouseId: roomId),
+                  ),
+                );
+              },
+              child: Icon(Icons.add),
+            )
+          : SizedBox(),
     );
   }
 
@@ -143,34 +146,58 @@ class _RoomListScreenState extends State<RoomListScreen> {
             const SizedBox(height: 12),
 
             // 🔘 Action buttons (only if room is active)
-            if (isActive)
-              Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
-                  onTap: () {
-                    if (isBooked) {
+            if (isActive) ...[
+              if (isBooked && AppCommon.canViewBooking)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.pushNamed(
                         context,
                         '/booking',
                         arguments: roomId,
                       );
-                    } else {
-                      Navigator.pushNamed(context, '/booking');
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppCommon.colors.btnColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      isBooked ? "View Booking" : "Book Room",
-                      style: TextStyle(color: Colors.white),
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppCommon.colors.btnColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        "View Booking",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
-              ),
+              if (!isBooked && AppCommon.canBook)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/booking');
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppCommon.colors.btnColor,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        "Book Room",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ],
         ),
       ),
