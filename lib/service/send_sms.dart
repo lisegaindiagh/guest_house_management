@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:group_smskit/group_smskit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../Common/app_common.dart';
+
 class SendSMSService {
   Future<void> sendSMS(BuildContext context) async {
     // Request permission before sending SMS
@@ -16,9 +18,7 @@ class SendSMSService {
     );
 
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result ?? 'Message sent.')));
+      AppCommon.displayToast(result ?? "Message sent.");
     }
   }
 

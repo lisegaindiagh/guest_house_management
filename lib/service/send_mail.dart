@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../Common/app_common.dart';
 import 'sign_with_google.dart';
 
 class SendMailService {
@@ -48,11 +49,9 @@ class SendMailService {
     );
 
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Email sent ✅')));
+      AppCommon.displayToast("Email sent ✅");
     } else {
-      print('Send failed (${response.statusCode}): ${response.body}');
+      debugPrint('Send failed (${response.statusCode}): ${response.body}');
     }
   }
 

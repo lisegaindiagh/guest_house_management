@@ -50,22 +50,18 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         "api.php",
         "POST",
         queryParams: {"action": "addRoom"},
-        params: requestParam
+        params: requestParam,
       );
       if (res["success"]) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Room added successfully")));
-
+        AppCommon.displayToast("Room added successfully");
       } else {
         AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
-
       AppCommon.displayToast("Server error");
-    } finally {
-    }
+    } finally {}
   }
+
   /// Validate and submit form
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -102,9 +98,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                   hint: "e.g. 105",
                 ),
                 validator: (value) {
-                  if (value == null || value
-                      .trim()
-                      .isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Room name is required";
                   }
                   return null;
@@ -115,7 +109,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
 
               // 👥 Occupancy Type
               DropdownButtonFormField<String>(
-                value: _selectedOccupancyType,
+                initialValue: _selectedOccupancyType,
                 style: TextStyle(
                   color: AppCommon.colors.black,
                   fontWeight: FontWeight.w500,
@@ -136,12 +130,11 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                 ),
                 items: _occupancyTypes
                     .map(
-                      (type) =>
-                      DropdownMenuItem(
+                      (type) => DropdownMenuItem(
                         value: type,
                         child: Text(type.toUpperCase()),
                       ),
-                )
+                    )
                     .toList(),
                 onChanged: (value) {
                   setState(() {
@@ -168,9 +161,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
-                  if (value == null || value
-                      .trim()
-                      .isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Max occupancy is required";
                   }
 

@@ -4,7 +4,7 @@ class SignInWithGoogleService {
   SignInWithGoogleService._internal();
 
   static final SignInWithGoogleService instance =
-  SignInWithGoogleService._internal();
+      SignInWithGoogleService._internal();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: <String>[

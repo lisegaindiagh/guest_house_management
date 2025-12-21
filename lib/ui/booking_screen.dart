@@ -255,9 +255,7 @@ class _BookingScreenState extends State<BookingScreen> {
   /// 📅 Date & Time Picker
   Future<void> pickDateTime(bool isArrival) async {
     if (!isArrival && _arrivalDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select Arrival first")),
-      );
+      AppCommon.displayToast("Please select Arrival first");
       return;
     }
 

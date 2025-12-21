@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../Common/app_common.dart';
-import '../Common/session_key.dart';
 import '../service/sign_with_google.dart';
 import 'home_screen.dart';
 
@@ -14,15 +13,11 @@ class LoginScreen extends StatelessWidget {
     final user = await googleService.signIn();
 
     if (user == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Google sign-in cancelled')));
+      AppCommon.displayToast("Google sign-in cancelled");
       return;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Signed in as ${user.email}')));
+    AppCommon.displayToast("Signed in as ${user.email}");
 
     // Navigate to next screen
     Navigator.pushReplacement(
@@ -46,7 +41,6 @@ class LoginScreen extends StatelessWidget {
         AppCommon.navigatorKey.currentContext!,
         '/guestHouseList',
       );
-
     }
     // return res;
   }
