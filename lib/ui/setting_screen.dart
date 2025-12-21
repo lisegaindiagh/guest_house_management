@@ -103,7 +103,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.blue, // Focused border color
+                            // Focused border color
+                            color: AppCommon.colors.primaryColor,
                             width: 2.0, // Border width
                           ),
                         ),
@@ -132,7 +133,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(
-                            color: Colors.blue, // Focused border color
+                            // Focused border color
+                            color: AppCommon.colors.primaryColor,
                             width: 2.0, // Border width
                           ),
                         ),
@@ -154,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ElevatedButton(
                       onPressed: _updateSettings,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: AppCommon.colors.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
