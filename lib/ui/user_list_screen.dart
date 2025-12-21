@@ -37,7 +37,11 @@ class _UserListScreenState extends State<UserListScreen> {
         "POST",
         queryParams: {"action": "getUsers"},
       );
-      users = AppCommon.apiProvider.handleListResponse(res);
+      if (!AppCommon.isEmpty(res) && res["success"]) {
+        users = res["data"];
+      } else if (res is Map && res.containsKey("error")) {
+        AppCommon.displayToast(res["message"]);
+      }
     } catch (e) {
       users = [];
       AppCommon.displayToast("Server error");

@@ -47,7 +47,9 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Guest Houses")),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
+          : guestHousesList.isEmpty
+          ? const Center(child: Text("No guest houses found"))
           : ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: guestHousesList.length,
@@ -61,13 +63,14 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                     Navigator.pushNamed(
                       context,
                       '/home',
-                      arguments: int.parse(guestHouse["id"]),
+                      arguments: int.parse(guestHouse["id"].toString()),
                     );
                   },
-                  child: buildGestHouseCard(
-                    name: guestHouse["name"],
-                    address: guestHouse["address"],
+                  child: buildGuestHouseCard(
+                    name: guestHouse["name"] ?? "",
+                    address: guestHouse["address"] ?? "",
                     isActive: isActive,
+                    totalRooms: guestHouse["total_rooms"] ?? "0",
                   ),
                 );
               },
@@ -75,20 +78,23 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     );
   }
 
-  Widget buildGestHouseCard({
+  /// Guest house card UI
+  Widget buildGuestHouseCard({
     required String name,
     required String address,
     required bool isActive,
+    required dynamic totalRooms,
   }) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(14.0),
+        padding: const EdgeInsets.all(14),
         child: Row(
           spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 🏢 Icon
             Container(
               height: 64,
               width: 64,
@@ -109,7 +115,9 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
             Expanded(
               child: Column(
                 spacing: 8,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 🏠 Name + Status
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +148,22 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                       ),
                     ],
                   ),
+
+                  // 🛏️ Total Rooms
+                  Row(
+                    spacing: 8,
+
+                    children: [
+                      const Icon(Icons.meeting_room_outlined, size: 18),
+                      Text(
+                        "Rooms: $totalRooms",
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -149,6 +173,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     );
   }
 
+  /// Active / Inactive status chip
   Widget buildStatusChip({required bool isActive}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

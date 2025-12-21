@@ -73,29 +73,4 @@ class ApiProvider {
       throw Exception("Failed to Load");
     }
   }
-
-  /// ✅ Handles List-based API response
-  List<Map<String, dynamic>> handleListResponse(
-    dynamic response, {
-    bool showToast = true,
-  }) {
-    /// Success
-    if (response is List) {
-      return List<Map<String, dynamic>>.from(response);
-    }
-
-    /// Error from backend
-    if (response is Map && response.containsKey("error")) {
-      if (showToast) {
-        AppCommon.displayToast(response["error"]);
-      }
-      return [];
-    }
-
-    /// Unexpected response
-    if (showToast) {
-      AppCommon.displayToast("Something went wrong");
-    }
-    return [];
-  }
 }

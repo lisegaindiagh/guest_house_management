@@ -46,7 +46,7 @@ class _BookingScreenState extends State<BookingScreen> {
         "GET",
         queryParams: {"action": "getRoomBooking", "room_id": roomId},
       );
-      if (!AppCommon.isEmpty(res)) {
+      if (!AppCommon.isEmpty(res) && res["success"]) {
         if (res is Map && res.containsKey("booking")) {
           var booking = res["booking"];
           _guestController.text = booking["guest_name"];
@@ -57,10 +57,11 @@ class _BookingScreenState extends State<BookingScreen> {
           );
           _arrivalDate = DateTime.parse(booking["arrival_datetime"]);
           _departureDate = DateTime.parse(booking["departure_datetime"]);
-
-          String mealOnArrival = booking["meal_on_arrival"];
-          meals[mealOnArrival[0].toUpperCase() + mealOnArrival.substring(1)] =
-              true;
+          meals = {
+            "Breakfast": booking["is_breakfast"] == 1,
+            "Lunch": booking["is_lunch"] == 1,
+            "Dinner": booking["is_dinner"] == 1,
+          };
           isEdit = true;
         } else if (res is Map && res.containsKey("error")) {
           AppCommon.displayToast(res["error"]);

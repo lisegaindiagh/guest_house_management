@@ -21,7 +21,12 @@ class _RoomListScreenState extends State<RoomListScreen> {
         "POST",
         queryParams: {"action": "getRooms", "guest_house_id": roomId},
       );
-      roomList = AppCommon.apiProvider.handleListResponse(res);
+
+      if (!AppCommon.isEmpty(res) && res["success"]) {
+        roomList = res["data"];
+      } else if (res is Map && res.containsKey("error")) {
+        AppCommon.displayToast(res["message"]);
+      }
     } catch (e) {
       roomList = [];
       AppCommon.displayToast("Server error");
