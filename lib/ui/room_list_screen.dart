@@ -65,6 +65,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
               itemBuilder: (context, index) {
                 final room = roomList[index];
                 return buildRoomCard(
+                  roomId: room["id"],
                   roomName: room["room_name"],
                   occupancyType: room["occupancy_type"],
                   maxOccupancy: room["max_occupancy"],
@@ -77,6 +78,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
   }
 
   Widget buildRoomCard({
+    required int roomId,
     required String roomName,
     required String occupancyType,
     required int maxOccupancy,
@@ -129,7 +131,11 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 child: GestureDetector(
                   onTap: () {
                     if (isBooked) {
-                      // 👉 Navigate to booking details screen
+                      Navigator.pushNamed(
+                        context,
+                        '/booking',
+                        arguments: roomId,
+                      );
                     } else {
                       Navigator.pushNamed(context, '/booking');
                     }
