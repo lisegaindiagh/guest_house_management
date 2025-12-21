@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../Common/app_common.dart';
+import 'add_edit_user_screen.dart';
 
 /// UserListScreen
 ///
@@ -26,6 +27,10 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   Future<void> getUsers() async {
+    if (!isLoading) {
+      isLoading = true;
+      setState(() {});
+    }
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
@@ -33,13 +38,33 @@ class _UserListScreenState extends State<UserListScreen> {
         queryParams: {"action": "getUsers"},
       );
       users = AppCommon.apiProvider.handleListResponse(res);
-      print(users.length);
     } catch (e) {
       users = [];
       AppCommon.displayToast("Server error");
     } finally {
       isLoading = false;
       setState(() {});
+    }
+  }
+
+  Future<void> deleteUser(int userId) async {
+    if (!isLoading) {
+      isLoading = true;
+      setState(() {});
+    }
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php",
+        "POST",
+        queryParams: {"action": "deleteUser"},
+        params: {"user_id": userId},
+      );
+      if (!AppCommon.isEmpty(res) && res["success"]) {
+        AppCommon.displayToast(res["message"]);
+        await getUsers();
+      }
+    } catch (e) {
+      AppCommon.displayToast("Server error");
     }
   }
 
@@ -59,6 +84,18 @@ class _UserListScreenState extends State<UserListScreen> {
                 return buildUserSwipeCard(user: user);
               },
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var res = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddEditUserScreen()),
+          );
+          if (res) {
+            await getUsers();
+          }
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -87,8 +124,19 @@ class _UserListScreenState extends State<UserListScreen> {
 
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.endToStart) {
+          var res = await showDeleteUserDialog(context);
+          if (res ?? false) await deleteUser(int.tryParse(user["id"]) ?? 0);
           return false;
         } else if (direction == DismissDirection.startToEnd) {
+          var res = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddEditUserScreen(userData: user),
+            ),
+          );
+          if (res) {
+            await getUsers();
+          }
           return false;
         }
         return null;
@@ -229,6 +277,42 @@ class _UserListScreenState extends State<UserListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<bool?> showDeleteUserDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // ❌ Prevent accidental dismiss
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete User"),
+          content: const Text(
+            "Are you sure you want to delete this user?\n"
+            "This action cannot be undone.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false); // ❌ Cancel
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppCommon.colors.primaryColor,
+              ),
+              onPressed: () {
+                Navigator.pop(context, true); // ✅ Confirm
+              },
+              child: Text(
+                "Delete",
+                style: TextStyle(color: AppCommon.colors.white),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -55,6 +55,10 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: AppCommon.colors.primaryColor,
+          foregroundColor: AppCommon.colors.white,
+        ),
       ),
 
       initialRoute: '/',

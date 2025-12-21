@@ -80,21 +80,6 @@ class _BookingScreenState extends State<BookingScreen> {
     return DateFormat("dd/MM/yyyy hh:mm a").format(date);
   }
 
-  /// 🎨 Common InputDecoration
-  InputDecoration _inputDecoration(String label, {Widget? suffixIcon}) {
-    return InputDecoration(
-      labelText: label,
-      suffixIcon: suffixIcon,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      floatingLabelStyle: TextStyle(color: AppCommon.colors.primaryColor),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppCommon.colors.primaryColor, width: 2),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final int roomId = (ModalRoute.of(context)!.settings.arguments ?? 0) as int;
@@ -117,7 +102,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     TextFormField(
                       controller: _guestController,
                       maxLength: 20,
-                      decoration: _inputDecoration("Guest Name"),
+                      decoration: AppCommon.inputDecoration("Guest Name"),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return "Guest name is required";
@@ -131,7 +116,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       controller: _mobileController,
                       keyboardType: TextInputType.phone,
                       maxLength: 10,
-                      decoration: _inputDecoration("Mobile Number"),
+                      decoration: AppCommon.inputDecoration("Mobile Number"),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return "Mobile number is required";
@@ -147,7 +132,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     TextFormField(
                       controller: _arrivalController,
                       readOnly: true,
-                      decoration: _inputDecoration(
+                      decoration: AppCommon.inputDecoration(
                         "Arrival",
                         suffixIcon: Icon(
                           Icons.calendar_today,
@@ -167,7 +152,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     TextFormField(
                       controller: _departureController,
                       readOnly: true,
-                      decoration: _inputDecoration(
+                      decoration: AppCommon.inputDecoration(
                         "Departure",
                         suffixIcon: Icon(
                           Icons.calendar_today,

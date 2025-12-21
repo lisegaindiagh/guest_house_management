@@ -131,4 +131,24 @@ class AppCommon {
   static void displayToast(String message) {
     Fluttertoast.showToast(msg: message, gravity: ToastGravity.BOTTOM);
   }
+
+  /// 🎨 Common InputDecoration
+  static InputDecoration inputDecoration(
+    String label, {
+    String? hint,
+    Widget? suffixIcon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      suffixIcon: suffixIcon,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      floatingLabelStyle: TextStyle(color: AppCommon.colors.primaryColor),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: AppCommon.colors.primaryColor, width: 2),
+      ),
+    );
+  }
 }

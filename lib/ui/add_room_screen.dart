@@ -83,26 +83,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
     }
   }
 
-  /// 🎨 Common InputDecoration
-  InputDecoration _inputDecoration(
-    String label,
-    String hint, {
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      labelText: label,
-      hintText: hint,
-      suffixIcon: suffixIcon,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      floatingLabelStyle: TextStyle(color: AppCommon.colors.primaryColor),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppCommon.colors.primaryColor, width: 2),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,9 +97,14 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
               // 🛏️ Room Name
               TextFormField(
                 controller: _roomNameController,
-                decoration: _inputDecoration("Room Name / Number", "e.g. 105"),
+                decoration: AppCommon.inputDecoration(
+                  "Room Name / Number",
+                  hint: "e.g. 105",
+                ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null || value
+                      .trim()
+                      .isEmpty) {
                     return "Room name is required";
                   }
                   return null;
@@ -151,11 +136,12 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                 ),
                 items: _occupancyTypes
                     .map(
-                      (type) => DropdownMenuItem(
+                      (type) =>
+                      DropdownMenuItem(
                         value: type,
                         child: Text(type.toUpperCase()),
                       ),
-                    )
+                )
                     .toList(),
                 onChanged: (value) {
                   setState(() {
@@ -176,10 +162,15 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
               TextFormField(
                 controller: _maxOccupancyController,
                 keyboardType: TextInputType.number,
-                decoration: _inputDecoration("Max Occupancy", "e.g. 1"),
+                decoration: AppCommon.inputDecoration(
+                  "Max Occupancy",
+                  hint: "e.g. 1",
+                ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null || value
+                      .trim()
+                      .isEmpty) {
                     return "Max occupancy is required";
                   }
 
