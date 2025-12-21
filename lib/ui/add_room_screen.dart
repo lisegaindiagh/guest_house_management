@@ -44,8 +44,30 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
     super.dispose();
   }
 
+  Future<void> addRoom(var requestParam) async {
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php",
+        "POST",
+        queryParams: {"action": "addRoom"},
+        params: requestParam
+      );
+      if (res["success"]) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Room added successfully")));
+
+      } else {
+        AppCommon.displayToast(res["error"]);
+      }
+    } catch (e) {
+
+      AppCommon.displayToast("Server error");
+    } finally {
+    }
+  }
   /// Validate and submit form
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final Map<String, dynamic> payload = {
         "guest_house_id": widget.guestHouseId,
@@ -53,13 +75,9 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         "occupancy_type": _selectedOccupancyType,
         "max_occupancy": int.parse(_maxOccupancyController.text.trim()),
       };
-
+      await addRoom(payload);
       // ✅ API call will go here
       debugPrint("Room Payload: $payload");
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Room added successfully")));
 
       Navigator.pop(context);
     }
@@ -112,7 +130,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
 
               // 👥 Occupancy Type
               DropdownButtonFormField<String>(
-                initialValue: _selectedOccupancyType,
+                value: _selectedOccupancyType,
                 style: TextStyle(
                   color: AppCommon.colors.black,
                   fontWeight: FontWeight.w500,

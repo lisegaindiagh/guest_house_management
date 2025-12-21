@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import '../Common/app_common.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -10,33 +11,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  bool _loading = false;
+  bool _loading = true;
 
   final Dio _dio = Dio(); // Dio instance
 
   @override
   void initState() {
     super.initState();
-    //_fetchSettings();
-    _mobileController.text = "9090909090";
-    _emailController.text = "nidhiLisega@gmail.com";
+    fetchSettingData();
+  //  _mobileController.text = "9090909090";
+    //_emailController.text = "nidhiLisega@gmail.com";
   }
 
-  Future<void> _fetchSettings() async {
+  Future<void> fetchSettingData() async {
     try {
-      final response = await _dio.get('https://yourdomain.com/api.php?action=getSettings');
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        _mobileController.text = response.data['settings']['notify_mobile'];
-        _emailController.text = response.data['settings']['notify_email'];
+      var res = await AppCommon.apiProvider.getServerResponse(
+          "api.php",
+          "GET",
+          queryParams: {"action": "getSettings"},
+      );
+      if (res["success"]) {
+        _mobileController.text = res["settings"]["notify_mobile"];
+        _emailController.text = res["settings"]["notify_email"];
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to fetch settings")),
-        );
+        AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+
+      AppCommon.displayToast("Server error");
     } finally {
       setState(() {
         _loading = false;
@@ -44,31 +46,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+
   Future<void> _updateSettings() async {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      final response = await _dio.post(
-        'https://yourdomain.com/api.php?action=updateSettings',
-        data: {
-          'notify_mobile': _mobileController.text,
-          'notify_email': _emailController.text,
-        },
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php",
+        "POST",
+        queryParams: {"action": "updateSettings"},
+        params: {
+          "notify_mobile": _mobileController.text,
+          "notify_email":  _emailController.text
+        }
       );
-
-      if (response.statusCode == 200 && response.data['success'] == true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Settings updated successfully")),
-        );
+      if (res["success"]) {
+        AppCommon.displayToast(res["message"]);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to update settings")),
-        );
+        AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+
+      AppCommon.displayToast("Server error");
+    } finally {
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -90,6 +93,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(height: 40),
               TextFormField(
                 controller: _mobileController,
+                maxLength: 10,
                 keyboardType: TextInputType.phone,
               decoration: InputDecoration(
                 labelText: "Mobile Number",
