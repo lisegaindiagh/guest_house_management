@@ -109,7 +109,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
 
               // 👥 Occupancy Type
               DropdownButtonFormField<String>(
-                initialValue: _selectedOccupancyType,
+                value: _selectedOccupancyType,
                 style: TextStyle(
                   color: AppCommon.colors.black,
                   fontWeight: FontWeight.w500,

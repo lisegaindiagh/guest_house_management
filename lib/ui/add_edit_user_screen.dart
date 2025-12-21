@@ -147,7 +147,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
 
               // 🧩 Role
               DropdownButtonFormField<String>(
-                initialValue: _selectedRole,
+                value: _selectedRole,
                 isDense: true,
                 decoration: AppCommon.inputDecoration("Role"),
                 items: const [

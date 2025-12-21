@@ -79,6 +79,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   maxOccupancy: room["max_occupancy"],
                   isActive: room["is_active"] == 1,
                   isBooked: room["is_booked"] == 1,
+                  guestHouseId: room["guest_house_id"],
                 );
               },
             ),
@@ -105,6 +106,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
     required int maxOccupancy,
     required bool isActive,
     required bool isBooked,
+    required int guestHouseId
   }) {
     return Card(
       elevation: 2,
@@ -154,7 +156,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                     onTap: () {
                       Navigator.pushNamed(
                         context,
-                        '/booking',
+                        '/viewBooking',
                         arguments: roomId,
                       );
                     },
@@ -179,7 +181,10 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/booking');
+                      Navigator.pushNamed(context, '/booking', arguments: {
+                        'roomId': roomId,
+                        'guestHouseId': guestHouseId,
+                      },);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(

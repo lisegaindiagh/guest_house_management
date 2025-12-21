@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guest_house_management/ui/view_booking.dart';
 
 import 'Common/app_common.dart';
 import 'splash_screen.dart';
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
         '/guestHouseList': (_) => GuestHouseListScreen(),
         "/setting": (_) => SettingsScreen(),
         "/booking": (_) => BookingScreen(),
+        "/viewBooking":(_) => ViewBookingScreen(),
         "/users": (_) => UserListScreen(),
         // '/about': (_) => const AboutScreen(),
       },

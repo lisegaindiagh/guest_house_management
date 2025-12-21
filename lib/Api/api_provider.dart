@@ -64,7 +64,7 @@ class ApiProvider {
       // The exception is of type DioError
       if (e is DioException) {
         if (e.response!.statusCode == 401) {}
-        AppCommon.displayToast(e.response!.data["Message"]);
+        AppCommon.displayToast(e.response!.data['error']);
       }
     }
     if (response.statusCode == 200) {

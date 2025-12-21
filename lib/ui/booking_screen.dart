@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../Common/app_common.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -22,6 +21,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
   DateTime? _arrivalDate;
   DateTime? _departureDate;
+  final int roomId = 0;
+  final int guestHouseId = 0;
 
   Map<String, bool> meals = {
     "Breakfast": false,
@@ -29,64 +30,22 @@ class _BookingScreenState extends State<BookingScreen> {
     "Dinner": false,
   };
 
-  bool isLoading = false, isFirstTime = true, isEdit = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<void> getBookingDetails(int roomId) async {
-    isLoading = true;
-    setState(() {});
-
-    try {
-      var res = await AppCommon.apiProvider.getServerResponse(
-        "api.php",
-        "GET",
-        queryParams: {"action": "getRoomBooking", "room_id": roomId},
-      );
-      if (!AppCommon.isEmpty(res) && res["success"]) {
-        if (res is Map && res.containsKey("booking")) {
-          var booking = res["booking"];
-          _guestController.text = booking["guest_name"];
-          _mobileController.text = booking["mobile"];
-          _arrivalController.text = convertDate(booking["arrival_datetime"]);
-          _departureController.text = convertDate(
-            booking["departure_datetime"],
-          );
-          _arrivalDate = DateTime.parse(booking["arrival_datetime"]);
-          _departureDate = DateTime.parse(booking["departure_datetime"]);
-          meals = {
-            "Breakfast": booking["is_breakfast"] == 1,
-            "Lunch": booking["is_lunch"] == 1,
-            "Dinner": booking["is_dinner"] == 1,
-          };
-          isEdit = true;
-        } else if (res is Map && res.containsKey("error")) {
-          AppCommon.displayToast(res["error"]);
-        }
-      }
-    } catch (e) {
-      AppCommon.displayToast("Server error");
-    } finally {
-      isLoading = false;
-      isFirstTime = false;
-      setState(() {});
-    }
-  }
+  bool isLoading = false, isFirstTime = true;
 
   String convertDate(String input) {
     DateTime date = DateTime.parse(input);
-    return DateFormat("dd/MM/yyyy hh:mm a").format(date);
+    return DateFormat("dd/MM/yyyy hh:mm:ss").format(date);
   }
 
   @override
   Widget build(BuildContext context) {
-    final int roomId = (ModalRoute.of(context)!.settings.arguments ?? 0) as int;
-    if (isFirstTime && roomId != 0) {
-      getBookingDetails(roomId);
-    }
+   // final int roomId = (ModalRoute.of(context)!.settings.arguments ?? 0) as int;
+    final args =
+    ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    final int roomId = args['roomId'];
+    final int guestHouseId = args['guestHouseId'];
+
     return Scaffold(
       appBar: AppBar(title: const Text("Guest Booking")),
       body: isLoading
@@ -203,7 +162,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           child: ElevatedButton(
                             onPressed: () => Navigator.pop(context),
                             child: Text(
-                              isEdit ? "Cancel Booking" : "Cancel",
+                               "Cancel",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppCommon.colors.primaryColor,
@@ -218,7 +177,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             ),
                             onPressed: _submit,
                             child: Text(
-                              isEdit ? "Update" : "Submit",
+                               "Submit",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -248,8 +207,49 @@ class _BookingScreenState extends State<BookingScreen> {
       debugPrint("Arrival: ${_arrivalController.text}");
       debugPrint("Departure: ${_departureController.text}");
       debugPrint("Meals: $selectedMeals");
+      bookedRoom();
 
       Navigator.pop(context);
+    }
+  }
+
+  Future<void> bookedRoom ()async {
+    final selectedMeals = meals.entries
+        .where((e) => e.value)
+        .map((e) => e.key)
+        .toList();
+
+    DateTime dateTime =
+    DateFormat("dd/MM/yyyy HH:mm:ss").parse(_arrivalController.text);
+
+    DateTime departureController =
+    DateFormat("dd/MM/yyyy HH:mm:ss").parse(_departureController.text);
+
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+          "api.php",
+          "POST",
+          queryParams: {"action": "createBooking"},
+          params: {
+            {
+              "guest_house_id": guestHouseId,
+              "room_id": roomId,
+              "guest_name": _guestController.text,
+              "arrival_datetime":  DateFormat("yyyy-MM-dd HH:mm:ss").format(dateTime),
+              "departure_datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(departureController),
+              "meal_on_arrival": "Lunch"
+              //selectedMeals
+            }
+          }
+      );
+      if (res["success"]) {
+        AppCommon.displayToast(res["message"]);
+      } else {
+        AppCommon.displayToast(res["error"]);
+      }
+    } catch (e) {
+
+      AppCommon.displayToast("Server error");
     }
   }
 
@@ -264,7 +264,7 @@ class _BookingScreenState extends State<BookingScreen> {
         ? (_arrivalDate ?? DateTime.now())
         : (_departureDate ?? _arrivalDate!);
     DateTime firstDate = isArrival
-        ? (isEdit ? _arrivalDate! : DateTime.now())
+        ? (DateTime.now())
         : _arrivalDate!;
     DateTime lastDate = DateTime(2100);
 
@@ -330,14 +330,14 @@ class _BookingScreenState extends State<BookingScreen> {
       if (isArrival) {
         _arrivalDate = dateTime;
         _arrivalController.text = DateFormat(
-          "dd/MM/yyyy hh:mm a",
+          "dd/MM/yyyy hh:mm:ss",
         ).format(dateTime);
         _departureDate = null;
         _departureController.clear();
       } else {
         _departureDate = dateTime;
         _departureController.text = DateFormat(
-          "dd/MM/yyyy hh:mm a",
+          "dd/MM/yyyy hh:mm:ss",
         ).format(dateTime);
       }
     });
