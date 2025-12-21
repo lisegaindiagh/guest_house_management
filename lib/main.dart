@@ -8,6 +8,7 @@ import 'ui/guest_house_list.dart';
 import 'ui/login_screen.dart';
 import 'ui/room_list_screen.dart';
 import 'ui/setting_screen.dart';
+import 'ui/user_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         '/guestHouseList': (_) => GuestHouseListScreen(),
         "/setting": (_) => SettingsScreen(),
         "/booking": (_) => BookingScreen(),
+        "/users": (_) => UserListScreen(),
         // '/about': (_) => const AboutScreen(),
       },
     );

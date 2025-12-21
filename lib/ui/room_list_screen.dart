@@ -46,12 +46,13 @@ class _RoomListScreenState extends State<RoomListScreen> {
             onSelected: (value) {
               if (value == "Setting") {
                 Navigator.pushNamed(context, '/setting');
+              } else if (value == "User Rights") {
+                Navigator.pushNamed(context, '/users');
               }
             },
             itemBuilder: (context) => const [
               PopupMenuItem(value: "Setting", child: Text("Setting")),
-              PopupMenuItem(value: "bookings", child: Text("View Bookings")),
-              PopupMenuItem(value: "addRoom", child: Text("Add Room")),
+              PopupMenuItem(value: "User Rights", child: Text("User Rights")),
             ],
           ),
         ],
