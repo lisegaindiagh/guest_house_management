@@ -22,8 +22,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
   DateTime? _arrivalDate;
   DateTime? _departureDate;
-  final int roomId = 0;
-  final int guestHouseId = 0;
+   int roomId = 0;
+   int guestHouseId = 0;
 
   Map<String, bool> meals = {
     "Breakfast": false,
@@ -44,8 +44,8 @@ class _BookingScreenState extends State<BookingScreen> {
     final args =
     ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
-    final int roomId = args['roomId'];
-    final int guestHouseId = args['guestHouseId'];
+     roomId = args['roomId'];
+     guestHouseId = args['guestHouseId'];
 
     return Scaffold(
       appBar: AppBar(title: const Text("Guest Booking")),
@@ -176,7 +176,9 @@ class _BookingScreenState extends State<BookingScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppCommon.colors.primaryColor,
                             ),
-                            onPressed: _submit,
+                            onPressed:() async {
+                              await _submit();
+                            } ,
                             child: Text(
                                "Submit",
                               style: TextStyle(
@@ -196,7 +198,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   /// 📤 Submit
-  void _submit() {
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       final selectedMeals = meals.entries
           .where((e) => e.value)
@@ -208,9 +210,8 @@ class _BookingScreenState extends State<BookingScreen> {
       debugPrint("Arrival: ${_arrivalController.text}");
       debugPrint("Departure: ${_departureController.text}");
       debugPrint("Meals: $selectedMeals");
-      bookedRoom();
+     await bookedRoom();
 
-      Navigator.pop(context);
     }
   }
 
@@ -232,16 +233,22 @@ class _BookingScreenState extends State<BookingScreen> {
           "POST",
           queryParams: {"action": "createBooking"},
           params: {
-            {
               "guest_house_id": guestHouseId,
               "room_id": roomId,
               "guest_name": _guestController.text,
+              "mobile":_mobileController.text,
               "arrival_datetime":  DateFormat("yyyy-MM-dd HH:mm:ss").format(dateTime),
               "departure_datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(departureController),
-              "meal_on_arrival": "Lunch"
+              "is_breakfast": meals["Breakfast"] == true ? 1 : 0,
+              "is_lunch": meals["Lunch"] == true ? 1 : 0,
+              "is_dinner": meals["Dinner"] == true ? 1 : 0,
+             /* "is_breakfast": 1,
+              "is_lunch": 0,
+              "is_dinner": 1,*/
+              "note": "Late arrival, please keep room ready"
               //selectedMeals
             }
-          }
+
       );
       if (res["success"]) {
         // for send SMS
@@ -255,11 +262,12 @@ class _BookingScreenState extends State<BookingScreen> {
               departure: _departureController.text,
               mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals);
           AppCommon.displayToast(res["message"]);
+          Navigator.pop(context);
         } finally {
           debugPrint("failed to send SMS.");
         }
         // for send Email
-        try{
+       /* try{
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
           var sendEmailResponse = await AppCommon.apiProvider.getServerResponse(
@@ -274,12 +282,11 @@ class _BookingScreenState extends State<BookingScreen> {
           );
         } finally {
           debugPrint("failed to send Email.");
-        }
+        }*/
       } else {
         AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
-
       AppCommon.displayToast("Server error");
     }
   }
