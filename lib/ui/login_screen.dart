@@ -1,36 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../Common/app_common.dart';
-import '../service/sign_with_google.dart';
-import 'home_screen.dart';
+import '../service/send_sms.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
-  Future<void> _signIn(BuildContext context) async {
-    final googleService = SignInWithGoogleService.instance;
-
-    final user = await googleService.signIn();
-
-    if (user == null) {
-      AppCommon.displayToast("Google sign-in cancelled");
-      return;
-    }
-
-    AppCommon.displayToast("Signed in as ${user.email}");
-
-    // Navigate to next screen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
-  }
-
-  Future<void> getLoginDetails() async {
+  Future<void> getLoginDetails(context) async {
     var res = await AppCommon.apiProvider.getServerResponse(
       "auth.php",
       "POST",
-      params: {"email": "admin@mail.com"},
+      params: {"email": "admin@mail.com", "password":"admin@123"},
     );
     if (res["success"]) {
       await AppCommon.sharePref.setString(
@@ -57,8 +37,8 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: ElevatedButton.icon(
-          onPressed: () {
-            getLoginDetails();
+          onPressed: () async {
+            await getLoginDetails(context);
           },
           //_signIn(context),
           icon: const Icon(Icons.login),

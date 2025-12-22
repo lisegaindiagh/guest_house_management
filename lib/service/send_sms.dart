@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../Common/app_common.dart';
 
 class SendSMSService {
-  Future<void> sendSMS(BuildContext context) async {
+  Future<void> sendSMS(BuildContext context, {required int roomId, required String guestName, required String mobile, required String arrival, required String departure, dynamic mealOnArrival}) async {
     // Request permission before sending SMS
     await requestSmsPermission();
 
@@ -14,7 +14,8 @@ class SendSMSService {
       // List of recipient numbers
       numbers: ['6353520694'],
       // Message body
-      message: 'Hii...!!',
+        message: "Room Booking Alert \nGuest: $guestName \nMobile: $mobile \nRoom: $roomId \nArrival: $arrival \nDeparture: $departure \nMeal on Arrival: ${mealOnArrival ??
+            ""} \n\n- Booked via Guest House App"
     );
 
     if (context.mounted) {
@@ -30,6 +31,8 @@ class SendSMSService {
     // If not granted, request permission from user
     if (!status.isGranted) {
       await Permission.sms.request();
+    } else if (status.isPermanentlyDenied) {
+      await openAppSettings();
     }
   }
 }

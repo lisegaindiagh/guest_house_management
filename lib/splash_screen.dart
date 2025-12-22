@@ -39,15 +39,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    AppCommon.displayNetworkPopup();
+    // AppCommon.displayNetworkPopup();
     navigateToLogin();
   }
 
   void navigateToLogin() {
     Future.delayed(const Duration(seconds: 3), () async {
-      if (await AppCommon.isOnline()) {
+      // if (await AppCommon.isOnline()) {
         Navigator.pushReplacementNamed(context, '/login');
-      }
+      // }
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../Common/app_common.dart';
+import '../service/send_sms.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -243,7 +244,37 @@ class _BookingScreenState extends State<BookingScreen> {
           }
       );
       if (res["success"]) {
-        AppCommon.displayToast(res["message"]);
+        // for send SMS
+        try {
+          await SendSMSService().sendSMS(
+              context,
+              roomId: roomId,
+              guestName: _guestController.text,
+              mobile: _mobileController.text,
+              arrival: _arrivalController.text,
+              departure: _departureController.text,
+              mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals);
+          AppCommon.displayToast(res["message"]);
+        } finally {
+          debugPrint("failed to send SMS.");
+        }
+        // for send Email
+        try{
+          //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
+          // todo: change sender & receiver
+          var sendEmailResponse = await AppCommon.apiProvider.getServerResponse(
+              "send_mailer.php",
+              "POST",
+              params: {
+                "sender_email": "pradip.jadav055@gmail.com",
+                "receiver_email": "jadavpradip2002@gmail.com",
+                "text": "test mail"
+              }
+
+          );
+        } finally {
+          debugPrint("failed to send Email.");
+        }
       } else {
         AppCommon.displayToast(res["error"]);
       }
