@@ -13,6 +13,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
   bool isLoading = true;
   dynamic roomList = [];
   bool isFirstTime = true;
+  final dialogFormKey = GlobalKey<FormState>();
 
   Future<void> getGuestHouseRoomList(int roomId) async {
     try {
@@ -25,7 +26,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
       if (!AppCommon.isEmpty(res) && res["success"]) {
         roomList = res["data"];
       } else if (res is Map && res.containsKey("error")) {
-        AppCommon.displayToast(res["message"]);
+        AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
       roomList = [];
@@ -53,10 +54,16 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 Navigator.pushNamed(context, '/setting');
               } else if (value == "User Rights") {
                 Navigator.pushNamed(context, '/users');
+              } else if (value == "Reset Password") {
+                _resetPasswordDialog();
               }
             },
             itemBuilder: (context) => [
               PopupMenuItem(value: "Setting", child: Text("Setting")),
+              PopupMenuItem(
+                value: "Reset Password",
+                child: Text("Reset Password"),
+              ),
               if (AppCommon.canMangeUsers)
                 PopupMenuItem(value: "User Rights", child: Text("User Rights")),
             ],
@@ -106,7 +113,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
     required int maxOccupancy,
     required bool isActive,
     required bool isBooked,
-    required int guestHouseId
+    required int guestHouseId,
   }) {
     return Card(
       elevation: 2,
@@ -181,10 +188,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/booking', arguments: {
-                        'roomId': roomId,
-                        'guestHouseId': guestHouseId,
-                      },);
+                      Navigator.pushNamed(
+                        context,
+                        '/booking',
+                        arguments: {
+                          'roomId': roomId,
+                          'guestHouseId': guestHouseId,
+                        },
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -244,6 +255,171 @@ class _RoomListScreenState extends State<RoomListScreen> {
           color: textColor,
         ),
       ),
+    );
+  }
+
+  Future<void> _resetPassword({
+    required String currentPass,
+    required String newPass,
+  }) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    if (!dialogFormKey.currentState!.validate()) return;
+
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php",
+        "POST",
+        queryParams: {"action": "changePassword"},
+        params: {"current_password": currentPass, "new_password": newPass},
+      );
+      if (res["success"]) {
+        AppCommon.displayToast(res["message"]);
+      } else {
+        AppCommon.displayToast(res["error"]);
+      }
+    } catch (e) {
+      AppCommon.displayToast("Server error");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _resetPasswordDialog() {
+    final currentPasswordCtrl = TextEditingController();
+    final newPasswordCtrl = TextEditingController();
+
+    bool isOldObscure = true;
+    bool isNewObscure = true;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Form(
+                key: dialogFormKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// Title
+                      const Text(
+                        "Reset Password",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      /// Current Password
+                      TextFormField(
+                        controller: currentPasswordCtrl,
+                        obscureText: isOldObscure,
+                        decoration: AppCommon.inputDecoration(
+                          "Current Password",
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isOldObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isOldObscure = !isOldObscure;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Current password is required";
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      /// New Password
+                      TextFormField(
+                        controller: newPasswordCtrl,
+                        obscureText: isNewObscure,
+                        decoration: AppCommon.inputDecoration(
+                          "New Password",
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isNewObscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isNewObscure = !isNewObscure;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "New password is required";
+                          } else if (value.length < 6) {
+                            return "Minimum 6 characters required";
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// Action Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("Cancel"),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppCommon.colors.primaryColor,
+                            ),
+                            onPressed: () {
+                              if (dialogFormKey.currentState!.validate()) {
+                                _resetPassword(
+                                  currentPass: currentPasswordCtrl.text,
+                                  newPass: newPasswordCtrl.text,
+                                );
+                              }
+                            },
+                            child: Text(
+                              "Reset",
+                              style: TextStyle(color: AppCommon.colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

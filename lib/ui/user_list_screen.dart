@@ -40,7 +40,7 @@ class _UserListScreenState extends State<UserListScreen> {
       if (!AppCommon.isEmpty(res) && res["success"]) {
         users = res["data"];
       } else if (res is Map && res.containsKey("error")) {
-        AppCommon.displayToast(res["message"]);
+        AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
       users = [];
@@ -94,7 +94,7 @@ class _UserListScreenState extends State<UserListScreen> {
             context,
             MaterialPageRoute(builder: (context) => AddEditUserScreen()),
           );
-          if (res) {
+          if (res ?? false) {
             await getUsers();
           }
         },
@@ -138,7 +138,7 @@ class _UserListScreenState extends State<UserListScreen> {
               builder: (context) => AddEditUserScreen(userData: user),
             ),
           );
-          if (res) {
+          if (res ?? false) {
             await getUsers();
           }
           return false;

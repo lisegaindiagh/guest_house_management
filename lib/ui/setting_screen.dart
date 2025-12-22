@@ -18,8 +18,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     fetchSettingData();
-    //  _mobileController.text = "9090909090";
-    //_emailController.text = "nidhiLisega@gmail.com";
   }
 
   Future<void> fetchSettingData() async {
@@ -71,6 +69,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,36 +80,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
           : Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
-                vertical: 16.0,
+                vertical: 24.0,
               ),
               child: Form(
                 key: _formKey,
                 child: Column(
+                  spacing: 12,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 40),
                     TextFormField(
                       controller: _mobileController,
                       maxLength: 10,
                       keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: "Mobile Number",
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            // Focused border color
-                            color: AppCommon.colors.primaryColor,
-                            width: 2.0, // Border width
-                          ),
-                        ),
-                      ),
-
+                      decoration: AppCommon.inputDecoration("Mobile Number"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Mobile number is required";
@@ -119,28 +102,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16),
                     TextFormField(
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            // Focused border color
-                            color: AppCommon.colors.primaryColor,
-                            width: 2.0, // Border width
-                          ),
-                        ),
-                      ),
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      decoration: AppCommon.inputDecoration("Email"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Email is required";
@@ -152,18 +117,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: _updateSettings,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCommon.colors.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: ElevatedButton(
+                        onPressed: _updateSettings,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppCommon.colors.primaryColor,
                         ),
-                      ),
-                      child: Text(
-                        "Update Settings",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        child: Text(
+                          "Update Settings",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
                       ),
                     ),
                   ],
