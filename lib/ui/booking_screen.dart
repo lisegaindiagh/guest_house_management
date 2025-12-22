@@ -22,8 +22,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
   DateTime? _arrivalDate;
   DateTime? _departureDate;
-   int roomId = 0;
-   int guestHouseId = 0;
+  int roomId = 0;
+  int guestHouseId = 0;
 
   Map<String, bool> meals = {
     "Breakfast": false,
@@ -40,12 +40,11 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-   // final int roomId = (ModalRoute.of(context)!.settings.arguments ?? 0) as int;
     final args =
-    ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
-     roomId = args['roomId'];
-     guestHouseId = args['guestHouseId'];
+    roomId = args['roomId'];
+    guestHouseId = args['guestHouseId'];
 
     return Scaffold(
       appBar: AppBar(title: const Text("Guest Booking")),
@@ -163,7 +162,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           child: ElevatedButton(
                             onPressed: () => Navigator.pop(context),
                             child: Text(
-                               "Cancel",
+                              "Cancel",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: AppCommon.colors.primaryColor,
@@ -176,11 +175,11 @@ class _BookingScreenState extends State<BookingScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppCommon.colors.primaryColor,
                             ),
-                            onPressed:() async {
+                            onPressed: () async {
                               await _submit();
-                            } ,
+                            },
                             child: Text(
-                               "Submit",
+                              "Submit",
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -210,64 +209,69 @@ class _BookingScreenState extends State<BookingScreen> {
       debugPrint("Arrival: ${_arrivalController.text}");
       debugPrint("Departure: ${_departureController.text}");
       debugPrint("Meals: $selectedMeals");
-     await bookedRoom();
-
+      await bookedRoom();
     }
   }
 
-  Future<void> bookedRoom ()async {
+  Future<void> bookedRoom() async {
     final selectedMeals = meals.entries
         .where((e) => e.value)
         .map((e) => e.key)
         .toList();
 
-    DateTime dateTime =
-    DateFormat("dd/MM/yyyy HH:mm:ss").parse(_arrivalController.text);
+    DateTime dateTime = DateFormat(
+      "dd/MM/yyyy HH:mm:ss",
+    ).parse(_arrivalController.text);
 
-    DateTime departureController =
-    DateFormat("dd/MM/yyyy HH:mm:ss").parse(_departureController.text);
+    DateTime departureController = DateFormat(
+      "dd/MM/yyyy HH:mm:ss",
+    ).parse(_departureController.text);
 
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
-          "api.php",
-          "POST",
-          queryParams: {"action": "createBooking"},
-          params: {
-              "guest_house_id": guestHouseId,
-              "room_id": roomId,
-              "guest_name": _guestController.text,
-              "mobile":_mobileController.text,
-              "arrival_datetime":  DateFormat("yyyy-MM-dd HH:mm:ss").format(dateTime),
-              "departure_datetime": DateFormat("yyyy-MM-dd HH:mm:ss").format(departureController),
-              "is_breakfast": meals["Breakfast"] == true ? 1 : 0,
-              "is_lunch": meals["Lunch"] == true ? 1 : 0,
-              "is_dinner": meals["Dinner"] == true ? 1 : 0,
-             /* "is_breakfast": 1,
+        "api.php",
+        "POST",
+        queryParams: {"action": "createBooking"},
+        params: {
+          "guest_house_id": guestHouseId,
+          "room_id": roomId,
+          "guest_name": _guestController.text,
+          "mobile": _mobileController.text,
+          "arrival_datetime": DateFormat(
+            "yyyy-MM-dd HH:mm:ss",
+          ).format(dateTime),
+          "departure_datetime": DateFormat(
+            "yyyy-MM-dd HH:mm:ss",
+          ).format(departureController),
+          "is_breakfast": meals["Breakfast"] == true ? 1 : 0,
+          "is_lunch": meals["Lunch"] == true ? 1 : 0,
+          "is_dinner": meals["Dinner"] == true ? 1 : 0,
+          /* "is_breakfast": 1,
               "is_lunch": 0,
               "is_dinner": 1,*/
-              "note": "Late arrival, please keep room ready"
-              //selectedMeals
-            }
-
+          "note": "Late arrival, please keep room ready",
+          //selectedMeals
+        },
       );
       if (res["success"]) {
         // for send SMS
         try {
           await SendSMSService().sendSMS(
-              context,
-              roomId: roomId,
-              guestName: _guestController.text,
-              mobile: _mobileController.text,
-              arrival: _arrivalController.text,
-              departure: _departureController.text,
-              mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals);
+            context,
+            roomId: roomId,
+            guestName: _guestController.text,
+            mobile: _mobileController.text,
+            arrival: _arrivalController.text,
+            departure: _departureController.text,
+            mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
+          );
           AppCommon.displayToast(res["message"]);
           Navigator.pop(context);
         } finally {
           debugPrint("failed to send SMS.");
         }
         // for send Email
-       /* try{
+        /* try{
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
           var sendEmailResponse = await AppCommon.apiProvider.getServerResponse(
@@ -301,9 +305,7 @@ class _BookingScreenState extends State<BookingScreen> {
     DateTime initialDate = isArrival
         ? (_arrivalDate ?? DateTime.now())
         : (_departureDate ?? _arrivalDate!);
-    DateTime firstDate = isArrival
-        ? (DateTime.now())
-        : _arrivalDate!;
+    DateTime firstDate = isArrival ? (DateTime.now()) : _arrivalDate!;
     DateTime lastDate = DateTime(2100);
 
     DateTime? pickedDate = await showDatePicker(

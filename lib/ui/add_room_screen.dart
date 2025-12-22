@@ -54,6 +54,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
       );
       if (res["success"]) {
         AppCommon.displayToast("Room added successfully");
+        Navigator.pop(context, true);
       } else {
         AppCommon.displayToast(res["error"]);
       }
@@ -72,10 +73,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         "max_occupancy": int.parse(_maxOccupancyController.text.trim()),
       };
       await addRoom(payload);
-      // ✅ API call will go here
-      debugPrint("Room Payload: $payload");
-
-      Navigator.pop(context);
     }
   }
 

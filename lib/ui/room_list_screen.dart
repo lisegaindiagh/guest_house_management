@@ -100,13 +100,16 @@ class _RoomListScreenState extends State<RoomListScreen> {
             ),
       floatingActionButton: AppCommon.canManageRooms
           ? FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                var res = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AddRoomScreen(guestHouseId: roomId),
                   ),
                 );
+                if (res ?? false) {
+                  await getGuestHouseRoomList(roomId);
+                }
               },
               child: Icon(Icons.add),
             )
@@ -154,7 +157,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 const Icon(Icons.person_outline, size: 16),
                 const SizedBox(width: 6),
                 Text(
-                  "${occupancyType[0].toUpperCase()}${occupancyType.substring(1)} • Max $maxOccupancy",
+                  "${occupancyType.isNotEmpty ? occupancyType[0].toUpperCase() + occupancyType.substring(1) : ""} • Max $maxOccupancy",
                   style: const TextStyle(color: Colors.grey),
                 ),
               ],
@@ -162,66 +165,69 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
             const SizedBox(height: 12),
 
-            // 🔘 Action buttons (only if room is active)
-            if (isActive) ...[
-              if (isBooked && AppCommon.canViewBooking)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/viewBooking',
-                        arguments: roomId,
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppCommon.colors.btnColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        "View Booking",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              if (!isBooked && AppCommon.canBook)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/booking',
-                        arguments: {
-                          'roomId': roomId,
-                          'guestHouseId': guestHouseId,
-                        },
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppCommon.colors.btnColor,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        "Book Room",
-                        style: TextStyle(color: Colors.white),
+            Row(
+              spacing: 12,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (AppCommon.canViewBooking)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/viewBooking',
+                          arguments: roomId,
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppCommon.colors.btnColor,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          "View Booking",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
-                ),
-            ],
+                if (!isBooked && AppCommon.canBook)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/booking',
+                          arguments: {
+                            'roomId': roomId,
+                            'guestHouseId': guestHouseId,
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppCommon.colors.btnColor,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          "Book Room",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
