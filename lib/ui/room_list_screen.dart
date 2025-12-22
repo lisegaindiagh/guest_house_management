@@ -15,6 +15,8 @@ class _RoomListScreenState extends State<RoomListScreen> {
   dynamic roomList = [];
   bool isFirstTime = true;
   final dialogFormKey = GlobalKey<FormState>();
+  int roomId = 0;
+  String guestRoomName = "";
 
   Future<void> getGuestHouseRoomList(int roomId) async {
     try {
@@ -41,13 +43,17 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int roomId = ModalRoute.of(context)!.settings.arguments as int;
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    roomId = args["id"];
+    guestRoomName = args["name"];
     if (isFirstTime) {
       getGuestHouseRoomList(roomId);
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Guest House Rooms"),
+        title: Text(guestRoomName),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {

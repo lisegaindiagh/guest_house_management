@@ -82,7 +82,10 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                     Navigator.pushNamed(
                       context,
                       '/home',
-                      arguments: int.parse(guestHouse["id"].toString()),
+                      arguments: {
+                        "id": int.parse(guestHouse["id"].toString()),
+                        "name": guestHouse["name"],
+                      },
                     );
                   },
                   child: buildGuestHouseCard(

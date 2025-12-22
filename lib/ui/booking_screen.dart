@@ -266,7 +266,7 @@ class _BookingScreenState extends State<BookingScreen> {
             mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
           );
           AppCommon.displayToast(res["message"]);
-          Navigator.pop(context);
+          Navigator.pop(context, true);
         } finally {
           debugPrint("failed to send SMS.");
         }
