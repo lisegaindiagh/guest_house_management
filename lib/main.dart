@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guest_house_management/ui/login_screen_New.dart';
 import 'package:guest_house_management/ui/view_booking.dart';
 
 import 'Common/app_common.dart';
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (_) => SplashScreen(),
-        '/login': (_) => LoginScreen(),
+        '/login': (_) => LoginScreenNew(),
         '/home': (_) => const RoomListScreen(),
         '/guestHouseList': (_) => GuestHouseListScreen(),
         "/setting": (_) => SettingsScreen(),

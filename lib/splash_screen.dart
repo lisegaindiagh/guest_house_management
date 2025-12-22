@@ -44,13 +44,40 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void navigateToLogin() {
-    Future.delayed(const Duration(seconds: 3), () async {
-      // if (await AppCommon.isOnline()) {
-        Navigator.pushReplacementNamed(context, '/login');
-      // }
+    Future.delayed(const Duration(seconds: 5), () async {
+      if (await AppCommon.isOnline()) {
+        String email = await AppCommon.sharePref.getString(AppCommon.sessionKey.email);
+        String password = await AppCommon.sharePref.getString(AppCommon.sessionKey.password);
+        if(!AppCommon.isEmpty(email) && !AppCommon.isEmpty(password)){
+          await getLoginDetails(email, password);
+        }else{
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+
+      }
     });
   }
 
+
+  Future<void> getLoginDetails(String email,String password) async {
+    var res = await AppCommon.apiProvider.getServerResponse(
+      "auth.php",
+      "POST",
+      params: {"email": email,
+        "password":password},
+    );
+    if (res["success"]) {
+      await AppCommon.sharePref.setString(
+        AppCommon.sessionKey.token,
+        res["token"],
+      );
+      Navigator.pushReplacementNamed(
+        context,
+        '/guestHouseList',
+      );
+    }
+    // return res;
+  }
   @override
   void dispose() {
     _controller.dispose();

@@ -5,4 +5,6 @@
 
 class SessionKey {
   String token = "login_token"; //login token
+  String email = "email";
+  String password = "password";
 }
