@@ -53,11 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Login", textAlign: TextAlign.center),
-      ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: AppBar(title: Text("Login", textAlign: TextAlign.center)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Card(
@@ -90,16 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Dealer Code / Username
                 TextFormField(
                   controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: "User Name",
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  decoration: AppCommon.inputDecoration("User Name"),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Email is required';
@@ -117,21 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: passwordController,
                   obscureText: showPassword,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Password is required";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
+                  decoration: AppCommon.inputDecoration(
+                    "Password",
                     suffixIcon: IconButton(
                       icon: Icon(
                         showPassword ? Icons.visibility_off : Icons.visibility,
@@ -143,6 +117,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Password is required";
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 10),
@@ -167,10 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       //  Navigator.pushReplacementNamed(context, '/guestHouseList');
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      backgroundColor: AppCommon.colors.primaryColor,
                     ),
                     child: const Text(
                       "Login",

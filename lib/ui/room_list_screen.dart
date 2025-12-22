@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Common/app_common.dart';
 import 'add_room_screen.dart';
+import 'login_screen.dart';
 
 class RoomListScreen extends StatefulWidget {
   const RoomListScreen({super.key});
@@ -56,6 +57,12 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 Navigator.pushNamed(context, '/users');
               } else if (value == "Reset Password") {
                 _resetPasswordDialog();
+              } else if (value == "Logout") {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false,
+                );
               }
             },
             itemBuilder: (context) => [
@@ -66,6 +73,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
               ),
               if (AppCommon.canMangeUsers)
                 PopupMenuItem(value: "User Rights", child: Text("User Rights")),
+              PopupMenuItem(value: "Logout", child: Text("Logout")),
             ],
           ),
         ],

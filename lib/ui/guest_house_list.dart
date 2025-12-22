@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../common/app_common.dart';
+import 'login_screen.dart';
 
 class GuestHouseListScreen extends StatefulWidget {
   const GuestHouseListScreen({super.key});
@@ -45,7 +46,25 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Guest Houses")),
+      appBar: AppBar(
+        title: const Text("Guest Houses"),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == "Logout") {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (route) => false,
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(value: "Logout", child: Text("Logout")),
+            ],
+          ),
+        ],
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : guestHousesList.isEmpty
