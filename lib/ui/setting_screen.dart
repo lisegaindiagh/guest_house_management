@@ -12,6 +12,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _defaultUserPassController =
+      TextEditingController();
   bool _loading = true;
 
   @override
@@ -30,6 +32,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (res["success"]) {
         _mobileController.text = res["settings"]["notify_mobile"];
         _emailController.text = res["settings"]["notify_email"];
+        _defaultUserPassController.text =
+            res["settings"]["default_user_password"];
       } else {
         AppCommon.displayToast(res["error"]);
       }
@@ -53,6 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         params: {
           "notify_mobile": _mobileController.text,
           "notify_email": _emailController.text,
+          "default_user_password": _defaultUserPassController.text,
         },
       );
       if (res["success"]) {
@@ -68,8 +73,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +116,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                         ).hasMatch(value)) {
                           return "Enter a valid email address";
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _defaultUserPassController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: AppCommon.inputDecoration(
+                        "Default User Password",
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Default User Password is required";
+                        } else if (value.length < 6) {
+                          return "Password is short";
                         }
                         return null;
                       },
