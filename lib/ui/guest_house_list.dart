@@ -92,34 +92,37 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
           ? const Center(child: CircularProgressIndicator())
           : guestHousesList.isEmpty
           ? const Center(child: Text("No guest houses found"))
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: guestHousesList.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final guestHouse = guestHousesList[index];
-                final bool isActive = guestHouse["is_active"] == "1";
+          : ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: guestHousesList.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final guestHouse = guestHousesList[index];
+                  final bool isActive = guestHouse["is_active"] == "1";
 
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RoomListScreen(
-                          roomId: int.parse(guestHouse["id"].toString()),
-                          guestRoomName: guestHouse["name"],
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RoomListScreen(
+                            roomId: int.parse(guestHouse["id"].toString()),
+                            guestRoomName: guestHouse["name"],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  child: buildGuestHouseCard(
-                    name: guestHouse["name"] ?? "",
-                    address: guestHouse["address"] ?? "",
-                    isActive: isActive,
-                    totalRooms: guestHouse["total_rooms"] ?? "0",
-                  ),
-                );
-              },
+                      );
+                    },
+                    child: buildGuestHouseCard(
+                      name: guestHouse["name"] ?? "",
+                      address: guestHouse["address"] ?? "",
+                      isActive: isActive,
+                      totalRooms: guestHouse["total_rooms"] ?? "0",
+                    ),
+                  );
+                },
+              ),
             ),
     );
   }

@@ -98,22 +98,25 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: roomList.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final room = roomList[index];
-                return buildRoomCard(
-                  roomId: room["id"],
-                  roomName: room["room_name"],
-                  occupancyType: room["occupancy_type"],
-                  maxOccupancy: room["max_occupancy"],
-                  isActive: room["is_active"] == 1,
-                  isBooked: room["is_booked"] == 1,
-                  guestHouseId: room["guest_house_id"],
-                );
-              },
+          : ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: roomList.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final room = roomList[index];
+                  return buildRoomCard(
+                    roomId: room["id"],
+                    roomName: room["room_name"],
+                    occupancyType: room["occupancy_type"],
+                    maxOccupancy: room["max_occupancy"],
+                    isActive: room["is_active"] == 1,
+                    isBooked: room["is_booked"] == 1,
+                    guestHouseId: room["guest_house_id"],
+                  );
+                },
+              ),
             ),
       floatingActionButton: AppCommon.canManageRooms
           ? FloatingActionButton(

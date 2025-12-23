@@ -78,15 +78,18 @@ class _UserListScreenState extends State<UserListScreen> {
       appBar: AppBar(title: const Text("Users")),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: users.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final user = users[index];
+          : ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: users.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final user = users[index];
 
-                return buildUserSwipeCard(user: user);
-              },
+                  return buildUserSwipeCard(user: user);
+                },
+              ),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
