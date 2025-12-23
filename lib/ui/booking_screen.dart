@@ -25,6 +25,7 @@ class _BookingScreenState extends State<BookingScreen> {
   final _mobileController = TextEditingController();
   final _arrivalController = TextEditingController();
   final _departureController = TextEditingController();
+  final _remarkController = TextEditingController();
 
   DateTime? _arrivalDate;
   DateTime? _departureDate;
@@ -125,7 +126,11 @@ class _BookingScreenState extends State<BookingScreen> {
                       },
                       onTap: () => pickDateTime(false),
                     ),
-
+                    TextFormField(
+                      controller: _remarkController,
+                      maxLength: 20,
+                      decoration: AppCommon.inputDecoration("Remark"),
+                    ),
                     /// 🍽 Meals
                     Column(
                       spacing: 4,
@@ -151,8 +156,6 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
 
                     const SizedBox(height: 12),
-
-                    /// ✅ Submit Button
                     Row(
                       spacing: 12,
                       children: [
@@ -244,10 +247,7 @@ class _BookingScreenState extends State<BookingScreen> {
           "is_breakfast": meals["Breakfast"] == true ? 1 : 0,
           "is_lunch": meals["Lunch"] == true ? 1 : 0,
           "is_dinner": meals["Dinner"] == true ? 1 : 0,
-          /* "is_breakfast": 1,
-              "is_lunch": 0,
-              "is_dinner": 1,*/
-          "note": "Late arrival, please keep room ready",
+          "note": _remarkController.text,
           //selectedMeals
         },
       );

@@ -113,14 +113,17 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _detailRow("Guest Name", bookingDetails["guest_name"]),
-              _detailRow("Arrival Date", bookingDetails["arrival_datetime"]),
+              _detailRow("Guest Name", bookingDetails["guest_name"] ?? ""),
+              _detailRow("Arrival Date", bookingDetails["arrival_datetime"] ?? ""),
               _detailRow(
                 "Departure Date",
-                bookingDetails["departure_datetime"],
+                bookingDetails["departure_datetime"] ?? "",
               ),
               _detailRow("Meal On Arrival", getMealText(bookingDetails)),
-              _detailRow("Booked By", bookingDetails["booked_by"]),
+
+              if (!AppCommon.isEmpty(bookingDetails["booked_by"] ))
+                _detailRow("Booked By", bookingDetails["booked_by"]),
+             // _detailRow("Booked By", bookingDetails["booked_by"] ?? ""),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
