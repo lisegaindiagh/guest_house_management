@@ -10,7 +10,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool showPassword = true, isRemember = false, isLoading = false;
+  bool showPassword = true;
+  bool isRemember = false;
+  bool isLoading = false;
 
   TextEditingController emailController = TextEditingController(
     text: "cjgabani1409@gmail.com",
@@ -28,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> getUserData() async {
     isLoading = true;
     setState(() {});
+
     bool res =
         await AppCommon.sharePref.getBool(AppCommon.sessionKey.isRemember) ??
         false;
@@ -40,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         AppCommon.sessionKey.password,
       );
     }
+
     isLoading = false;
     setState(() {});
   }
@@ -53,26 +57,29 @@ class _LoginScreenState extends State<LoginScreen> {
         "password": passwordController.text,
       },
     );
-    if (res["success"]) {
-      await setSession(res,context);
 
+    if (res["success"]) {
+      await setSession(res, context);
     }
   }
 
-  Future<void> setSession(var res,BuildContext context) async {
+  Future<void> setSession(var res, BuildContext context) async {
     Map user = res["user"];
+
     AppCommon.canBook = user["can_book"] == 1;
     AppCommon.canViewBooking = user["can_view_bookings"] == 1;
     AppCommon.canManageRooms = user["can_manage_rooms"] == 1;
     AppCommon.canMangeUsers = user["can_manage_users"] == 1;
+
     await AppCommon.sharePref.setPreference({
       AppCommon.sessionKey.token: res["token"],
-      AppCommon.sessionKey.email: res["user"]["email"],
-      AppCommon.sessionKey.password: passwordController.text.toString(),
+      AppCommon.sessionKey.email: user["email"],
+      AppCommon.sessionKey.password: passwordController.text,
     });
-   await Navigator.pushReplacement(
+
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
+      MaterialPageRoute(builder: (_) => GuestHouseListScreen()),
     );
   }
 
@@ -81,46 +88,50 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(title: Text("Login", textAlign: TextAlign.center)),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Card(
-                elevation: 6,
+                elevation: 12,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10,
+                  padding: const EdgeInsets.only(
+                    left: 24,
+                    right: 24,
+                    bottom: 24,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                        height: 180,
+                      /// Logo
+                      Image.asset(
+                        "assets/images/lisega_logo.png",
+                        height: 150,
                         width: 230,
-                        child: Image.asset("assets/images/lisega_logo.png"),
                       ),
+
+                      /// Title
                       const Text(
-                        "Welcome",
+                        "Guest House Login",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 6),
                       const Text(
-                        "Login to continue",
+                        "Sign in to manage bookings",
                         style: TextStyle(color: Colors.grey),
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 30),
 
-                      // Dealer Code / Username
+                      /// Username
                       TextFormField(
                         controller: emailController,
-                        decoration: AppCommon.inputDecoration("User Name"),
+                        decoration: AppCommon.inputDecoration("Email"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Email is required';
@@ -132,9 +143,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 18),
 
-                      // Password
+                      /// Password
                       TextFormField(
                         controller: passwordController,
                         obscureText: showPassword,
@@ -161,29 +172,36 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
 
-                      // Remember me
+                      /// Remember Me
                       Row(
                         children: [
                           Checkbox(
                             value: isRemember,
                             onChanged: (v) {
-                              isRemember = !isRemember;
-                              setState(() {});
+                              setState(() {
+                                isRemember = v!;
+                              });
                             },
                           ),
                           const Text("Remember me"),
                         ],
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
 
-                      // Login Button
+                      /// Login Button
                       SizedBox(
                         width: double.infinity,
-                        height: 45,
+                        height: 48,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppCommon.colors.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                           onPressed: () async {
                             AppCommon.sharePref.setBool(
                               AppCommon.sessionKey.isRemember,
@@ -191,12 +209,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             await getLoginDetails(context);
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppCommon.colors.primaryColor,
-                          ),
                           child: const Text(
-                            "Login",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            "LOGIN",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
