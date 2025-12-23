@@ -412,8 +412,8 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             height: 44,
                             width: 44,
                             decoration: BoxDecoration(
-                              color: AppCommon.colors.primaryColor.withOpacity(
-                                0.15,
+                              color: AppCommon.colors.primaryColor.withValues(
+                                alpha: 0.15,
                               ),
                               borderRadius: BorderRadius.circular(12),
                             ),

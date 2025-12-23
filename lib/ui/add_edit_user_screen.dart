@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../Common/app_common.dart';
 
 /// AddEditUserScreen
@@ -18,10 +17,10 @@ class AddEditUserScreen extends StatefulWidget {
 }
 
 class _AddEditUserScreenState extends State<AddEditUserScreen> {
-  /// Form key
+  /// 🔑 Form key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  /// Controllers
+  /// 📝 Controllers
   late TextEditingController _emailController;
   late TextEditingController _nameController;
 
@@ -50,7 +49,6 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
     );
 
     _selectedRole = widget.userData?["role"] ?? "user";
-
     _canBook = widget.userData?["can_book"] == "1";
     _canViewBookings = widget.userData?["can_view_bookings"] == "1";
     _canManageRooms = widget.userData?["can_manage_rooms"] == "1";
@@ -67,7 +65,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
   /// Submit form
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final Map<String, dynamic> payload = {
+      final payload = {
         "email": _emailController.text.trim(),
         "name": _nameController.text.trim(),
         "role": _selectedRole,
@@ -80,7 +78,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
       if (isEditMode) {
         payload.addAll({
           "user_id": int.tryParse(widget.userData!["id"]) ?? 0,
-          "is_active": int.tryParse(widget.userData!["is_active"] ?? 0),
+          "is_active": int.tryParse(widget.userData!["is_active"]) ?? 0,
         });
       }
 
@@ -106,178 +104,246 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(isEditMode ? "Edit User" : "Add User")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(2), // border width
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppCommon.colors.white, // border color
-                    width: 4,
-                  ),
-                ),
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundColor: AppCommon.colors.backgroundColor,
-                  child: Icon(Icons.person, size: 60, color: Colors.grey),
-                ),
-              ), //
-
-              SizedBox(height: 20),
-
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 20.0,
-                  ),
-                  child: Column(
-                    spacing: 16,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // 📧 Email
-                      TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: AppCommon.inputDecoration("Email"),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Email is required";
-                          }
-                          if (!value.contains("@")) {
-                            return "Enter a valid email address";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      // 👤 Name
-                      TextFormField(
-                        controller: _nameController,
-                        decoration: AppCommon.inputDecoration("Name"),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Name is required";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      // 🧩 Role
-                      DropdownButtonFormField<String>(
-                        value: _selectedRole,
-                        isDense: true,
-                        decoration: AppCommon.inputDecoration("Role"),
-                        items: const [
-                          DropdownMenuItem(
-                            value: "admin",
-                            child: Text("Admin"),
-                          ),
-                          DropdownMenuItem(value: "user", child: Text("User")),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedRole = value!;
-                          });
-                        },
-                      ),
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // 🔐 Permissions
-                          const Text(
-                            "Permissions",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-
-                          SizedBox(height: 8),
-
-                          buildPermissionCheckBox(
-                            label: "Can Book Room",
-                            value: _canBook,
-                            onChanged: (value) {
-                              setState(() => _canBook = value);
-                            },
-                          ),
-                          buildPermissionCheckBox(
-                            label: "Can View Bookings",
-                            value: _canViewBookings,
-                            onChanged: (value) {
-                              setState(() => _canViewBookings = value);
-                            },
-                          ),
-
-                          buildPermissionCheckBox(
-                            label: "Can Manage Rooms",
-                            value: _canManageRooms,
-                            onChanged: (value) {
-                              setState(() => _canManageRooms = value);
-                            },
-                          ),
-
-                          buildPermissionCheckBox(
-                            label: "Can Manage Users",
-                            value: _canManageUsers,
-                            onChanged: (value) {
-                              setState(() => _canManageUsers = value);
-                            },
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    /// 👤 Profile Header
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
-
-                      // ✅ Submit button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppCommon.colors.primaryColor,
-                          ),
-                          onPressed: _submitForm,
-                          child: Text(
-                            isEditMode ? "Update User" : "Add User",
-                            style: TextStyle(color: AppCommon.colors.white),
-                          ),
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundColor: AppCommon.colors.primaryColor
+                            .withValues(alpha: 0.15),
+                        child: Icon(
+                          Icons.person_outline,
+                          size: 48,
+                          color: AppCommon.colors.primaryColor,
                         ),
                       ),
-                    ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    /// 📄 User Details
+                    sectionCard(
+                      title: "User Information",
+                      icon: Icons.person_outline,
+                      child: Column(
+                        children: [
+                          inputField(
+                            controller: _emailController,
+                            label: "Email",
+                            icon: Icons.email_outlined,
+                            keyboard: TextInputType.emailAddress,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Email is required";
+                              }
+                              if (!value.contains("@")) {
+                                return "Enter valid email";
+                              }
+                              return null;
+                            },
+                          ),
+                          inputField(
+                            controller: _nameController,
+                            label: "Full Name",
+                            icon: Icons.badge_outlined,
+                            validator: (value) =>
+                                value!.isEmpty ? "Name is required" : null,
+                          ),
+                          DropdownButtonFormField<String>(
+                            value: _selectedRole,
+                            decoration: AppCommon.inputDecoration("Role")
+                                .copyWith(
+                                  prefixIcon: const Icon(
+                                    Icons.admin_panel_settings,
+                                  ),
+                                ),
+                            items: const [
+                              DropdownMenuItem(
+                                value: "admin",
+                                child: Text("Admin"),
+                              ),
+                              DropdownMenuItem(
+                                value: "user",
+                                child: Text("User"),
+                              ),
+                            ],
+                            onChanged: (value) =>
+                                setState(() => _selectedRole = value!),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// 🔐 Permissions
+                    sectionCard(
+                      title: "Permissions",
+                      icon: Icons.security_outlined,
+                      child: Column(
+                        children: [
+                          permissionTile(
+                            "Can Book Room",
+                            _canBook,
+                            (v) => setState(() => _canBook = v),
+                          ),
+                          permissionTile(
+                            "Can View Bookings",
+                            _canViewBookings,
+                            (v) => setState(() => _canViewBookings = v),
+                          ),
+                          permissionTile(
+                            "Can Manage Rooms",
+                            _canManageRooms,
+                            (v) => setState(() => _canManageRooms = v),
+                          ),
+                          permissionTile(
+                            "Can Manage Users",
+                            _canManageUsers,
+                            (v) => setState(() => _canManageUsers = v),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          /// 🔒 Sticky Action Button
+          Container(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, -4),
+                ),
+              ],
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppCommon.colors.primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  isEditMode ? "Update User" : "Add User",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget buildPermissionCheckBox({
-    required String label,
-    required bool value,
-    required ValueChanged<bool> onChanged,
+  /// ---------- UI HELPERS ----------
+  Widget sectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
   }) {
-    return Row(
-      children: [
-        Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
-        Transform.scale(
-          scale: 0.7,
-          child: Switch(
-            value: value,
-            onChanged: (val) => onChanged(val),
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
-        ),
-      ],
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: AppCommon.colors.primaryColor),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget inputField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboard = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboard,
+        validator: validator,
+        decoration: AppCommon.inputDecoration(
+          label,
+        ).copyWith(prefixIcon: Icon(icon)),
+      ),
+    );
+  }
+
+  Widget permissionTile(
+    String label,
+    bool value,
+    ValueChanged<bool> onChanged,
+  ) {
+    return SwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(label),
+      value: value,
+      onChanged: onChanged,
     );
   }
 }

@@ -159,107 +159,6 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  Widget buildUserCard({
-    required String name,
-    required String email,
-    required String role,
-    required bool isActive,
-    required Map<String, dynamic> permissions,
-  }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 👤 Name & status
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                buildStatusChip(isActive: isActive),
-              ],
-            ),
-
-            const SizedBox(height: 6),
-
-            // 📧 Email
-            Text(email, style: const TextStyle(color: Colors.grey)),
-
-            const SizedBox(height: 6),
-
-            // 🧩 Role
-            Text(
-              "Role: ${role.toUpperCase()}",
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-            ),
-
-            const SizedBox(height: 10),
-
-            // 🔐 Permissions
-            Wrap(
-              spacing: 6,
-              children: [
-                buildPermissionChip("Book", permissions["can_book"] == "1"),
-                buildPermissionChip(
-                  "View Bookings",
-                  permissions["can_view_bookings"] == "1",
-                ),
-                buildPermissionChip(
-                  "Manage Rooms",
-                  permissions["can_manage_rooms"] == "1",
-                ),
-                buildPermissionChip(
-                  "Manage Users",
-                  permissions["can_manage_users"] == "1",
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildStatusChip({required bool isActive}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.green.shade100 : Colors.red.shade100,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        isActive ? "Active" : "Inactive",
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: isActive ? Colors.green : Colors.red,
-        ),
-      ),
-    );
-  }
-
-  Widget buildPermissionChip(String label, bool enabled) {
-    return Chip(
-      label: Text(
-        label,
-        style: TextStyle(
-          fontSize: 11,
-          color: enabled ? Colors.green : Colors.grey,
-        ),
-      ),
-      backgroundColor: enabled ? Colors.green.shade50 : Colors.grey.shade200,
-    );
-  }
-
   Widget buildSwipAction({
     required Color color,
     required IconData icon,
@@ -287,37 +186,265 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
+  Widget buildUserCard({
+    required String name,
+    required String email,
+    required String role,
+    required bool isActive,
+    required Map<String, dynamic> permissions,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// 👤 Header (Avatar + Name + Status)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Avatar
+                Container(
+                  height: 44,
+                  width: 44,
+                  decoration: BoxDecoration(
+                    color: AppCommon.colors.primaryColor.withValues(
+                      alpha: 0.15,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.person_outline,
+                    color: AppCommon.colors.primaryColor,
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                /// Name + Email
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        email,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// Status
+                statusBadge(isActive),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            /// Role
+            Row(children: [roleChip(role)]),
+
+            const SizedBox(height: 12),
+
+            /// Permissions
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                permissionPill("Book", permissions["can_book"] == "1"),
+                permissionPill(
+                  "View Bookings",
+                  permissions["can_view_bookings"] == "1",
+                ),
+                permissionPill(
+                  "Manage Rooms",
+                  permissions["can_manage_rooms"] == "1",
+                ),
+                permissionPill(
+                  "Manage Users",
+                  permissions["can_manage_users"] == "1",
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget statusBadge(bool isActive) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: isActive
+            ? Colors.green.withValues(alpha: 0.12)
+            : Colors.red.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        isActive ? "Active" : "Inactive",
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: isActive ? Colors.green : Colors.red,
+        ),
+      ),
+    );
+  }
+
+  Widget roleChip(String role) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.blue.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        role.toUpperCase(),
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: Colors.blue,
+        ),
+      ),
+    );
+  }
+
+  Widget permissionPill(String label, bool enabled) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: enabled
+            ? Colors.green.withValues(alpha: 0.12)
+            : Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: enabled ? Colors.green : Colors.grey,
+        ),
+      ),
+    );
+  }
+
   Future<bool?> showDeleteUserDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
-      barrierDismissible: false, // ❌ Prevent accidental dismiss
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("Delete User"),
-          content: const Text(
-            "Are you sure you want to delete this user?\n"
-            "This action cannot be undone.",
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, false); // ❌ Cancel
-              },
-              child: const Text("Cancel"),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// ⚠️ Header
+                Row(
+                  children: [
+                    Container(
+                      height: 44,
+                      width: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.warning_amber_rounded,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        "Delete User",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                /// Message
+                const Text(
+                  "Are you sure you want to delete this user?\n"
+                  "This action cannot be undone.",
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// Divider
+                Divider(color: Colors.grey.shade200, thickness: 1),
+
+                const SizedBox(height: 12),
+
+                /// Actions
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text("Cancel"),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text(
+                        "Delete",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppCommon.colors.primaryColor,
-              ),
-              onPressed: () {
-                Navigator.pop(context, true); // ✅ Confirm
-              },
-              child: Text(
-                "Delete",
-                style: TextStyle(color: AppCommon.colors.white),
-              ),
-            ),
-          ],
+          ),
         );
       },
     );
