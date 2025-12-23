@@ -39,7 +39,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
   String convertDate(String input) {
     DateTime date = DateTime.parse(input);
-    return DateFormat("dd/MM/yyyy hh:mm:ss").format(date);
+    return DateFormat("dd/MM/yyyy HH:mm:ss").format(date);
   }
 
   @override
@@ -341,20 +341,25 @@ class _BookingScreenState extends State<BookingScreen> {
       context: context,
       initialTime: TimeOfDay.now(),
       builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: AppCommon.colors.primaryColor, // Header & selected date
-              onPrimary: AppCommon.colors.white, // Header text
-              onSurface: AppCommon.colors.black, // Calendar text
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppCommon.colors.primaryColor, // OK / CANCEL
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            alwaysUse24HourFormat: true, // ✅ 24-hour format
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                primary: AppCommon.colors.primaryColor,
+                onPrimary: AppCommon.colors.white,
+                onSurface: AppCommon.colors.black,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppCommon.colors.primaryColor,
+                ),
               ),
             ),
+            child: child!,
           ),
-          child: child!,
         );
       },
     );
@@ -373,14 +378,14 @@ class _BookingScreenState extends State<BookingScreen> {
       if (isArrival) {
         _arrivalDate = dateTime;
         _arrivalController.text = DateFormat(
-          "dd/MM/yyyy hh:mm:ss",
+          "dd/MM/yyyy HH:mm:ss",
         ).format(dateTime);
         _departureDate = null;
         _departureController.clear();
       } else {
         _departureDate = dateTime;
         _departureController.text = DateFormat(
-          "dd/MM/yyyy hh:mm:ss",
+          "dd/MM/yyyy HH:mm:ss",
         ).format(dateTime);
       }
     });
