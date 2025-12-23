@@ -30,7 +30,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
       if (!AppCommon.isEmpty(res) && res["success"]) {
         bookingDetailsList = res["bookings"];
       } else {
-        AppCommon.displayToast(res["error"]);
+        AppCommon.displayToast(res["message"]);
       }
     } catch (e) {
       AppCommon.displayToast("Server error");
@@ -50,6 +50,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
       );
       if (!AppCommon.isEmpty(res) && res["success"]) {
         AppCommon.displayToast(res["message"]);
+        await getBookingDetails();
       } else {
         AppCommon.displayToast(res["error"]);
       }
