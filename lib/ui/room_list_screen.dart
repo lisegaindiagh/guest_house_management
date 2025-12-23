@@ -395,45 +395,78 @@ class _RoomListScreenState extends State<RoomListScreen> {
           builder: (context, setState) {
             return Dialog(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Form(
                 key: dialogFormKey,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /// Title
-                      const Text(
-                        "Reset Password",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      /// 🔐 Header
+                      Row(
+                        children: [
+                          Container(
+                            height: 44,
+                            width: 44,
+                            decoration: BoxDecoration(
+                              color: AppCommon.colors.primaryColor.withOpacity(
+                                0.15,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.lock_reset_outlined,
+                              color: AppCommon.colors.primaryColor,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              "Reset Password",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
 
-                      /// Current Password
+                      const Text(
+                        "For security, please enter your current password "
+                        "and choose a new one.",
+                        style: TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// 🔑 Current Password
                       TextFormField(
                         controller: currentPasswordCtrl,
                         obscureText: isOldObscure,
-                        decoration: AppCommon.inputDecoration(
-                          "Current Password",
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isOldObscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                        decoration:
+                            AppCommon.inputDecoration(
+                              "Current Password",
+                            ).copyWith(
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  isOldObscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isOldObscure = !isOldObscure;
+                                  });
+                                },
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                isOldObscure = !isOldObscure;
-                              });
-                            },
-                          ),
-                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Current password is required";
@@ -442,27 +475,28 @@ class _RoomListScreenState extends State<RoomListScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 14),
 
-                      /// New Password
+                      /// 🔐 New Password
                       TextFormField(
                         controller: newPasswordCtrl,
                         obscureText: isNewObscure,
-                        decoration: AppCommon.inputDecoration(
-                          "New Password",
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isNewObscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                        decoration: AppCommon.inputDecoration("New Password")
+                            .copyWith(
+                              prefixIcon: const Icon(Icons.lock_reset),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  isNewObscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    isNewObscure = !isNewObscure;
+                                  });
+                                },
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                isNewObscure = !isNewObscure;
-                              });
-                            },
-                          ),
-                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "New password is required";
@@ -473,9 +507,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
                         },
                       ),
 
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
 
-                      /// Action Buttons
+                      /// Divider
+                      Divider(color: Colors.grey.shade200, thickness: 1),
+
+                      const SizedBox(height: 12),
+
+                      /// 🔘 Action Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -487,6 +526,13 @@ class _RoomListScreenState extends State<RoomListScreen> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppCommon.colors.primaryColor,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                             onPressed: () {
                               if (dialogFormKey.currentState!.validate()) {
@@ -497,8 +543,11 @@ class _RoomListScreenState extends State<RoomListScreen> {
                               }
                             },
                             child: Text(
-                              "Reset",
-                              style: TextStyle(color: AppCommon.colors.white),
+                              "Reset Password",
+                              style: TextStyle(
+                                color: AppCommon.colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],

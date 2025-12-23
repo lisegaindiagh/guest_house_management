@@ -121,7 +121,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   label: Text(meal),
                                   selected: meals[meal]!,
                                   selectedColor: AppCommon.colors.primaryColor
-                                      .withOpacity(.15),
+                                      .withValues(alpha: .15),
                                   onSelected: (val) {
                                     setState(() => meals[meal] = val);
                                   },
