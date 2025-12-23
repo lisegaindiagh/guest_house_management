@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../common/app_common.dart';
 
 class ViewBookingScreen extends StatefulWidget {
@@ -101,64 +102,213 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
     return selectedMeals.isNotEmpty ? selectedMeals.join(", ") : "No Meals";
   }
 
-  Widget buildBookingDetails(var bookingDetails) {
-    return SizedBox(
-      width: double.infinity,
-      child: Card(
-        elevation: 2,
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _detailRow("Guest Name", bookingDetails["guest_name"] ?? ""),
-              _detailRow("Arrival Date", bookingDetails["arrival_datetime"] ?? ""),
-              _detailRow(
-                "Departure Date",
-                bookingDetails["departure_datetime"] ?? "",
-              ),
-              _detailRow("Meal On Arrival", getMealText(bookingDetails)),
+  Widget buildBookingDetails(Map<String, dynamic> booking) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// 👤 Guest Name + Status
+            Text(
+              booking["guest_name"] ?? "",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
 
-              if (!AppCommon.isEmpty(bookingDetails["booked_by"] ))
-                _detailRow("Booked By", bookingDetails["booked_by"]),
-             // _detailRow("Booked By", bookingDetails["booked_by"] ?? ""),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () async {
-                    await cancelBooking(bookingDetails["booking_id"]);
-                  },
-                  style: TextButton.styleFrom(foregroundColor: Colors.red),
-                  child: const Text("Cancel Booking "),
-                ),
+            const SizedBox(height: 10),
+
+            /// 📅 Date Range
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 📅 Arrival
+                  Row(
+                    children: [
+                      const Icon(Icons.login, size: 16, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      const Text(
+                        "Arrival:",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          convertDateFormat(
+                            booking["arrival_datetime"],
+                            "yyyy-MM-dd HH:mm:ss",
+                            "dd/MM/yyyy hh:mm a",
+                          ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // 📅 Departure
+                  Row(
+                    children: [
+                      const Icon(Icons.logout, size: 16, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      const Text(
+                        "Departure:",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          convertDateFormat(
+                            booking["departure_datetime"],
+                            "yyyy-MM-dd HH:mm:ss",
+                            "dd/MM/yyyy hh:mm a",
+                          ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 14),
+
+            /// 🍽️ Meals
+            Wrap(spacing: 8, runSpacing: 8, children: mealChips(booking)),
+
+            if (!AppCommon.isEmpty(booking["booked_by"])) ...[
+              const SizedBox(height: 14),
+
+              /// 👤 Booked By
+              Row(
+                children: [
+                  const Icon(
+                    Icons.person_outline,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    "Booked by: ${booking["booked_by"]}",
+                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
+                ],
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _detailRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(color: Colors.black, fontSize: 14),
-          children: [
-            TextSpan(
-              text: "$title : ",
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-            TextSpan(
-              text: value,
-              style: const TextStyle(fontWeight: FontWeight.w400),
+            const SizedBox(height: 18),
+
+            /// Divider
+            Divider(color: Colors.grey.shade200, thickness: 1),
+
+            /// ❌ Cancel Action
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: () async {
+                  await cancelBooking(booking["booking_id"]);
+                },
+                icon: const Icon(Icons.cancel_outlined, size: 18),
+                label: const Text("Cancel Booking"),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  textStyle: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> mealChips(Map<String, dynamic> data) {
+    final meals = {
+      "is_breakfast": "Breakfast",
+      "is_lunch": "Lunch",
+      "is_dinner": "Dinner",
+    };
+
+    final selectedMeals = meals.entries
+        .where((e) => data[e.key] == 1)
+        .map(
+          (e) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              e.value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.green,
+              ),
+            ),
+          ),
+        )
+        .toList();
+
+    if (selectedMeals.isEmpty) {
+      return [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Text(
+            "No Meals",
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return selectedMeals;
+  }
+
+  String convertDateFormat(String input, String fromFormat, String toFormat) {
+    final inputFormatter = DateFormat(fromFormat);
+    final outputFormatter = DateFormat(toFormat);
+    final dateTime = inputFormatter.parse(input);
+    return outputFormatter.format(dateTime);
   }
 }

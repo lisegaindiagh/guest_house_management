@@ -46,159 +46,246 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Guest Booking")),
+      appBar: AppBar(title: const Text("Create Booking")),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  spacing: 12,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// 👤 Guest Name
-                    TextFormField(
-                      controller: _guestController,
-                      maxLength: 20,
-                      decoration: AppCommon.inputDecoration("Guest Name"),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return "Guest name is required";
-                        }
-                        return null;
-                      },
-                    ),
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        spacing: 12,
+                        children: [
+                          sectionCard(
+                            title: "Guest Details",
+                            icon: Icons.person_outline,
+                            child: Column(
+                              children: [
+                                inputField(
+                                  controller: _guestController,
+                                  label: "Guest Name",
+                                  icon: Icons.person,
+                                  maxLength: 20,
+                                  validator: (v) =>
+                                      v!.isEmpty ? "Guest name required" : null,
+                                ),
+                                inputField(
+                                  controller: _mobileController,
+                                  label: "Mobile Number",
+                                  icon: Icons.phone,
+                                  keyboard: TextInputType.phone,
+                                  maxLength: 10,
+                                  validator: (v) => v!.length != 10
+                                      ? "Enter valid mobile number"
+                                      : null,
+                                ),
+                              ],
+                            ),
+                          ),
 
-                    /// 📱 Mobile Number
-                    TextFormField(
-                      controller: _mobileController,
-                      keyboardType: TextInputType.phone,
-                      maxLength: 10,
-                      decoration: AppCommon.inputDecoration("Mobile Number"),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return "Mobile number is required";
-                        }
-                        if (value.length != 10) {
-                          return "Enter valid 10 digit mobile number";
-                        }
-                        return null;
-                      },
-                    ),
+                          sectionCard(
+                            title: "Stay Duration",
+                            icon: Icons.calendar_month_outlined,
+                            child: Column(
+                              children: [
+                                dateField(
+                                  controller: _arrivalController,
+                                  label: "Arrival Date & Time",
+                                  onTap: () => pickDateTime(true),
+                                  validator: () =>
+                                      _arrivalDate == null ? "Required" : null,
+                                ),
+                                dateField(
+                                  controller: _departureController,
+                                  label: "Departure Date & Time",
+                                  onTap: () => pickDateTime(false),
+                                  validator: () => _departureDate == null
+                                      ? "Required"
+                                      : null,
+                                ),
+                              ],
+                            ),
+                          ),
 
-                    /// 📅 Arrival
-                    TextFormField(
-                      controller: _arrivalController,
-                      readOnly: true,
-                      decoration: AppCommon.inputDecoration(
-                        "Arrival",
-                        suffixIcon: Icon(
-                          Icons.calendar_today,
-                          color: AppCommon.colors.primaryColor,
-                        ),
-                      ),
-                      validator: (_) {
-                        if (_arrivalDate == null) {
-                          return "Please select arrival date & time";
-                        }
-                        return null;
-                      },
-                      onTap: () => pickDateTime(true),
-                    ),
+                          sectionCard(
+                            title: "Meal on Arrival",
+                            icon: Icons.restaurant_outlined,
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              children: meals.keys.map((meal) {
+                                return ChoiceChip(
+                                  label: Text(meal),
+                                  selected: meals[meal]!,
+                                  selectedColor: AppCommon.colors.primaryColor
+                                      .withOpacity(.15),
+                                  onSelected: (val) {
+                                    setState(() => meals[meal] = val);
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
 
-                    /// 📅 Departure
-                    TextFormField(
-                      controller: _departureController,
-                      readOnly: true,
-                      decoration: AppCommon.inputDecoration(
-                        "Departure",
-                        suffixIcon: Icon(
-                          Icons.calendar_today,
-                          color: AppCommon.colors.primaryColor,
-                        ),
-                      ),
-                      validator: (_) {
-                        if (_departureDate == null) {
-                          return "Please select departure date & time";
-                        }
-                        return null;
-                      },
-                      onTap: () => pickDateTime(false),
-                    ),
-                    TextFormField(
-                      controller: _remarkController,
-                      maxLength: 20,
-                      decoration: AppCommon.inputDecoration("Remark"),
-                    ),
-                    /// 🍽 Meals
-                    Column(
-                      spacing: 4,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          "Meal on Arrival",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Wrap(
-                          spacing: 10,
-                          children: meals.keys.map((meal) {
-                            return FilterChip(
-                              label: Text(meal),
-                              selected: meals[meal]!,
-                              onSelected: (val) {
-                                setState(() => meals[meal] = val);
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12),
-                    Row(
-                      spacing: 12,
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: AppCommon.colors.primaryColor,
+                          sectionCard(
+                            title: "Additional Notes",
+                            icon: Icons.notes_outlined,
+                            child: TextFormField(
+                              controller: _remarkController,
+                              maxLines: 3,
+                              decoration: AppCommon.inputDecoration(
+                                "Enter remarks (optional)",
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppCommon.colors.primaryColor,
-                            ),
-                            onPressed: () async {
-                              await _submit();
-                            },
-                            child: Text(
-                              "Submit",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+
+                /// 🔒 Sticky Action Bar
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("Cancel"),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppCommon.colors.primaryColor,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: submit,
+                          child: const Text(
+                            "Confirm Booking",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
     );
   }
 
-  /// 📤 Submit
-  Future<void> _submit() async {
+  /// ---------- Widgets ----------
+  Widget sectionCard({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
+    return Card(
+      elevation: 1.5,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 20, color: AppCommon.colors.primaryColor),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(height: 20),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget inputField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboard = TextInputType.text,
+    int? maxLength,
+    String? Function(String?)? validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboard,
+        maxLength: maxLength,
+        validator: validator,
+        decoration: AppCommon.inputDecoration(
+          label,
+        ).copyWith(prefixIcon: Icon(icon)),
+      ),
+    );
+  }
+
+  Widget dateField({
+    required TextEditingController controller,
+    required String label,
+    required VoidCallback onTap,
+    required String? Function() validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: controller,
+        readOnly: true,
+        validator: (_) => validator(),
+        onTap: onTap,
+        decoration: AppCommon.inputDecoration(
+          label,
+        ).copyWith(prefixIcon: const Icon(Icons.calendar_today)),
+      ),
+    );
+  }
+
+  /// ---------- Logic ----------
+  Future<void> submit() async {
     if (_formKey.currentState!.validate()) {
       final selectedMeals = meals.entries
           .where((e) => e.value)
