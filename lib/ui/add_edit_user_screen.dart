@@ -273,7 +273,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
           scale: 0.7,
           child: Switch(
             value: value,
-            onChanged: (val) => onChanged(val ?? false),
+            onChanged: (val) => onChanged(val),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ),

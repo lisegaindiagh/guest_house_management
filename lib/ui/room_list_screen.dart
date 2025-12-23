@@ -73,7 +73,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   MaterialPageRoute(builder: (context) => UserListScreen()),
                 );
               } else if (value == "Reset Password") {
-                _resetPasswordDialog();
+                resetPasswordDialog();
               } else if (value == "Logout") {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -147,116 +147,129 @@ class _RoomListScreenState extends State<RoomListScreen> {
     required bool isBooked,
     required int guestHouseId,
   }) {
+    final Color statusColor = !isActive
+        ? Colors.grey
+        : isBooked
+        ? Colors.orange
+        : Colors.green;
+
+    final String statusText = !isActive
+        ? "Inactive"
+        : isBooked
+        ? "Booked"
+        : "Available";
+
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      color: statusColor,
+      child: Container(
+        margin: EdgeInsets.only(left: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(4),
+            right: Radius.circular(12),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Stack(
           children: [
-            // 🛏️ Room name & status
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Room $roomName",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                buildRoomStatusChip(isActive: isActive, isBooked: isBooked),
-              ],
+            /// Status Badge (Top Right)
+            Positioned(
+              top: 12,
+              right: 12,
+              child: statusBadge(statusText, statusColor),
             ),
 
-            const SizedBox(height: 8),
-
-            // 👥 Occupancy info
-            Row(
-              children: [
-                const Icon(Icons.person_outline, size: 16),
-                const SizedBox(width: 6),
-                Text(
-                  "${occupancyType.isNotEmpty ? occupancyType[0].toUpperCase() + occupancyType.substring(1) : ""} • Max $maxOccupancy",
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            Row(
-              spacing: 12,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (AppCommon.canViewBooking)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () async {
-                        var res = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ViewBookingScreen(roomId: roomId),
-                          ),
-                        );
-                        if (res ?? false) {
-                          await getGuestHouseRoomList();
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppCommon.colors.btnColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          "View Booking",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// 🛏️ Room Title
+                  Text(
+                    "Room $roomName",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.2,
                     ),
                   ),
-                if (AppCommon.canBook)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () async {
-                        var res = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookingScreen(
-                              roomId: roomId,
-                              guestHouseId: guestHouseId,
-                            ),
-                          ),
-                        );
-                        if (res ?? false) {
-                          await getGuestHouseRoomList();
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppCommon.colors.btnColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          "Book Room",
-                          style: TextStyle(color: Colors.white),
-                        ),
+
+                  const SizedBox(height: 12),
+
+                  /// Occupancy Info
+                  Row(
+                    children: [
+                      infoItem(
+                        Icons.people_alt_outlined,
+                        occupancyType.toString(),
                       ),
-                    ),
+                      const SizedBox(width: 20),
+                      infoItem(Icons.person_outline, "Max $maxOccupancy"),
+                    ],
                   ),
-              ],
+
+                  const SizedBox(height: 18),
+
+                  /// Divider
+                  Divider(color: Colors.grey.shade200, thickness: 1),
+
+                  const SizedBox(height: 12),
+
+                  /// Action Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (AppCommon.canViewBooking)
+                        actionButton(
+                          label: "View Bookings",
+                          icon: Icons.receipt_long_outlined,
+                          onTap: () async {
+                            var res = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ViewBookingScreen(roomId: roomId),
+                              ),
+                            );
+                            if (res ?? false) {
+                              await getGuestHouseRoomList();
+                            }
+                          },
+                        ),
+
+                      if (AppCommon.canBook) const SizedBox(width: 12),
+
+                      if (AppCommon.canBook)
+                        actionButton(
+                          label: "Book Room",
+                          icon: Icons.add,
+                          primary: true,
+                          onTap: () async {
+                            var res = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BookingScreen(
+                                  roomId: roomId,
+                                  guestHouseId: guestHouseId,
+                                ),
+                              ),
+                            );
+                            if (res ?? false) {
+                              await getGuestHouseRoomList();
+                            }
+                          },
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -264,45 +277,79 @@ class _RoomListScreenState extends State<RoomListScreen> {
     );
   }
 
-  Widget buildRoomStatusChip({required bool isActive, required bool isBooked}) {
-    if (!isActive) {
-      return _buildChip(
-        label: "Inactive",
-        bgColor: Colors.grey.shade300,
-        textColor: Colors.grey.shade700,
-      );
-    }
-
-    return _buildChip(
-      label: isBooked ? "Booked" : "Available",
-      bgColor: isBooked ? Colors.orange.shade100 : Colors.green.shade100,
-      textColor: isBooked ? Colors.orange : Colors.green,
-    );
-  }
-
-  Widget _buildChip({
-    required String label,
-    required Color bgColor,
-    required Color textColor,
-  }) {
+  Widget statusBadge(String text, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        label,
+        text,
         style: TextStyle(
+          color: color,
           fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: textColor,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
 
-  Future<void> _resetPassword({
+  Widget infoItem(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: Colors.grey.shade600),
+        const SizedBox(width: 6),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget actionButton({
+    required String label,
+    required IconData icon,
+    bool primary = false,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: primary ? AppCommon.colors.btnColor : Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: primary ? Colors.white : Colors.black87,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: primary ? Colors.white : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> resetPassword({
     required String currentPass,
     required String newPass,
   }) async {
@@ -333,7 +380,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
     }
   }
 
-  void _resetPasswordDialog() {
+  void resetPasswordDialog() {
     final currentPasswordCtrl = TextEditingController();
     final newPasswordCtrl = TextEditingController();
 
@@ -443,7 +490,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             ),
                             onPressed: () {
                               if (dialogFormKey.currentState!.validate()) {
-                                _resetPassword(
+                                resetPassword(
                                   currentPass: currentPasswordCtrl.text,
                                   newPass: newPasswordCtrl.text,
                                 );

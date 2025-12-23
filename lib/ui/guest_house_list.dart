@@ -134,83 +134,123 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     required bool isActive,
     required dynamic totalRooms,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(16),
         child: Row(
-          spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🏢 Icon
+            /// 🏢 Guest House Icon (Professional)
             Container(
-              height: 64,
-              width: 64,
+              height: 68,
+              width: 68,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
                   colors: [
-                    AppCommon.colors.primaryColor.withValues(alpha: 0.4),
-                    AppCommon.colors.primaryColor.withValues(alpha: 0.7),
-                    AppCommon.colors.primaryColor,
+                    AppCommon.colors.primaryColor.withValues(alpha: 0.85),
+                    AppCommon.colors.primaryColor.withValues(alpha: 0.55),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppCommon.colors.primaryColor.withValues(
+                      alpha: 0.35,
+                    ),
+                    blurRadius: 10,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.apartment, color: Colors.white, size: 36),
+              child: const Center(
+                child: Icon(
+                  Icons.apartment_rounded,
+                  color: Colors.white,
+                  size: 34,
+                ),
+              ),
             ),
+
+            const SizedBox(width: 14),
+
+            /// 📄 Content
             Expanded(
               child: Column(
-                spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🏠 Name + Status
+                  /// Title + Status
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
                     children: [
                       Expanded(
                         child: Text(
                           name,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontWeight.w600,
+                            letterSpacing: 0.2,
                           ),
                         ),
                       ),
-                      buildStatusChip(isActive: isActive),
+                      statusBadge(isActive),
                     ],
                   ),
+
+                  const SizedBox(height: 8),
+
+                  /// 📍 Address
                   Row(
-                    spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.location_on_outlined, size: 18),
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           address,
-                          style: const TextStyle(color: Colors.grey),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ],
                   ),
 
-                  // 🛏️ Total Rooms
-                  Row(
-                    spacing: 8,
+                  const SizedBox(height: 14),
 
+                  /// Divider
+                  Divider(color: Colors.grey.shade200, thickness: 1),
+
+                  const SizedBox(height: 10),
+
+                  /// Footer
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(Icons.meeting_room_outlined, size: 18),
-                      Text(
-                        "Rooms: $totalRooms",
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      infoChip(
+                        icon: Icons.meeting_room_outlined,
+                        label: "$totalRooms Rooms",
                       ),
+                      const Icon(Icons.chevron_right, color: Colors.grey),
                     ],
                   ),
                 ],
@@ -222,12 +262,13 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
     );
   }
 
-  /// Active / Inactive status chip
-  Widget buildStatusChip({required bool isActive}) {
+  Widget statusBadge(bool isActive) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isActive ? Colors.green.shade100 : Colors.red.shade100,
+        color: isActive
+            ? Colors.green.withValues(alpha: 0.12)
+            : Colors.red.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -235,8 +276,28 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
         style: TextStyle(
           color: isActive ? Colors.green : Colors.red,
           fontSize: 12,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
         ),
+      ),
+    );
+  }
+
+  Widget infoChip({required IconData icon, required String label}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: Colors.grey.shade700),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ],
       ),
     );
   }
