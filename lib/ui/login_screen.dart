@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../common/app_common.dart';
+import '../Common/app_common.dart';
 import 'guest_house_list.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showPassword = true, isRemember = false, isLoading = false;
 
   TextEditingController emailController = TextEditingController(
-    text: "admin@mail.com",
+    text: "cjgabani1409@gmail.com",
   );
   TextEditingController passwordController = TextEditingController(
     text: "admin@123",
@@ -45,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {});
   }
 
-  Future<void> getLoginDetails(BuildContext contex) async {
+  Future<void> getLoginDetails(BuildContext context) async {
     var res = await AppCommon.apiProvider.getServerResponse(
       "auth.php",
       "POST",
@@ -55,26 +54,26 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
     if (res["success"]) {
-      await setSession(res);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
-      );
+      await setSession(res,context);
+
     }
   }
 
-  Future<void> setSession(var res) async {
-    await AppCommon.sharePref.setPreference({
-      AppCommon.sessionKey.token: res["token"],
-      AppCommon.sessionKey.email: res["user"]["email"],
-      AppCommon.sessionKey.password: passwordController.text.toString(),
-    });
-
+  Future<void> setSession(var res,BuildContext context) async {
     Map user = res["user"];
     AppCommon.canBook = user["can_book"] == 1;
     AppCommon.canViewBooking = user["can_view_bookings"] == 1;
     AppCommon.canManageRooms = user["can_manage_rooms"] == 1;
     AppCommon.canMangeUsers = user["can_manage_users"] == 1;
+    await AppCommon.sharePref.setPreference({
+      AppCommon.sessionKey.token: res["token"],
+      AppCommon.sessionKey.email: res["user"]["email"],
+      AppCommon.sessionKey.password: passwordController.text.toString(),
+    });
+   await Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
+    );
   }
 
   @override
