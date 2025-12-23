@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: AppCommon.navigatorKey,
       title: 'Guest House Management',
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        primarySwatch: Colors.blue,
         primaryColor: AppCommon.colors.primaryColor,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppCommon.colors.primaryColor,
