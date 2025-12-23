@@ -2,36 +2,40 @@ import 'package:flutter/material.dart';
 import '../common/app_common.dart';
 
 class ViewBookingScreen extends StatefulWidget {
-  const ViewBookingScreen({super.key});
+  final int roomId;
+
+  const ViewBookingScreen({super.key, required this.roomId});
 
   @override
   State<ViewBookingScreen> createState() => _ViewBookingScreenState();
 }
 
 class _ViewBookingScreenState extends State<ViewBookingScreen> {
-  bool isLoading = true, isFirstTime = true;
+  bool isLoading = true;
   dynamic bookingDetailsList = [];
-   int roomId = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    getBookingDetails();
+  }
 
-  Future<void> getBookingDetails(int roomId) async {
+  Future<void> getBookingDetails() async {
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
         "GET",
-        queryParams: {"action": "getRoomBooking", "room_id": roomId},
+        queryParams: {"action": "getRoomBooking", "room_id": widget.roomId},
       );
       if (!AppCommon.isEmpty(res) && res["success"]) {
         bookingDetailsList = res["bookings"];
-      }else{
+      } else {
         AppCommon.displayToast(res["error"]);
       }
-
     } catch (e) {
       AppCommon.displayToast("Server error");
     } finally {
       isLoading = false;
-      isFirstTime = false;
       setState(() {});
     }
   }
@@ -41,46 +45,46 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
         "POST",
-        queryParams: {"action": "cancelBooking", },
+        queryParams: {"action": "cancelBooking"},
         params: {"booking_id": bookingId},
       );
       if (!AppCommon.isEmpty(res) && res["success"]) {
         AppCommon.displayToast(res["message"]);
-
-      }else{
+      } else {
         AppCommon.displayToast(res["error"]);
       }
-
     } catch (e) {
       AppCommon.displayToast("Server error");
     } finally {
       isLoading = false;
-      isFirstTime = true;
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-     int roomId = (ModalRoute.of(context)!.settings.arguments ?? 0) as int;
-    if (isFirstTime && roomId != 0) {
-      getBookingDetails(roomId);
-    }
     return Scaffold(
-      appBar: AppBar(title: const Text("View Booking")),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator()):
-
-      ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: bookingDetailsList.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-         return buildBookingDetails(bookingDetailsList[index]);
-        },
+      appBar: AppBar(
+        title: const Text("View Booking"),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
       ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: bookingDetailsList.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                return buildBookingDetails(bookingDetailsList[index]);
+              },
+            ),
     );
   }
+
   String getMealText(Map<String, dynamic> data) {
     final mealMap = {
       "is_breakfast": "Breakfast",
@@ -93,44 +97,41 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
         .map((e) => e.value)
         .toList();
 
-    return selectedMeals.isNotEmpty
-        ? selectedMeals.join(", ")
-        : "No Meals";
+    return selectedMeals.isNotEmpty ? selectedMeals.join(", ") : "No Meals";
   }
+
   Widget buildBookingDetails(var bookingDetails) {
     return SizedBox(
       width: double.infinity,
       child: Card(
         elevation: 2,
         margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _detailRow("Guest Name", bookingDetails["guest_name"]),
-              _detailRow("Arrival Date",  bookingDetails["arrival_datetime"]),
-              _detailRow("Departure Date", bookingDetails["departure_datetime"]),
-              _detailRow("Meal On Arrival", getMealText(bookingDetails),),
+              _detailRow("Arrival Date", bookingDetails["arrival_datetime"]),
+              _detailRow(
+                "Departure Date",
+                bookingDetails["departure_datetime"],
+              ),
+              _detailRow("Meal On Arrival", getMealText(bookingDetails)),
               _detailRow("Booked By", bookingDetails["booked_by"]),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () async {
-                   await cancelBooking(bookingDetails["booking_id"]);
+                    await cancelBooking(bookingDetails["booking_id"]);
                   },
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.red,
-                  ),
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
                   child: const Text("Cancel Booking "),
                 ),
               ),
             ],
           ),
-
         ),
       ),
     );
@@ -156,6 +157,4 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
       ),
     );
   }
-
-
 }

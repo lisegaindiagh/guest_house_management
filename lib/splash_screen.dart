@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'Common/app_common.dart';
+import 'ui/guest_house_list.dart';
+import 'ui/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -39,32 +41,36 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // AppCommon.displayNetworkPopup();
+    AppCommon.displayNetworkPopup();
     navigateToLogin();
   }
 
   void navigateToLogin() {
-    Future.delayed(const Duration(seconds: 5), () async {
+    Future.delayed(const Duration(seconds: 3), () async {
       if (await AppCommon.isOnline()) {
-        String email = await AppCommon.sharePref.getString(AppCommon.sessionKey.email);
-        String password = await AppCommon.sharePref.getString(AppCommon.sessionKey.password);
-        if(!AppCommon.isEmpty(email) && !AppCommon.isEmpty(password)){
+        String email = await AppCommon.sharePref.getString(
+          AppCommon.sessionKey.email,
+        );
+        String password = await AppCommon.sharePref.getString(
+          AppCommon.sessionKey.password,
+        );
+        if (!AppCommon.isEmpty(email) && !AppCommon.isEmpty(password)) {
           await getLoginDetails(email, password);
-        }else{
-          Navigator.pushReplacementNamed(context, '/login');
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+          );
         }
-
       }
     });
   }
 
-
-  Future<void> getLoginDetails(String email,String password) async {
+  Future<void> getLoginDetails(String email, String password) async {
     var res = await AppCommon.apiProvider.getServerResponse(
       "auth.php",
       "POST",
-      params: {"email": email,
-        "password":password},
+      params: {"email": email, "password": password},
     );
     if (res["success"]) {
       await AppCommon.sharePref.setString(
@@ -76,14 +82,13 @@ class _SplashScreenState extends State<SplashScreen>
       AppCommon.canViewBooking = user["can_view_bookings"] == 1;
       AppCommon.canManageRooms = user["can_manage_rooms"] == 1;
       AppCommon.canMangeUsers = user["can_manage_users"] == 1;
-
-      Navigator.pushReplacementNamed(
+      Navigator.pushReplacement(
         context,
-        '/guestHouseList',
+        MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
       );
     }
-    // return res;
   }
+
   @override
   void dispose() {
     _controller.dispose();

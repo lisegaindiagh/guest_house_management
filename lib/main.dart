@@ -3,13 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'Common/app_common.dart';
 import 'splash_screen.dart';
-import 'ui/booking_screen.dart';
-import 'ui/guest_house_list.dart';
-import 'ui/login_screen.dart';
-import 'ui/room_list_screen.dart';
-import 'ui/setting_screen.dart';
-import 'ui/user_list_screen.dart';
-import 'ui/view_booking.dart';
 
 void main() {
   runApp(const MyApp());
@@ -62,18 +55,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      initialRoute: '/',
-      routes: {
-        '/': (_) => SplashScreen(),
-        '/login': (_) => LoginScreen(),
-        '/home': (_) => const RoomListScreen(),
-        '/guestHouseList': (_) => GuestHouseListScreen(),
-        "/setting": (_) => SettingsScreen(),
-        "/booking": (_) => BookingScreen(),
-        "/viewBooking":(_) => ViewBookingScreen(),
-        "/users": (_) => UserListScreen(),
-        // '/about': (_) => const AboutScreen(),
-      },
+      home: SplashScreen(),
     );
   }
 }

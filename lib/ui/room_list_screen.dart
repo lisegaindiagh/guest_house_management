@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import '../Common/app_common.dart';
 import 'add_room_screen.dart';
+import 'booking_screen.dart';
 import 'login_screen.dart';
+import 'setting_screen.dart';
+import 'user_list_screen.dart';
+import 'view_booking.dart';
 
 class RoomListScreen extends StatefulWidget {
-  const RoomListScreen({super.key});
+  final int roomId;
+  final String guestRoomName;
+
+  const RoomListScreen({
+    super.key,
+    required this.roomId,
+    required this.guestRoomName,
+  });
 
   @override
   State<RoomListScreen> createState() => _RoomListScreenState();
@@ -13,17 +24,20 @@ class RoomListScreen extends StatefulWidget {
 class _RoomListScreenState extends State<RoomListScreen> {
   bool isLoading = true;
   dynamic roomList = [];
-  bool isFirstTime = true;
   final dialogFormKey = GlobalKey<FormState>();
-  int roomId = 0;
-  String guestRoomName = "";
 
-  Future<void> getGuestHouseRoomList(int roomId) async {
+  @override
+  void initState() {
+    super.initState();
+    getGuestHouseRoomList();
+  }
+
+  Future<void> getGuestHouseRoomList() async {
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
         "POST",
-        queryParams: {"action": "getRooms", "guest_house_id": roomId},
+        queryParams: {"action": "getRooms", "guest_house_id": widget.roomId},
       );
 
       if (!AppCommon.isEmpty(res) && res["success"]) {
@@ -36,31 +50,28 @@ class _RoomListScreenState extends State<RoomListScreen> {
       AppCommon.displayToast("Server error");
     } finally {
       isLoading = false;
-      isFirstTime = false;
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-
-    roomId = args["id"];
-    guestRoomName = args["name"];
-    if (isFirstTime) {
-      getGuestHouseRoomList(roomId);
-    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(guestRoomName),
+        title: Text(widget.guestRoomName),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == "Setting") {
-                Navigator.pushNamed(context, '/setting');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()),
+                );
               } else if (value == "User Rights") {
-                Navigator.pushNamed(context, '/users');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserListScreen()),
+                );
               } else if (value == "Reset Password") {
                 _resetPasswordDialog();
               } else if (value == "Logout") {
@@ -110,11 +121,12 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 var res = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddRoomScreen(guestHouseId: roomId),
+                    builder: (context) =>
+                        AddRoomScreen(guestHouseId: widget.roomId),
                   ),
                 );
                 if (res ?? false) {
-                  await getGuestHouseRoomList(roomId);
+                  await getGuestHouseRoomList();
                 }
               },
               child: Icon(Icons.add),
@@ -179,12 +191,17 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
+                      onTap: () async {
+                        var res = await Navigator.push(
                           context,
-                          '/viewBooking',
-                          arguments: roomId,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ViewBookingScreen(roomId: roomId),
+                          ),
                         );
+                        if (res ?? false) {
+                          await getGuestHouseRoomList();
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -206,15 +223,19 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
+                      onTap: () async {
+                        var res = await Navigator.push(
                           context,
-                          '/booking',
-                          arguments: {
-                            'roomId': roomId,
-                            'guestHouseId': guestHouseId,
-                          },
+                          MaterialPageRoute(
+                            builder: (context) => BookingScreen(
+                              roomId: roomId,
+                              guestHouseId: guestHouseId,
+                            ),
+                          ),
                         );
+                        if (res ?? false) {
+                          await getGuestHouseRoomList();
+                        }
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(

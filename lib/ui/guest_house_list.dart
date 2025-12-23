@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../common/app_common.dart';
 import 'login_screen.dart';
+import 'room_list_screen.dart';
 
 class GuestHouseListScreen extends StatefulWidget {
   const GuestHouseListScreen({super.key});
@@ -79,13 +80,14 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
 
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(
+                    Navigator.push(
                       context,
-                      '/home',
-                      arguments: {
-                        "id": int.parse(guestHouse["id"].toString()),
-                        "name": guestHouse["name"],
-                      },
+                      MaterialPageRoute(
+                        builder: (context) => RoomListScreen(
+                          roomId: int.parse(guestHouse["id"].toString()),
+                          guestRoomName: guestHouse["name"],
+                        ),
+                      ),
                     );
                   },
                   child: buildGuestHouseCard(

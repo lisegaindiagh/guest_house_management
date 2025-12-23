@@ -4,7 +4,13 @@ import '../Common/app_common.dart';
 import '../service/send_sms.dart';
 
 class BookingScreen extends StatefulWidget {
-  const BookingScreen({super.key});
+  final int roomId, guestHouseId;
+
+  const BookingScreen({
+    super.key,
+    required this.roomId,
+    required this.guestHouseId,
+  });
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -22,8 +28,6 @@ class _BookingScreenState extends State<BookingScreen> {
 
   DateTime? _arrivalDate;
   DateTime? _departureDate;
-  int roomId = 0;
-  int guestHouseId = 0;
 
   Map<String, bool> meals = {
     "Breakfast": false,
@@ -31,7 +35,7 @@ class _BookingScreenState extends State<BookingScreen> {
     "Dinner": false,
   };
 
-  bool isLoading = false, isFirstTime = true;
+  bool isLoading = false;
 
   String convertDate(String input) {
     DateTime date = DateTime.parse(input);
@@ -40,12 +44,6 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-
-    roomId = args['roomId'];
-    guestHouseId = args['guestHouseId'];
-
     return Scaffold(
       appBar: AppBar(title: const Text("Guest Booking")),
       body: isLoading
@@ -233,8 +231,8 @@ class _BookingScreenState extends State<BookingScreen> {
         "POST",
         queryParams: {"action": "createBooking"},
         params: {
-          "guest_house_id": guestHouseId,
-          "room_id": roomId,
+          "guest_house_id": widget.guestHouseId,
+          "room_id": widget.roomId,
           "guest_name": _guestController.text,
           "mobile": _mobileController.text,
           "arrival_datetime": DateFormat(
@@ -258,7 +256,7 @@ class _BookingScreenState extends State<BookingScreen> {
         try {
           await SendSMSService().sendSMS(
             context,
-            roomId: roomId,
+            roomId: widget.roomId,
             guestName: _guestController.text,
             mobile: _mobileController.text,
             arrival: _arrivalController.text,

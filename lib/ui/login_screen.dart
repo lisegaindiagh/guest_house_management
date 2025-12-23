@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../common/app_common.dart';
+import 'guest_house_list.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,8 +13,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool showPassword = true, isRemember = false, isLoading = false;
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController(
+    text: "admin@mail.com",
+  );
+  TextEditingController passwordController = TextEditingController(
+    text: "admin@123",
+  );
 
   @override
   void initState() {
@@ -51,7 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     if (res["success"]) {
       await setSession(res);
-      Navigator.pushReplacementNamed(contex, '/guestHouseList');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
+      );
     }
   }
 
