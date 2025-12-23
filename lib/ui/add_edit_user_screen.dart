@@ -113,109 +113,144 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 📧 Email
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: AppCommon.inputDecoration("Email"),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Email is required";
-                  }
-                  if (!value.contains("@")) {
-                    return "Enter a valid email address";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 16),
-
-              // 👤 Name
-              TextFormField(
-                controller: _nameController,
-                decoration: AppCommon.inputDecoration("Name"),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Name is required";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 16),
-
-              // 🧩 Role
-              DropdownButtonFormField<String>(
-                value: _selectedRole,
-                isDense: true,
-                decoration: AppCommon.inputDecoration("Role"),
-                items: const [
-                  DropdownMenuItem(value: "admin", child: Text("Admin")),
-                  DropdownMenuItem(value: "user", child: Text("User")),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedRole = value!;
-                  });
-                },
-              ),
-
-              const SizedBox(height: 24),
-
-              // 🔐 Permissions
-              const Text(
-                "Permissions",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-              ),
-
-              const SizedBox(height: 8),
-
-              buildPermissionCheckBox(
-                label: "Can Book Room",
-                value: _canBook,
-                onChanged: (value) {
-                  setState(() => _canBook = value);
-                },
-              ),
-
-              buildPermissionCheckBox(
-                label: "Can View Bookings",
-                value: _canViewBookings,
-                onChanged: (value) {
-                  setState(() => _canViewBookings = value);
-                },
-              ),
-
-              buildPermissionCheckBox(
-                label: "Can Manage Rooms",
-                value: _canManageRooms,
-                onChanged: (value) {
-                  setState(() => _canManageRooms = value);
-                },
-              ),
-
-              buildPermissionCheckBox(
-                label: "Can Manage Users",
-                value: _canManageUsers,
-                onChanged: (value) {
-                  setState(() => _canManageUsers = value);
-                },
-              ),
-
-              const SizedBox(height: 24),
-
-              // ✅ Submit button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppCommon.colors.primaryColor,
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(2), // border width
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppCommon.colors.white, // border color
+                    width: 4,
                   ),
-                  onPressed: _submitForm,
-                  child: Text(
-                    isEditMode ? "Update User" : "Add User",
-                    style: TextStyle(color: AppCommon.colors.white),
+                ),
+                child: CircleAvatar(
+                  radius: 48,
+                  backgroundColor: AppCommon.colors.backgroundColor,
+                  child: Icon(Icons.person, size: 60, color: Colors.grey),
+                ),
+              ), //
+
+              SizedBox(height: 20),
+
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 20.0,
+                  ),
+                  child: Column(
+                    spacing: 16,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // 📧 Email
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: AppCommon.inputDecoration("Email"),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Email is required";
+                          }
+                          if (!value.contains("@")) {
+                            return "Enter a valid email address";
+                          }
+                          return null;
+                        },
+                      ),
+
+                      // 👤 Name
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: AppCommon.inputDecoration("Name"),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Name is required";
+                          }
+                          return null;
+                        },
+                      ),
+
+                      // 🧩 Role
+                      DropdownButtonFormField<String>(
+                        value: _selectedRole,
+                        isDense: true,
+                        decoration: AppCommon.inputDecoration("Role"),
+                        items: const [
+                          DropdownMenuItem(
+                            value: "admin",
+                            child: Text("Admin"),
+                          ),
+                          DropdownMenuItem(value: "user", child: Text("User")),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedRole = value!;
+                          });
+                        },
+                      ),
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // 🔐 Permissions
+                          const Text(
+                            "Permissions",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+
+                          SizedBox(height: 8),
+
+                          buildPermissionCheckBox(
+                            label: "Can Book Room",
+                            value: _canBook,
+                            onChanged: (value) {
+                              setState(() => _canBook = value);
+                            },
+                          ),
+                          buildPermissionCheckBox(
+                            label: "Can View Bookings",
+                            value: _canViewBookings,
+                            onChanged: (value) {
+                              setState(() => _canViewBookings = value);
+                            },
+                          ),
+
+                          buildPermissionCheckBox(
+                            label: "Can Manage Rooms",
+                            value: _canManageRooms,
+                            onChanged: (value) {
+                              setState(() => _canManageRooms = value);
+                            },
+                          ),
+
+                          buildPermissionCheckBox(
+                            label: "Can Manage Users",
+                            value: _canManageUsers,
+                            onChanged: (value) {
+                              setState(() => _canManageUsers = value);
+                            },
+                          ),
+                        ],
+                      ),
+
+                      // ✅ Submit button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppCommon.colors.primaryColor,
+                          ),
+                          onPressed: _submitForm,
+                          child: Text(
+                            isEditMode ? "Update User" : "Add User",
+                            style: TextStyle(color: AppCommon.colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -234,11 +269,13 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
     return Row(
       children: [
         Expanded(child: Text(label, style: const TextStyle(fontSize: 14))),
-        Checkbox(
-          value: value,
-          onChanged: (val) => onChanged(val ?? false),
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
+        Transform.scale(
+          scale: 0.7,
+          child: Switch(
+            value: value,
+            onChanged: (val) => onChanged(val ?? false),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
         ),
       ],
     );
