@@ -32,15 +32,37 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
       );
       if (res["success"]) {
         guestHousesList = res["data"];
+        await fetchSettingData();
       } else {
         AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
       guestHousesList = [];
       AppCommon.displayToast("Server error");
+    }
+  }
+
+  Future<void> fetchSettingData() async {
+    try {
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "api.php",
+        "GET",
+        queryParams: {"action": "getSettings"},
+      );
+      if (res["success"]) {
+        await AppCommon.sharePref.setPreference({
+          AppCommon.sessionKey.notifyEmail: res["settings"]["notify_email"],
+          AppCommon.sessionKey.notifyMobile: res["settings"]["notify_mobile"],
+        });
+      } else {
+        AppCommon.displayToast(res["error"]);
+      }
+    } catch (e) {
+      AppCommon.displayToast("Server error");
     } finally {
-      isLoading = false;
-      setState(() {});
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

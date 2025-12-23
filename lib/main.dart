@@ -28,16 +28,17 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           elevation: 0,
           centerTitle: true,
-          backgroundColor: AppCommon.colors.primaryColor,
-          iconTheme: IconThemeData(color: AppCommon.colors.white, size: 25.0),
+          backgroundColor: AppCommon.colors.backgroundColor,
+          iconTheme: IconThemeData(
+            color: AppCommon.colors.primaryColor,
+            size: 25.0,
+          ),
           systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: AppCommon.colors.primaryColor.withValues(
-              alpha: 0.2,
-            ),
+            statusBarColor: AppCommon.colors.white.withValues(alpha: 0.2),
           ),
           titleTextStyle: TextStyle(
             fontSize: 20,
-            color: AppCommon.colors.white,
+            color: AppCommon.colors.primaryColor,
             overflow: TextOverflow.ellipsis,
             fontWeight: FontWeight.bold,
           ),

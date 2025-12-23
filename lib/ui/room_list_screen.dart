@@ -219,7 +219,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       ),
                     ),
                   ),
-                if (!isBooked && AppCommon.canBook)
+                if (AppCommon.canBook)
                   Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(

@@ -64,18 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> setSession(var res) async {
-    await AppCommon.sharePref.setString(
-      AppCommon.sessionKey.token,
-      res["token"],
-    );
-    await AppCommon.sharePref.setString(
-      AppCommon.sessionKey.email,
-      res["user"]["email"],
-    );
-    await AppCommon.sharePref.setString(
-      AppCommon.sessionKey.password,
-      passwordController.text,
-    );
+    await AppCommon.sharePref.setPreference({
+      AppCommon.sessionKey.token: res["token"],
+      AppCommon.sessionKey.email: res["user"]["email"],
+      AppCommon.sessionKey.password: passwordController.text.toString(),
+    });
 
     Map user = res["user"];
     AppCommon.canBook = user["can_book"] == 1;

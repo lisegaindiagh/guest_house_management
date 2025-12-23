@@ -9,10 +9,14 @@ class SendSMSService {
     // Request permission before sending SMS
     await requestSmsPermission();
 
+    var notifyMobile = await AppCommon.sharePref.getString(
+      AppCommon.sessionKey.notifyEmail,
+    );
+
     // Call the plugin method to send SMS
     final result = await GroupSMSKit.sendSms(
       // List of recipient numbers
-      numbers: ['6353520694'],
+      numbers: [notifyMobile],
       // Message body
       message: "Room Booking Alert \nGuest: $guestName \nMobile: $mobile \nRoom: $roomId \nArrival: $arrival \nDeparture: $departure \nMeal on Arrival: ${mealOnArrival ?? ""} \n\n- Booked via Guest House App"
     );

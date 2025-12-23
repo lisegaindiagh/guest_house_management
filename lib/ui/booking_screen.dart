@@ -269,22 +269,27 @@ class _BookingScreenState extends State<BookingScreen> {
           debugPrint("failed to send SMS.");
         }
         // for send Email
-        /* try{
+        try {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
+          var email = await AppCommon.sharePref.getString(
+            AppCommon.sessionKey.email,
+          );
+          var notifyEmail = await AppCommon.sharePref.getString(
+            AppCommon.sessionKey.notifyEmail,
+          );
           var sendEmailResponse = await AppCommon.apiProvider.getServerResponse(
-              "send_mailer.php",
-              "POST",
-              params: {
-                "sender_email": "pradip.jadav055@gmail.com",
-                "receiver_email": "jadavpradip2002@gmail.com",
-                "text": "test mail"
-              }
-
+            "send_mailer.php",
+            "POST",
+            params: {
+              "sender_email": email,
+              "receiver_email": notifyEmail,
+              "text": "test mail",
+            },
           );
         } finally {
           debugPrint("failed to send Email.");
-        }*/
+        }
       } else {
         AppCommon.displayToast(res["error"]);
       }

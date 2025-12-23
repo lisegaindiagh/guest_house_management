@@ -8,4 +8,7 @@ class SessionKey {
   String email = "email";
   String password = "password";
   String isRemember = "isRemember";
+
+  String notifyEmail = "notifyEmail";
+  String notifyMobile = "notifyMobile";
 }
