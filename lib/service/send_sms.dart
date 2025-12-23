@@ -14,8 +14,7 @@ class SendSMSService {
       // List of recipient numbers
       numbers: ['6353520694'],
       // Message body
-        message: "Room Booking Alert \nGuest: $guestName \nMobile: $mobile \nRoom: $roomId \nArrival: $arrival \nDeparture: $departure \nMeal on Arrival: ${mealOnArrival ??
-            ""} \n\n- Booked via Guest House App"
+      message: "Room Booking Alert \nGuest: $guestName \nMobile: $mobile \nRoom: $roomId \nArrival: $arrival \nDeparture: $departure \nMeal on Arrival: ${mealOnArrival ?? ""} \n\n- Booked via Guest House App"
     );
 
     if (context.mounted) {
