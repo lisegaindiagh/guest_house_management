@@ -44,8 +44,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
   }
 
   Future<void> cancelBooking(int bookingId) async {
-    isLoading = true;
-    setState(() {});
+    AppCommon.startLoadingProcess(context);
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
@@ -62,7 +61,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
     } catch (e) {
       AppCommon.displayToast("Server error");
     } finally {
-      isLoading = false;
+      AppCommon.endLoadingProcess(context);
       setState(() {});
     }
   }

@@ -49,17 +49,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> getLoginDetails(BuildContext context) async {
-    var res = await AppCommon.apiProvider.getServerResponse(
-      "auth.php",
-      "POST",
-      params: {
-        "email": emailController.text,
-        "password": passwordController.text,
-      },
-    );
+    try{
+      var res = await AppCommon.apiProvider.getServerResponse(
+        "auth.php",
+        "POST",
+        params: {
+          "email": emailController.text,
+          "password": passwordController.text,
+        },
+      );
 
-    if (res["success"]) {
-      await setSession(res, context);
+      if (res["success"]) {
+        await setSession(res, context);
+      }
+    }catch (e) {
+      AppCommon.displayToast("Server error");
     }
   }
 
