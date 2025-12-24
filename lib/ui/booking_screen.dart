@@ -347,6 +347,7 @@ class _BookingScreenState extends State<BookingScreen> {
             mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
           );
           AppCommon.displayToast(res["message"]);
+          AppCommon.endLoadingProcess(context);
           Navigator.pop(context, true);
         } finally {
           AppCommon.endLoadingProcess(context);
@@ -376,6 +377,7 @@ class _BookingScreenState extends State<BookingScreen> {
           debugPrint("failed to send Email.");
         }
       } else {
+        AppCommon.endLoadingProcess(context);
         AppCommon.displayToast(res["error"]);
       }
     } catch (e) {

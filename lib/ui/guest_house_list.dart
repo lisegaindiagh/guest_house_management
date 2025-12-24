@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../common/app_common.dart';
+import '../Common/app_common.dart';
 import 'login_screen.dart';
 import 'room_list_screen.dart';
 
@@ -73,13 +73,16 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
         title: const Text("Guest Houses"),
         actions: [
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == "Logout") {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (route) => false,
-                );
+                final shouldLogout = await AppCommon.showLogoutConfirmationDialog(context);
+                if (shouldLogout == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                        (route) => false,
+                  );
+                }
               }
             },
             itemBuilder: (context) => [

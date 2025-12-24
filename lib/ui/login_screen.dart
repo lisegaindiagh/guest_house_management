@@ -15,10 +15,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
 
   TextEditingController emailController = TextEditingController(
-    text: "cjgabani1409@gmail.com",
+    text: "",
   );
   TextEditingController passwordController = TextEditingController(
-    text: "admin@123",
+    text: "",
   );
 
   @override
@@ -63,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
         await setSession(res, context);
       }
     }catch (e) {
-      AppCommon.displayToast("Server error");
     }
   }
 

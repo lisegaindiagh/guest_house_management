@@ -61,7 +61,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
         title: Text(widget.guestRoomName),
         actions: [
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == "Setting") {
                 Navigator.push(
                   context,
@@ -75,11 +75,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
               } else if (value == "Reset Password") {
                 resetPasswordDialog();
               } else if (value == "Logout") {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (route) => false,
-                );
+                final shouldLogout = await AppCommon.showLogoutConfirmationDialog(context);
+                if (shouldLogout == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                        (route) => false,
+                  );
+                }
               }
             },
             itemBuilder: (context) => [
