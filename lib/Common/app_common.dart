@@ -38,30 +38,102 @@ class AppCommon {
   /*
   * This Method is used to show dialog if no-internet
   * */
-  static Future<dynamic> offlineDialog() async {
+  static Future<void> offlineDialog() async {
     if (!await AppCommon.isOnline()) {
       showDialog(
-        context: navigatorKey.currentContext!,
+        context: AppCommon.navigatorKey.currentContext!,
+        barrierDismissible: false,
         builder: (context) {
-          return AlertDialog(
-            title: Text("Alert"),
-            content: Text("Please check your internet."),
-            actions: [
-              ElevatedButton(
-                onPressed: () async {
-                  if (await AppCommon.isOnline()) {
-                    Navigator.pop(AppCommon.navigatorKey.currentContext!, true);
-                    Navigator.pushReplacement(
-                      navigatorKey.currentContext!,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// 🌐 Header
+                  Row(
+                    children: [
+                      Container(
+                        height: 44,
+                        width: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.wifi_off_rounded,
+                          color: Colors.orange,
+                        ),
                       ),
-                    );
-                  }
-                },
-                child: Text("Retry"),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          "No Internet Connection",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// 📄 Message
+                  const Text(
+                    "Please check your internet connection and try again.",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// Divider
+                  Divider(color: Colors.grey.shade200, thickness: 1),
+
+                  const SizedBox(height: 12),
+
+                  /// 🔘 Actions
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppCommon.colors.primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (await AppCommon.isOnline()) {
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(
+                            AppCommon.navigatorKey.currentContext!,
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text(
+                        "Retry",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           );
         },
       );
