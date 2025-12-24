@@ -31,6 +31,8 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
       if (!AppCommon.isEmpty(res) && res["success"]) {
         bookingDetailsList = res["bookings"];
       } else {
+        bookingDetailsList = [];
+        Navigator.pop(context, true);
         AppCommon.displayToast(res["message"]);
       }
     } catch (e) {
@@ -42,6 +44,8 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
   }
 
   Future<void> cancelBooking(int bookingId) async {
+    isLoading = true;
+    setState(() {});
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
@@ -205,13 +209,13 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
               ),
             ),
 
-            const SizedBox(height: 14),
+            const SizedBox(height: 8),
 
             /// 🍽️ Meals
             Wrap(spacing: 8, runSpacing: 8, children: mealChips(booking)),
 
             if (!AppCommon.isEmpty(booking["booked_by"])) ...[
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
 
               /// 👤 Booked By
               Row(
@@ -230,8 +234,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
               ),
             ],
 
-            const SizedBox(height: 18),
-
             /// Divider
             Divider(color: Colors.grey.shade200, thickness: 1),
 
@@ -240,7 +242,11 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
               alignment: Alignment.centerRight,
               child: TextButton.icon(
                 onPressed: () async {
-                  await cancelBooking(booking["booking_id"]);
+                  final confirm = await showCancelBookingDialog(context);
+
+                  if (confirm == true) {
+                    await cancelBooking(booking["booking_id"]);
+                  }
                 },
                 icon: const Icon(Icons.cancel_outlined, size: 18),
                 label: const Text("Cancel Booking"),
@@ -275,8 +281,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
             child: Text(
               e.value,
               style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w900,
                 color: Colors.green,
               ),
             ),
@@ -312,5 +317,103 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
     final outputFormatter = DateFormat(toFormat);
     final dateTime = inputFormatter.parse(input);
     return outputFormatter.format(dateTime);
+  }
+
+  Future<bool?> showCancelBookingDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// ⚠️ Header
+                Row(
+                  children: [
+                    Container(
+                      height: 44,
+                      width: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.red.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.cancel_outlined,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        "Cancel Booking",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                /// Message
+                const Text(
+                  "Are you sure you want to cancel this booking?\n"
+                  "This action cannot be undone.",
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// Divider
+                Divider(color: Colors.grey.shade200, thickness: 1),
+
+                const SizedBox(height: 12),
+
+                /// Actions
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text("No"),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text(
+                        "Yes, Cancel",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
