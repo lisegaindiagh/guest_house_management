@@ -214,6 +214,54 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
             /// 🍽️ Meals
             Wrap(spacing: 8, runSpacing: 8, children: mealChips(booking)),
 
+            // 📝 Note
+            if (!AppCommon.isEmpty(booking["note"])) ...[
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.sticky_note_2_outlined,
+                      size: 18,
+                      color: Colors.blueGrey,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Note",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            booking["note"],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
             if (!AppCommon.isEmpty(booking["booked_by"])) ...[
               const SizedBox(height: 8),
 
