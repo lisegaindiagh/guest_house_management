@@ -15,7 +15,7 @@ class AppCommon {
   static SharePref sharePref = SharePref();
   static SessionKey sessionKey = SessionKey();
   static ApiProvider apiProvider = ApiProvider();
-
+  static bool isLoadingProcess = false;
   static bool canBook = false;
   static bool canViewBooking = false;
   static bool canManageRooms = false;
@@ -226,6 +226,61 @@ class AppCommon {
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(color: AppCommon.colors.primaryColor, width: 2),
       ),
+    );
+  }
+
+  static void startLoadingProcess(BuildContext context) {
+    if (!isLoadingProcess) {
+      isLoadingProcess = true;
+      // Show the loading dialog
+      showLoadingDialog(context);
+    }
+  }
+
+  /*
+  * Method to decrement processCount when the process is complete
+  * This method is called from event of individual screen to close the loader dialog
+  * */
+  static void endLoadingProcess(BuildContext context) {
+    if (isLoadingProcess) {
+      isLoadingProcess = false;
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pop();
+    }
+  }
+  /*
+  * Method is used to show Central Loader
+  * This method called from startProcess method of this class
+  * */
+  static void showLoadingDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: Row(
+        children: [
+          Transform.scale(
+            scale: 0.8,
+            child: CircularProgressIndicator(color:AppCommon.colors.primaryColor),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 7),
+            child: Text("Loading..."),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          child: alert,
+          onWillPop: () async {
+            endLoadingProcess(context);
+            return false;
+          },
+        );
+      },
     );
   }
 }

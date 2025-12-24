@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../Common/app_common.dart';
 
 /// AddRoomScreen
@@ -113,9 +112,9 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                                 return null;
                               },
                             ),
-        
+
                             dropdownField(),
-        
+
                             inputField(
                               controller: _maxOccupancyController,
                               label: "Max Occupancy",
@@ -139,14 +138,14 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                           ],
                         ),
                       ),
-        
+
                       const SizedBox(height: 80),
                     ],
                   ),
                 ),
               ),
             ),
-        
+
             /// 🔒 STICKY ACTION BAR
             Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),

@@ -86,7 +86,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                 ],
                               ),
                             ),
-        
+
                             sectionCard(
                               title: "Stay Duration",
                               icon: Icons.calendar_month_outlined,
@@ -110,7 +110,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                 ],
                               ),
                             ),
-        
+
                             sectionCard(
                               title: "Meal on Arrival",
                               icon: Icons.restaurant_outlined,
@@ -130,7 +130,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                 }).toList(),
                               ),
                             ),
-        
+
                             sectionCard(
                               title: "Additional Notes",
                               icon: Icons.notes_outlined,
@@ -147,7 +147,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                     ),
                   ),
-        
+
                   /// 🔒 Sticky Action Bar
                   Container(
                     decoration: BoxDecoration(
@@ -293,12 +293,6 @@ class _BookingScreenState extends State<BookingScreen> {
           .where((e) => e.value)
           .map((e) => e.key)
           .toList();
-
-      debugPrint("Guest: ${_guestController.text}");
-      debugPrint("Mobile: ${_mobileController.text}");
-      debugPrint("Arrival: ${_arrivalController.text}");
-      debugPrint("Departure: ${_departureController.text}");
-      debugPrint("Meals: $selectedMeals");
       await bookedRoom();
     }
   }
@@ -316,7 +310,7 @@ class _BookingScreenState extends State<BookingScreen> {
     DateTime departureController = DateFormat(
       "dd/MM/yyyy HH:mm:ss",
     ).parse(_departureController.text);
-
+    AppCommon.startLoadingProcess(context);
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
@@ -355,6 +349,7 @@ class _BookingScreenState extends State<BookingScreen> {
           AppCommon.displayToast(res["message"]);
           Navigator.pop(context, true);
         } finally {
+          AppCommon.endLoadingProcess(context);
           debugPrint("failed to send SMS.");
         }
         // for send Email
@@ -377,12 +372,14 @@ class _BookingScreenState extends State<BookingScreen> {
             },
           );
         } finally {
+          AppCommon.endLoadingProcess(context);
           debugPrint("failed to send Email.");
         }
       } else {
         AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
+      AppCommon.endLoadingProcess(context);
       AppCommon.displayToast("Server error");
     }
   }
