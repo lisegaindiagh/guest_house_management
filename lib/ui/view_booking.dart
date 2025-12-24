@@ -74,16 +74,18 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
           },
         ),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: bookingDetailsList.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                return buildBookingDetails(bookingDetailsList[index]);
-              },
-            ),
+      body: SafeArea(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: bookingDetailsList.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  return buildBookingDetails(bookingDetailsList[index]);
+                },
+              ),
+      ),
     );
   }
 

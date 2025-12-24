@@ -76,21 +76,23 @@ class _UserListScreenState extends State<UserListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Users")),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(overscroll: false),
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: users.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final user = users[index];
-
-                  return buildUserSwipeCard(user: user);
-                },
+      body: SafeArea(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(overscroll: false),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: users.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final user = users[index];
+        
+                    return buildUserSwipeCard(user: user);
+                  },
+                ),
               ),
-            ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var res = await Navigator.push(
@@ -306,8 +308,7 @@ class _UserListScreenState extends State<UserListScreen> {
       child: Text(
         isActive ? "Active" : "Inactive",
         style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w900,
           color: isActive ? Colors.green : Colors.red,
         ),
       ),
@@ -318,15 +319,14 @@ class _UserListScreenState extends State<UserListScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.12),
+        color: AppCommon.colors.primaryColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         role.toUpperCase(),
-        style: const TextStyle(
-          fontSize: 12,
+        style: TextStyle(
           fontWeight: FontWeight.w600,
-          color: Colors.blue,
+          color: AppCommon.colors.primaryColor,
         ),
       ),
     );
@@ -344,7 +344,6 @@ class _UserListScreenState extends State<UserListScreen> {
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 12,
           fontWeight: FontWeight.w500,
           color: enabled ? Colors.green : Colors.grey,
         ),

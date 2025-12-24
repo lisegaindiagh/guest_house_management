@@ -96,28 +96,30 @@ class _RoomListScreenState extends State<RoomListScreen> {
         ],
       ),
 
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(overscroll: false),
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: roomList.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final room = roomList[index];
-                  return buildRoomCard(
-                    roomId: room["id"],
-                    roomName: room["room_name"],
-                    occupancyType: room["occupancy_type"],
-                    maxOccupancy: room["max_occupancy"],
-                    isActive: room["is_active"] == 1,
-                    isBooked: room["is_booked"] == 1,
-                    guestHouseId: room["guest_house_id"],
-                  );
-                },
+      body: SafeArea(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(overscroll: false),
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: roomList.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final room = roomList[index];
+                    return buildRoomCard(
+                      roomId: room["id"],
+                      roomName: room["room_name"],
+                      occupancyType: room["occupancy_type"],
+                      maxOccupancy: room["max_occupancy"],
+                      isActive: room["is_active"] == 1,
+                      isBooked: room["is_booked"] == 1,
+                      guestHouseId: room["guest_house_id"],
+                    );
+                  },
+                ),
               ),
-            ),
+      ),
       floatingActionButton: AppCommon.canManageRooms
           ? FloatingActionButton(
               onPressed: () async {
@@ -208,19 +210,16 @@ class _RoomListScreenState extends State<RoomListScreen> {
                     children: [
                       infoItem(
                         Icons.people_alt_outlined,
-                        occupancyType.toString(),
+                        occupancyType[0].toUpperCase() +
+                            occupancyType.substring(1),
                       ),
                       const SizedBox(width: 20),
                       infoItem(Icons.person_outline, "Max $maxOccupancy"),
                     ],
                   ),
 
-                  const SizedBox(height: 18),
-
                   /// Divider
                   Divider(color: Colors.grey.shade200, thickness: 1),
-
-                  const SizedBox(height: 12),
 
                   /// Action Buttons
                   Row(
@@ -288,8 +287,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
         text,
         style: TextStyle(
           color: color,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w900,
         ),
       ),
     );
@@ -324,7 +322,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: primary ? AppCommon.colors.btnColor : Colors.grey.shade100,
+          color: primary
+              ? AppCommon.colors.primaryColor
+              : AppCommon.colors.primaryColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

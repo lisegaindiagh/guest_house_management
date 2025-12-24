@@ -22,7 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final TextEditingController _defaultUserPassController =
       TextEditingController();
 
-  bool _loading = true;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (e) {
       AppCommon.displayToast("Server error");
     } finally {
-      setState(() => _loading = false);
+      setState(() => isLoading = false);
     }
   }
 
@@ -78,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (e) {
       AppCommon.displayToast("Server error");
     } finally {
-      setState(() => _loading = false);
+      setState(() => isLoading = false);
     }
   }
 
@@ -86,126 +86,128 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Settings")),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                /// FORM CONTENT
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          /// 📢 Notification Settings
-                          sectionCard(
-                            title: "Notification Settings",
-                            subtitle: "Mobile & email used for alerts",
-                            icon: Icons.notifications_outlined,
-                            child: Column(
-                              children: [
-                                inputField(
-                                  controller: _mobileController,
-                                  label: "Notification Mobile",
-                                  icon: Icons.phone_android,
-                                  keyboard: TextInputType.phone,
-                                  maxLength: 10,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Mobile number is required";
-                                    } else if (!RegExp(
-                                      r'^\d{10}$',
-                                    ).hasMatch(value)) {
-                                      return "Enter valid 10-digit mobile";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                inputField(
-                                  controller: _emailController,
-                                  label: "Notification Email",
-                                  icon: Icons.email_outlined,
-                                  keyboard: TextInputType.emailAddress,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return "Email is required";
-                                    } else if (!RegExp(
-                                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                    ).hasMatch(value)) {
-                                      return "Enter valid email address";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ],
+      body: SafeArea(
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  /// FORM CONTENT
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            /// 📢 Notification Settings
+                            sectionCard(
+                              title: "Notification Settings",
+                              subtitle: "Mobile & email used for alerts",
+                              icon: Icons.notifications_outlined,
+                              child: Column(
+                                children: [
+                                  inputField(
+                                    controller: _mobileController,
+                                    label: "Notification Mobile",
+                                    icon: Icons.phone_android,
+                                    keyboard: TextInputType.phone,
+                                    maxLength: 10,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Mobile number is required";
+                                      } else if (!RegExp(
+                                        r'^\d{10}$',
+                                      ).hasMatch(value)) {
+                                        return "Enter valid 10-digit mobile";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  inputField(
+                                    controller: _emailController,
+                                    label: "Notification Email",
+                                    icon: Icons.email_outlined,
+                                    keyboard: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Email is required";
+                                      } else if (!RegExp(
+                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                      ).hasMatch(value)) {
+                                        return "Enter valid email address";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
 
-                          /// 🔐 User Settings
-                          sectionCard(
-                            title: "User Settings",
-                            subtitle: "Default credentials for new users",
-                            icon: Icons.security_outlined,
-                            child: inputField(
-                              controller: _defaultUserPassController,
-                              label: "Default User Password",
-                              icon: Icons.lock_outline,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Password is required";
-                                } else if (value.length < 6) {
-                                  return "Minimum 6 characters required";
-                                }
-                                return null;
-                              },
+                            /// 🔐 User Settings
+                            sectionCard(
+                              title: "User Settings",
+                              subtitle: "Default credentials for new users",
+                              icon: Icons.security_outlined,
+                              child: inputField(
+                                controller: _defaultUserPassController,
+                                label: "Default User Password",
+                                icon: Icons.lock_outline,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Password is required";
+                                  } else if (value.length < 6) {
+                                    return "Minimum 6 characters required";
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                          ),
 
-                          const SizedBox(height: 80),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                /// 🔒 STICKY UPDATE BUTTON
-                Container(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 10,
-                        offset: const Offset(0, -4),
-                      ),
-                    ],
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _updateSettings,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppCommon.colors.primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text(
-                        "Update Settings",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                            const SizedBox(height: 80),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+
+                  /// 🔒 STICKY UPDATE BUTTON
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 10,
+                          offset: const Offset(0, -4),
+                        ),
+                      ],
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _updateSettings,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppCommon.colors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Update Settings",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
   }
 

@@ -35,7 +35,12 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
   String? _selectedOccupancyType;
 
   /// Occupancy type options
-  final List<String> _occupancyTypes = ["single", "double", "triple"];
+  final List<String> _occupancyTypes = [
+    "single",
+    "double",
+    "triple",
+    "quadruple",
+  ];
 
   @override
   void dispose() {
@@ -78,104 +83,106 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Add New Room")),
-      body: Column(
-        children: [
-          /// FORM CONTENT
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    /// 🛏️ Room Details
-                    sectionCard(
-                      title: "Room Details",
-                      subtitle: "Basic room information",
-                      icon: Icons.meeting_room_outlined,
-                      child: Column(
-                        children: [
-                          inputField(
-                            controller: _roomNameController,
-                            label: "Room Name / Number",
-                            hint: "e.g. 105",
-                            icon: Icons.tag,
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return "Room name is required";
-                              }
-                              return null;
-                            },
-                          ),
-
-                          dropdownField(),
-
-                          inputField(
-                            controller: _maxOccupancyController,
-                            label: "Max Occupancy",
-                            hint: "e.g. 1",
-                            icon: Icons.person_outline,
-                            keyboard: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return "Max occupancy is required";
-                              }
-                              final int? number = int.tryParse(value);
-                              if (number == null || number <= 0) {
-                                return "Enter a valid number";
-                              }
-                              return null;
-                            },
-                          ),
-                        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            /// FORM CONTENT
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      /// 🛏️ Room Details
+                      sectionCard(
+                        title: "Room Details",
+                        subtitle: "Basic room information",
+                        icon: Icons.meeting_room_outlined,
+                        child: Column(
+                          children: [
+                            inputField(
+                              controller: _roomNameController,
+                              label: "Room Name / Number",
+                              hint: "e.g. 105",
+                              icon: Icons.tag,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Room name is required";
+                                }
+                                return null;
+                              },
+                            ),
+        
+                            dropdownField(),
+        
+                            inputField(
+                              controller: _maxOccupancyController,
+                              label: "Max Occupancy",
+                              hint: "e.g. 1",
+                              icon: Icons.person_outline,
+                              keyboard: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Max occupancy is required";
+                                }
+                                final int? number = int.tryParse(value);
+                                if (number == null || number <= 0) {
+                                  return "Enter a valid number";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
+        
+                      const SizedBox(height: 80),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        
+            /// 🔒 STICKY ACTION BAR
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppCommon.colors.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-
-                    const SizedBox(height: 80),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          /// 🔒 STICKY ACTION BAR
-          Container(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 10,
-                  offset: const Offset(0, -4),
-                ),
-              ],
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppCommon.colors.primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
                   ),
-                ),
-                child: const Text(
-                  "Add Room",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                  child: const Text(
+                    "Add Room",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
