@@ -86,6 +86,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
               }
             },
             itemBuilder: (context) => [
+              if(AppCommon.canUpdateSetting)
               PopupMenuItem(value: "Setting", child: Text("Setting")),
               PopupMenuItem(
                 value: "Reset Password",

@@ -32,6 +32,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
   bool _canViewBookings = false;
   bool _canManageRooms = false;
   bool _canManageUsers = false;
+  bool _canUpdateSetting = false;
 
   /// Check if screen is in edit mode
   bool get isEditMode => widget.userData != null;
@@ -53,6 +54,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
     _canViewBookings = widget.userData?["can_view_bookings"] == "1";
     _canManageRooms = widget.userData?["can_manage_rooms"] == "1";
     _canManageUsers = widget.userData?["can_manage_users"] == "1";
+    _canUpdateSetting = widget.userData?["can_update_setting"] =="1";
   }
 
   @override
@@ -73,6 +75,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
         "can_view_bookings": _canViewBookings ? 1 : 0,
         "can_manage_rooms": _canManageRooms ? 1 : 0,
         "can_manage_users": _canManageUsers ? 1 : 0,
+        "can_update_setting":_canUpdateSetting ? 1:0,
       };
 
       if (isEditMode) {
@@ -220,6 +223,11 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                               "Can Manage Users",
                               _canManageUsers,
                               (v) => setState(() => _canManageUsers = v),
+                            ),
+                            permissionTile(
+                              "Can Update Settings",
+                              _canUpdateSetting,
+                                  (v) => setState(() => _canUpdateSetting = v),
                             ),
                           ],
                         ),

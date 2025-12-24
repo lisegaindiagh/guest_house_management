@@ -20,6 +20,7 @@ class AppCommon {
   static bool canViewBooking = false;
   static bool canManageRooms = false;
   static bool canMangeUsers = false;
+  static bool canUpdateSetting = false;
 
   /*
   * Method is used to listen the internet connectivity changes

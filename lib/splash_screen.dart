@@ -82,6 +82,7 @@ class _SplashScreenState extends State<SplashScreen>
       AppCommon.canViewBooking = user["can_view_bookings"] == 1;
       AppCommon.canManageRooms = user["can_manage_rooms"] == 1;
       AppCommon.canMangeUsers = user["can_manage_users"] == 1;
+      AppCommon.canUpdateSetting = user["can_update_setting"] == 1;
      await  Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
