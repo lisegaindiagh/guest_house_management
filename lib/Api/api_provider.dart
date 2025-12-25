@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 import '../Common/app_common.dart';
+import '../ui/login_screen.dart';
 
 /* Api call Method Declared
 * set Base url
@@ -65,6 +67,11 @@ class ApiProvider {
       if (e is DioException) {
         if (e.response!.statusCode == 401) {}
         AppCommon.displayToast(e.response!.data['error']);
+        Navigator.pushAndRemoveUntil(
+          AppCommon.navigatorKey.currentContext!,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+              (route) => false,
+        );
       }
     }
     if (response.statusCode == 200) {

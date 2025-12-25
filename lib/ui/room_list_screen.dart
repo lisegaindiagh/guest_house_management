@@ -230,7 +230,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if (AppCommon.canViewBooking)
-                        actionButton(
+                        _actionButton(
                           label: "View Bookings",
                           icon: Icons.receipt_long_outlined,
                           onTap: () async {
@@ -250,7 +250,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       if (AppCommon.canBook) const SizedBox(width: 12),
 
                       if (AppCommon.canBook)
-                        actionButton(
+                        _actionButton(
                           label: "Book Room",
                           icon: Icons.add,
                           primary: true,
@@ -271,8 +271,43 @@ class _RoomListScreenState extends State<RoomListScreen> {
                         ),
                     ],
                   ),
-                ],
+              ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _actionButton({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+    bool primary = false,
+  }) {
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          backgroundColor: primary
+              ? AppCommon.colors.primaryColor
+              : AppCommon.colors.primaryColor.withValues(alpha: 0.1),
+          foregroundColor: primary ? Colors.white : Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 0,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18),
+            const SizedBox(width: 4), // 👈 spacing control here
+            Text(
+              label,
+              style: const TextStyle(fontSize: 14),
             ),
           ],
         ),
@@ -311,45 +346,6 @@ class _RoomListScreenState extends State<RoomListScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget actionButton({
-    required String label,
-    required IconData icon,
-    bool primary = false,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: primary
-              ? AppCommon.colors.primaryColor
-              : AppCommon.colors.primaryColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: primary ? Colors.white : Colors.black87,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: primary ? Colors.white : Colors.black87,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
