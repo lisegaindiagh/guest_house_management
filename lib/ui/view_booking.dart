@@ -287,7 +287,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
             /// ❌ Cancel Action
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton.icon(
+            /*  child: TextButton.icon(
                 onPressed: () async {
                   final confirm = await showCancelBookingDialog(context);
 
@@ -301,7 +301,39 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                   foregroundColor: Colors.red,
                   textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-              ),
+              ),*/
+               child: SizedBox(
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final confirm = await showCancelBookingDialog(context);
+
+                      if (confirm == true) {
+                        await cancelBooking(booking["booking_id"]);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      backgroundColor:  AppCommon.colors.primaryColor.withValues(alpha: 0.1),
+                      foregroundColor:  Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.cancel_outlined, size: 18),
+                        const SizedBox(width: 4), // 👈 spacing control here
+                        Text(
+                          "Cancel Booking",
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
             ),
           ],
         ),
