@@ -156,7 +156,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
     final Color statusColor = !isActive
         ? Colors.grey
         : isBooked
-        ? Colors.orange
+        ? Colors.red
         : Colors.green;
 
     final String statusText = !isActive

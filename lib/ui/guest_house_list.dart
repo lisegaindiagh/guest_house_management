@@ -38,6 +38,8 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
       }
     } catch (e) {
       guestHousesList = [];
+      isLoading = false;
+      setState(() {});
       AppCommon.displayToast("Server error");
     }
   }

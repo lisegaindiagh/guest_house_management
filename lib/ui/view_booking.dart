@@ -143,7 +143,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 📅 Arrival
                   Row(
                     children: [
                       const Icon(Icons.login, size: 16, color: Colors.grey),
@@ -175,7 +174,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
 
                   const SizedBox(height: 8),
 
-                  // 📅 Departure
                   Row(
                     children: [
                       const Icon(Icons.logout, size: 16, color: Colors.grey),
@@ -210,10 +208,8 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
 
             const SizedBox(height: 8),
 
-            /// 🍽️ Meals
             Wrap(spacing: 8, runSpacing: 8, children: mealChips(booking)),
 
-            // 📝 Note
             if (!AppCommon.isEmpty(booking["note"])) ...[
               const SizedBox(height: 10),
               Container(
@@ -264,7 +260,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
             if (!AppCommon.isEmpty(booking["booked_by"])) ...[
               const SizedBox(height: 8),
 
-              /// 👤 Booked By
               Row(
                 children: [
                   const Icon(
@@ -277,14 +272,17 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                     "Booked by: ${booking["booked_by"]}",
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
+                  Text(
+                    booking["booked_by"],
+                    style: const TextStyle(fontSize: 13, color: Colors.black),
+                  ),
+
                 ],
               ),
             ],
 
-            /// Divider
             Divider(color: Colors.grey.shade200, thickness: 1),
 
-            /// ❌ Cancel Action
             Align(
               alignment: Alignment.centerRight,
             /*  child: TextButton.icon(
@@ -325,7 +323,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.cancel_outlined, size: 18),
-                        const SizedBox(width: 4), // 👈 spacing control here
+                        const SizedBox(width: 4),
                         Text(
                           "Cancel Booking",
                           style: const TextStyle(fontSize: 14),
