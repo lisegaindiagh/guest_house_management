@@ -22,6 +22,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
   }
 
   Future<void> getBookingDetails() async {
+    bool isExit = false;
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
@@ -32,7 +33,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
         bookingDetailsList = res["bookings"];
       } else {
         bookingDetailsList = [];
-        Navigator.pop(context, true);
+        isExit = true;
         AppCommon.displayToast(res["message"]);
       }
     } catch (e) {
@@ -40,6 +41,11 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
     } finally {
       isLoading = false;
       setState(() {});
+      if(isExit){
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pop(context, true);
+        });
+      }
     }
   }
 
@@ -269,12 +275,14 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    "Booked by: ${booking["booked_by"]}",
+                    "Booked by: ",
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
-                  Text(
-                    booking["booked_by"],
-                    style: const TextStyle(fontSize: 13, color: Colors.black),
+                  Expanded(
+                    child: Text(
+                      booking["booked_by"],
+                      style: const TextStyle(fontSize: 13, color: Colors.black),
+                    ),
                   ),
 
                 ],

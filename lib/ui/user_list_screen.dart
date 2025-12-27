@@ -287,6 +287,9 @@ class _UserListScreenState extends State<UserListScreen> {
                 permissionPill(
                   "Manage Users",
                   permissions["can_manage_users"] == "1",
+                ), permissionPill(
+                  "Update Settings",
+                  permissions["can_update_setting"] == "1",
                 ),
               ],
             ),
