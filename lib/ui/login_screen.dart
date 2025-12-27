@@ -13,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showPassword = true;
   bool isRemember = false;
   bool isLoading = false;
+  bool isLoginLoad = false;
 
   TextEditingController emailController = TextEditingController(
     text: "",
@@ -42,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       passwordController.text = await AppCommon.sharePref.getString(
         AppCommon.sessionKey.password,
       );
+      isRemember = res;
     }
 
     isLoading = false;
@@ -49,6 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> getLoginDetails(BuildContext context) async {
+    isLoginLoad = true;
+    setState(() {
+
+    });
     try{
       var res = await AppCommon.apiProvider.getServerResponse(
         "auth.php",
@@ -62,7 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res["success"]) {
         await setSession(res, context);
       }
-    }catch (e) {
+    } catch (e) {} finally {
+      isLoginLoad = false;
+      setState(() {
+
+      });
     }
   }
 
@@ -199,7 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           width: double.infinity,
                           height: 48,
-                          child: ElevatedButton(
+                          child: isLoginLoad
+                              ? const Center(child: CircularProgressIndicator()) :ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppCommon.colors.primaryColor,
                               shape: RoundedRectangleBorder(
