@@ -65,13 +65,14 @@ class ApiProvider {
     } catch (e) {
       // The exception is of type DioError
       if (e is DioException) {
-        if (e.response!.statusCode == 401) {}
+        if (e.response!.statusCode == 401) {
+          Navigator.pushAndRemoveUntil(
+            AppCommon.navigatorKey.currentContext!,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+                (route) => false,
+          );
+        }
         AppCommon.displayToast(e.response!.data['error']);
-        Navigator.pushAndRemoveUntil(
-          AppCommon.navigatorKey.currentContext!,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-              (route) => false,
-        );
       }
     }
     if (response.statusCode == 200) {

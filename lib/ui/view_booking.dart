@@ -290,24 +290,9 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
             ],
 
             Divider(color: Colors.grey.shade200, thickness: 1),
-
+            if (AppCommon.canBook)
             Align(
               alignment: Alignment.centerRight,
-            /*  child: TextButton.icon(
-                onPressed: () async {
-                  final confirm = await showCancelBookingDialog(context);
-
-                  if (confirm == true) {
-                    await cancelBooking(booking["booking_id"]);
-                  }
-                },
-                icon: const Icon(Icons.cancel_outlined, size: 18),
-                label: const Text("Cancel Booking"),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  textStyle: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),*/
                child: SizedBox(
                   height: 40,
                   child: ElevatedButton(
