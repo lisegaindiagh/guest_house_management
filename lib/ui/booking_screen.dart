@@ -357,6 +357,23 @@ class _BookingScreenState extends State<BookingScreen> {
         try {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
+          final emailText = '''
+              Your room booking has been successfully confirmed.
+              
+              Guest Name : ${_guestController.text}
+              Mobile     : ${_mobileController.text}
+              Arrival    : ${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}
+              Departure  : ${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}
+              Meals      : ${mealText().isEmpty ? "No meals selected" : mealText()}
+              Note       : ${_remarkController.text.isEmpty ? "—" : _remarkController.text}
+              
+              <div style="margin-top:8px; padding:6px; background:#e8f5e9; color:#2e7d32; font-weight:bold;">
+              CONFIRMED
+              </div>
+              
+              This is an automated message from the Guest House Management App.
+              ''';
+
           var email = await AppCommon.sharePref.getString(
             AppCommon.sessionKey.email,
           );
@@ -369,7 +386,7 @@ class _BookingScreenState extends State<BookingScreen> {
             params: {
               "sender_email": email,
               "receiver_email": notifyEmail,
-              "text": "test mail",
+              "text": emailText,
             },
           );
         } finally {
@@ -477,6 +494,18 @@ class _BookingScreenState extends State<BookingScreen> {
         ).format(dateTime);
       }
     });
+  }
+
+  String mealText() {
+    List<String> mealsSelected = [];
+
+    if (meals["Breakfast"] == true) mealsSelected.add("Breakfast");
+    if (meals["Lunch"] == true) mealsSelected.add("Lunch");
+    if (meals["Dinner"] == true) mealsSelected.add("Dinner");
+
+    return mealsSelected.isEmpty
+        ? "No meals selected"
+        : mealsSelected.join(", ");
   }
 
   @override

@@ -10,7 +10,7 @@ class SendSMSService {
     await requestSmsPermission();
 
     var notifyMobile = await AppCommon.sharePref.getString(
-      AppCommon.sessionKey.notifyEmail,
+      AppCommon.sessionKey.notifyMobile,
     );
 
     // Call the plugin method to send SMS
