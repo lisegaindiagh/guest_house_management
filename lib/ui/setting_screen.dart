@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Settings")),
+      appBar: AppBar(title: const Text("App Settings")),
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -101,14 +101,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           children: [
                             /// 📢 Notification Settings
                             sectionCard(
-                              title: "Notification Settings",
-                              subtitle: "Mobile & email used for alerts",
+                              title: "Contact details for system notifications",
+                              subtitle: "Used for booking alerts & updates",
                               icon: Icons.notifications_outlined,
                               child: Column(
                                 children: [
                                   inputField(
                                     controller: _mobileController,
-                                    label: "Notification Mobile",
+                                    label: "Notification Phone Number",
                                     icon: Icons.phone_android,
                                     keyboard: TextInputType.phone,
                                     maxLength: 10,
@@ -125,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                   inputField(
                                     controller: _emailController,
-                                    label: "Notification Email",
+                                    label: "Notification Email Address",
                                     icon: Icons.email_outlined,
                                     keyboard: TextInputType.emailAddress,
                                     validator: (value) {
@@ -146,11 +146,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             /// 🔐 User Settings
                             sectionCard(
                               title: "User Settings",
-                              subtitle: "Default credentials for new users",
+                              subtitle: "Default credentials for newly created users",
                               icon: Icons.security_outlined,
                               child: inputField(
                                 controller: _defaultUserPassController,
-                                label: "Default User Password",
+                                label: "Default Password for New Users",
                                 icon: Icons.lock_outline,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -195,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                         child: const Text(
-                          "Update Settings",
+                          "Save Changes",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

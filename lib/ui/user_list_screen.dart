@@ -75,7 +75,7 @@ class _UserListScreenState extends State<UserListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Users")),
+      appBar: AppBar(title: const Text("User Management")),
       body: SafeArea(
         child: isLoading
             ? Center(child: CircularProgressIndicator())
@@ -275,7 +275,7 @@ class _UserListScreenState extends State<UserListScreen> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                permissionPill("Book", permissions["can_book"] == "1"),
+                permissionPill("Create Booking", permissions["can_book"] == "1"),
                 permissionPill(
                   "View Bookings",
                   permissions["can_view_bookings"] == "1",
@@ -288,7 +288,7 @@ class _UserListScreenState extends State<UserListScreen> {
                   "Manage Users",
                   permissions["can_manage_users"] == "1",
                 ), permissionPill(
-                  "Update Settings",
+                  "Manage Settings",
                   permissions["can_update_setting"] == "1",
                 ),
               ],
@@ -401,15 +401,9 @@ class _UserListScreenState extends State<UserListScreen> {
 
                 /// Message
                 const Text(
-                  "Are you sure you want to delete this user?\n"
-                  "This action cannot be undone.",
+                  "Are you sure you want to delete this user?",
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
-
-                const SizedBox(height: 20),
-
-                /// Divider
-                Divider(color: Colors.grey.shade200, thickness: 1),
 
                 const SizedBox(height: 12),
 
@@ -435,7 +429,7 @@ class _UserListScreenState extends State<UserListScreen> {
                       ),
                       onPressed: () => Navigator.pop(context, true),
                       child: const Text(
-                        "Delete",
+                        "Delete User",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

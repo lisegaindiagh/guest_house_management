@@ -251,7 +251,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                     children: [
                       infoChip(
                         icon: Icons.meeting_room_outlined,
-                        label: "$totalRooms Rooms",
+                        label: "View Rooms ($totalRooms)",
                       ),
                       const Icon(Icons.chevron_right, color: Colors.grey),
                     ],

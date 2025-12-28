@@ -62,17 +62,17 @@ class _RoomListScreenState extends State<RoomListScreen> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) async {
-              if (value == "Setting") {
+              if (value == "Settings") {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SettingsScreen()),
                 );
-              } else if (value == "User Rights") {
+              } else if (value == "User Permissions") {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserListScreen()),
                 );
-              } else if (value == "Reset Password") {
+              } else if (value == "Change Password") {
                 resetPasswordDialog();
               } else if (value == "Logout") {
                 final shouldLogout = await AppCommon.showLogoutConfirmationDialog(context);
@@ -87,13 +87,13 @@ class _RoomListScreenState extends State<RoomListScreen> {
             },
             itemBuilder: (context) => [
               if(AppCommon.canUpdateSetting)
-              PopupMenuItem(value: "Setting", child: Text("Setting")),
+              PopupMenuItem(value: "Settings", child: Text("Settings")),
               PopupMenuItem(
-                value: "Reset Password",
-                child: Text("Reset Password"),
+                value: "Change Password",
+                child: Text("Change Password"),
               ),
               if (AppCommon.canMangeUsers)
-                PopupMenuItem(value: "User Rights", child: Text("User Rights")),
+                PopupMenuItem(value: "User Permissions", child: Text("User Permissions")),
               PopupMenuItem(value: "Logout", child: Text("Logout")),
             ],
           ),
@@ -199,7 +199,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                 children: [
                   /// 🛏️ Room Title
                   Text(
-                    "Room $roomName",
+                    "Room #$roomName",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -231,7 +231,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                     children: [
                       if (AppCommon.canViewBooking)
                         _actionButton(
-                          label: "View Bookings",
+                          label: "View Schedule",
                           icon: Icons.receipt_long_outlined,
                           onTap: () async {
                             var res = await Navigator.push(
@@ -251,7 +251,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
                       if (AppCommon.canBook)
                         _actionButton(
-                          label: "Book Room",
+                          label: "Book Now",
                           icon: Icons.add,
                           primary: true,
                           onTap: () async {
@@ -425,7 +425,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                           const SizedBox(width: 12),
                           const Expanded(
                             child: Text(
-                              "Reset Password",
+                              "Change Password",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -438,8 +438,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       const SizedBox(height: 8),
 
                       const Text(
-                        "For security, please enter your current password "
-                        "and choose a new one.",
+                        "For security reasons, please enter your current password and set a new one.",
                         style: TextStyle(fontSize: 13, color: Colors.grey),
                       ),
 
@@ -543,7 +542,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                               }
                             },
                             child: Text(
-                              "Reset Password",
+                              "Update Password",
                               style: TextStyle(
                                 color: AppCommon.colors.white,
                                 fontWeight: FontWeight.w600,

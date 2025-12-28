@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../Common/app_common.dart';
 
 class SendSMSService {
-  Future<void> sendSMS(BuildContext context, {required int roomId, required String guestName, required String mobile, required String arrival, required String departure, dynamic mealOnArrival}) async {
+  Future<void> sendSMS(BuildContext context, {required int roomId, required String guestName, required String mobile, required String arrival, required String departure, dynamic mealOnArrival, dynamic note}) async {
     // Request permission before sending SMS
     await requestSmsPermission();
 
@@ -18,7 +18,15 @@ class SendSMSService {
       // List of recipient numbers
       numbers: [notifyMobile],
       // Message body
-      message: "Room Booking Alert \nGuest: $guestName \nMobile: $mobile \nRoom: $roomId \nArrival: $arrival \nDeparture: $departure \nMeal on Arrival: ${mealOnArrival ?? ""} \n\n- Booked via Guest House App"
+      message:
+    "Booking has been successfully confirmed.\n"
+    "Guest: $guestName\n"
+    "Mobile: $mobile\n"
+    "Check-In: $arrival\n"
+    "Check-Out: $departure\n"
+    "Meals: ${mealOnArrival?.isNotEmpty == true ? mealOnArrival : "No meals selected"}\n"
+    "Note: $note\n\n"
+    "Guest House Management"
     );
 
     if (context.mounted) {

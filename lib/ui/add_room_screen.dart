@@ -81,7 +81,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add New Room")),
+      appBar: AppBar(title: const Text("Add Room")),
       body: SafeArea(
         child: Column(
           children: [
@@ -96,7 +96,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                       /// 🛏️ Room Details
                       sectionCard(
                         title: "Room Details",
-                        subtitle: "Basic room information",
+                        subtitle: "Define room capacity and type",
                         icon: Icons.meeting_room_outlined,
                         child: Column(
                           children: [
@@ -171,7 +171,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                     ),
                   ),
                   child: const Text(
-                    "Add Room",
+                    "Save Room",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

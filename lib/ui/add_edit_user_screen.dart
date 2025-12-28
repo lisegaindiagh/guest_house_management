@@ -153,7 +153,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                           children: [
                             inputField(
                               controller: _emailController,
-                              label: "Email",
+                              label: "Email Address",
                               icon: Icons.email_outlined,
                               keyboard: TextInputType.emailAddress,
                               validator: (value) {
@@ -175,7 +175,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                             ),
                             DropdownButtonFormField<String>(
                               value: _selectedRole,
-                              decoration: AppCommon.inputDecoration("Role")
+                              decoration: AppCommon.inputDecoration("User Role")
                                   .copyWith(
                                     prefixIcon: const Icon(
                                       Icons.admin_panel_settings,
@@ -205,27 +205,27 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                         child: Column(
                           children: [
                             permissionTile(
-                              "Can Book Room",
+                              "Create Bookings",
                               _canBook,
                               (v) => setState(() => _canBook = v),
                             ),
                             permissionTile(
-                              "Can View Bookings",
+                              "View Bookings",
                               _canViewBookings,
                               (v) => setState(() => _canViewBookings = v),
                             ),
                             permissionTile(
-                              "Can Manage Rooms",
+                              "Manage Rooms",
                               _canManageRooms,
                               (v) => setState(() => _canManageRooms = v),
                             ),
                             permissionTile(
-                              "Can Manage Users",
+                              "Manage Users",
                               _canManageUsers,
                               (v) => setState(() => _canManageUsers = v),
                             ),
                             permissionTile(
-                              "Can Update Settings",
+                              "Manage Settings",
                               _canUpdateSetting,
                                   (v) => setState(() => _canUpdateSetting = v),
                             ),

@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login", textAlign: TextAlign.center)),
+      appBar: AppBar(title: Text("Sign In", textAlign: TextAlign.center)),
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -125,10 +125,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 150,
                           width: 230,
                         ),
-        
+
                         /// Title
                         const Text(
-                          "Guest House Login",
+                          "Guest House Management App",
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -139,9 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           "Sign in to manage bookings",
                           style: TextStyle(color: Colors.grey),
                         ),
-        
+
                         const SizedBox(height: 30),
-        
+
                         /// Username
                         TextFormField(
                           controller: emailController,
@@ -156,9 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-        
+
                         const SizedBox(height: 18),
-        
+
                         /// Password
                         TextFormField(
                           controller: passwordController,
@@ -185,9 +185,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-        
+
                         const SizedBox(height: 12),
-        
+
                         /// Remember Me
                         Row(
                           children: [
@@ -202,9 +202,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Text("Remember me"),
                           ],
                         ),
-        
+
                         const SizedBox(height: 20),
-        
+
                         /// Login Button
                         SizedBox(
                           width: double.infinity,

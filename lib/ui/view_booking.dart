@@ -78,7 +78,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("View Booking"),
+        title: const Text("Booking Details "),
         leading: BackButton(
           onPressed: () {
             Navigator.pop(context, true);
@@ -112,7 +112,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
         .map((e) => e.value)
         .toList();
 
-    return selectedMeals.isNotEmpty ? selectedMeals.join(", ") : "No Meals";
+    return selectedMeals.isNotEmpty ? selectedMeals.join(", ") : "No Meals Selected";
   }
 
   Widget buildBookingDetails(Map<String, dynamic> booking) {
@@ -156,7 +156,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                       const Icon(Icons.login, size: 16, color: Colors.grey),
                       const SizedBox(width: 8),
                       const Text(
-                        "Arrival:",
+                        "Check-in:",
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -187,7 +187,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                       const Icon(Icons.logout, size: 16, color: Colors.grey),
                       const SizedBox(width: 8),
                       const Text(
-                        "Departure:",
+                        "Check-out:",
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -241,7 +241,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Note",
+                            "Special Note",
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -424,7 +424,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                     const SizedBox(width: 12),
                     const Expanded(
                       child: Text(
-                        "Cancel Booking",
+                        "Confirm Cancellation",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -438,17 +438,11 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
 
                 /// Message
                 const Text(
-                  "Are you sure you want to cancel this booking?\n"
-                  "This action cannot be undone.",
+                  "Are you sure you want to cancel this booking?",
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
 
-                const SizedBox(height: 20),
-
-                /// Divider
-                Divider(color: Colors.grey.shade200, thickness: 1),
-
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
                 /// Actions
                 Row(
@@ -456,7 +450,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: const Text("No"),
+                      child: const Text("Go Back"),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(

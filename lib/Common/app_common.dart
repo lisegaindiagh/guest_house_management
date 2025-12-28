@@ -317,7 +317,7 @@ class AppCommon {
                     const SizedBox(width: 12),
                     const Expanded(
                       child: Text(
-                        "Logout",
+                        "Confirm Logout",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -331,7 +331,7 @@ class AppCommon {
 
                 /// Message
                 const Text(
-                  "Are you sure you want to logout?\n"
+                  "Are you sure you want to log out?\n"
                       "You will need to login again to continue.",
                   style: TextStyle(
                     fontSize: 14,
@@ -339,12 +339,7 @@ class AppCommon {
                   ),
                 ),
 
-                const SizedBox(height: 20),
-
-                /// Divider
-                Divider(color: Colors.grey.shade200, thickness: 1),
-
-                const SizedBox(height: 12),
+                const SizedBox(height: 14),
 
                 /// Actions
                 Row(
@@ -352,7 +347,7 @@ class AppCommon {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: const Text("Cancel"),
+                      child: const Text("Stay Logged In"),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton(

@@ -46,7 +46,7 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Create Booking")),
+      appBar: AppBar(title: const Text("New Booking")),
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -75,7 +75,7 @@ class _BookingScreenState extends State<BookingScreen> {
                                   ),
                                   inputField(
                                     controller: _mobileController,
-                                    label: "Mobile Number",
+                                    label: "Contact Number",
                                     icon: Icons.phone,
                                     keyboard: TextInputType.phone,
                                     maxLength: 10,
@@ -94,14 +94,14 @@ class _BookingScreenState extends State<BookingScreen> {
                                 children: [
                                   dateField(
                                     controller: _arrivalController,
-                                    label: "Arrival Date & Time",
+                                    label: "Check-in Date & Time",
                                     onTap: () => pickDateTime(true),
                                     validator: () =>
                                         _arrivalDate == null ? "Required" : null,
                                   ),
                                   dateField(
                                     controller: _departureController,
-                                    label: "Departure Date & Time",
+                                    label: "Check-out Date & Time",
                                     onTap: () => pickDateTime(false),
                                     validator: () => _departureDate == null
                                         ? "Required"
@@ -112,7 +112,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             ),
 
                             sectionCard(
-                              title: "Meal on Arrival",
+                              title: "Meal Preference",
                               icon: Icons.restaurant_outlined,
                               child: Wrap(
                                 spacing: 8,
@@ -132,7 +132,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             ),
 
                             sectionCard(
-                              title: "Additional Notes",
+                              title: "Special Note",
                               icon: Icons.notes_outlined,
                               child: TextFormField(
                                 controller: _remarkController,
@@ -345,6 +345,7 @@ class _BookingScreenState extends State<BookingScreen> {
             arrival: _arrivalController.text,
             departure: _departureController.text,
             mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
+            note:  _remarkController.text
           );
           AppCommon.displayToast(res["message"]);
           AppCommon.endLoadingProcess(context);
@@ -358,18 +359,16 @@ class _BookingScreenState extends State<BookingScreen> {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
           final emailText = '''
-              Your room booking has been successfully confirmed.
+              Booking has been successfully confirmed.
               
               Guest Name : ${_guestController.text}
               Mobile     : ${_mobileController.text}
-              Arrival    : ${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}
-              Departure  : ${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}
+              Check-In   : ${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}
+              Check-Out  : ${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}
               Meals      : ${mealText().isEmpty ? "No meals selected" : mealText()}
-              Note       : ${_remarkController.text.isEmpty ? "—" : _remarkController.text}
+              Note       : ${_remarkController.text.isEmpty ? "" : _remarkController.text}
               
-              <div style="margin-top:8px; padding:6px; background:#e8f5e9; color:#2e7d32; font-weight:bold;">
-              CONFIRMED
-              </div>
+              BOOKING CONFIRMED
               
               This is an automated message from the Guest House Management App.
               ''';
