@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../common/app_common.dart';
+
+import '../Common/app_common.dart';
+
 
 class ViewBookingScreen extends StatefulWidget {
   final int roomId;
