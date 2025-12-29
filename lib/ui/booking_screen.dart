@@ -302,11 +302,6 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> bookedRoom() async {
-    final selectedMeals = meals.entries
-        .where((e) => e.value)
-        .map((e) => e.key)
-        .toList();
-
     DateTime dateTime = DateFormat(
       "dd/MM/yyyy HH:mm:ss",
     ).parse(_arrivalController.text);
@@ -392,7 +387,6 @@ class _BookingScreenState extends State<BookingScreen> {
           );
           AppCommon.displayToast(res["message"]);
           AppCommon.endLoadingProcess(context);
-          Navigator.pop(context, true);
         } finally {
           AppCommon.endLoadingProcess(context);
           debugPrint("failed to send SMS.");
@@ -403,7 +397,8 @@ class _BookingScreenState extends State<BookingScreen> {
       }
     } catch (e) {
       AppCommon.endLoadingProcess(context);
-      AppCommon.displayToast("Server error");
+      Navigator.pop(context, true);
+      // AppCommon.displayToast("Server error");
     }
   }
 
