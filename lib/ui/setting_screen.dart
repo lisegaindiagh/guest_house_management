@@ -72,6 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (res["success"]) {
         AppCommon.displayToast(res["message"]);
+        Navigator.pop(context, true);
       } else {
         AppCommon.displayToast(res["error"]);
       }
@@ -146,7 +147,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             /// 🔐 User Settings
                             sectionCard(
                               title: "User Settings",
-                              subtitle: "Default credentials for newly created users",
+                              subtitle:
+                                  "Default credentials for newly created users",
                               icon: Icons.security_outlined,
                               child: inputField(
                                 controller: _defaultUserPassController,
@@ -251,7 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   Text(
                     subtitle,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Colors.black),
                   ),
                 ],
               ),

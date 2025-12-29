@@ -77,12 +77,13 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
           PopupMenuButton<String>(
             onSelected: (value) async {
               if (value == "Logout") {
-                final shouldLogout = await AppCommon.showLogoutConfirmationDialog(context);
+                final shouldLogout =
+                    await AppCommon.showLogoutConfirmationDialog(context);
                 if (shouldLogout == true) {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
-                        (route) => false,
+                    (route) => false,
                   );
                 }
               }
@@ -233,10 +234,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                           address,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                          ),
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                     ],
@@ -295,10 +293,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
         children: [
           Icon(icon, size: 18, color: Colors.grey.shade700),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
     );

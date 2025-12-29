@@ -75,25 +75,29 @@ class _RoomListScreenState extends State<RoomListScreen> {
               } else if (value == "Change Password") {
                 resetPasswordDialog();
               } else if (value == "Logout") {
-                final shouldLogout = await AppCommon.showLogoutConfirmationDialog(context);
+                final shouldLogout =
+                    await AppCommon.showLogoutConfirmationDialog(context);
                 if (shouldLogout == true) {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
-                        (route) => false,
+                    (route) => false,
                   );
                 }
               }
             },
             itemBuilder: (context) => [
-              if(AppCommon.canUpdateSetting)
-              PopupMenuItem(value: "Settings", child: Text("Settings")),
+              if (AppCommon.canUpdateSetting)
+                PopupMenuItem(value: "Settings", child: Text("Settings")),
               PopupMenuItem(
                 value: "Change Password",
                 child: Text("Change Password"),
               ),
               if (AppCommon.canMangeUsers)
-                PopupMenuItem(value: "User Permissions", child: Text("User Permissions")),
+                PopupMenuItem(
+                  value: "User Permissions",
+                  child: Text("User Permissions"),
+                ),
               PopupMenuItem(value: "Logout", child: Text("Logout")),
             ],
           ),
@@ -261,6 +265,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                                 builder: (_) => BookingScreen(
                                   roomId: roomId,
                                   guestHouseId: guestHouseId,
+                                  roomName: roomName,
                                 ),
                               ),
                             );
@@ -271,7 +276,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                         ),
                     ],
                   ),
-              ],
+                ],
               ),
             ),
           ],
@@ -279,6 +284,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
       ),
     );
   }
+
   Widget _actionButton({
     required String label,
     required IconData icon,
@@ -305,10 +311,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
           children: [
             Icon(icon, size: 18),
             const SizedBox(width: 4), // 👈 spacing control here
-            Text(
-              label,
-              style: const TextStyle(fontSize: 14),
-            ),
+            Text(label),
           ],
         ),
       ),
@@ -324,10 +327,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
       ),
       child: Text(
         text,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w900,
-        ),
+        style: TextStyle(color: color, fontWeight: FontWeight.w900),
       ),
     );
   }
@@ -340,7 +340,6 @@ class _RoomListScreenState extends State<RoomListScreen> {
         Text(
           text,
           style: const TextStyle(
-            fontSize: 14,
             fontWeight: FontWeight.w500,
             color: Colors.black87,
           ),
@@ -439,7 +438,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
 
                       const Text(
                         "For security reasons, please enter your current password and set a new one.",
-                        style: TextStyle(fontSize: 13, color: Colors.grey),
+                        style: TextStyle(fontSize: 13),
                       ),
 
                       const SizedBox(height: 20),

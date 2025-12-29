@@ -88,7 +88,6 @@ class AppCommon {
                   /// 📄 Message
                   const Text(
                     "Please check your internet connection and try again.",
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
 
                   const SizedBox(height: 20),
@@ -245,12 +244,10 @@ class AppCommon {
   static void endLoadingProcess(BuildContext context) {
     if (isLoadingProcess) {
       isLoadingProcess = false;
-      Navigator.of(
-        context,
-        rootNavigator: true,
-      ).pop();
+      Navigator.of(context, rootNavigator: true).pop();
     }
   }
+
   /*
   * Method is used to show Central Loader
   * This method called from startProcess method of this class
@@ -261,7 +258,9 @@ class AppCommon {
         children: [
           Transform.scale(
             scale: 0.8,
-            child: CircularProgressIndicator(color:AppCommon.colors.primaryColor),
+            child: CircularProgressIndicator(
+              color: AppCommon.colors.primaryColor,
+            ),
           ),
           Container(
             margin: const EdgeInsets.only(left: 7),
@@ -274,16 +273,17 @@ class AppCommon {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return WillPopScope(
+        return PopScope(
+          canPop: false,
           child: alert,
-          onWillPop: () async {
+          onPopInvokedWithResult: (didPop, result) {
             endLoadingProcess(context);
-            return false;
           },
         );
       },
     );
   }
+
   static Future<bool?> showLogoutConfirmationDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
@@ -309,10 +309,7 @@ class AppCommon {
                         color: Colors.orange.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(
-                        Icons.logout,
-                        color: Colors.red,
-                      ),
+                      child: const Icon(Icons.logout, color: Colors.red),
                     ),
                     const SizedBox(width: 12),
                     const Expanded(
@@ -332,11 +329,7 @@ class AppCommon {
                 /// Message
                 const Text(
                   "Are you sure you want to log out?\n"
-                      "You will need to login again to continue.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
+                  "You will need to login again to continue.",
                 ),
 
                 const SizedBox(height: 14),

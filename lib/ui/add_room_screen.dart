@@ -224,10 +224,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
+                  Text(subtitle, style: const TextStyle(fontSize: 12)),
                 ],
               ),
             ],

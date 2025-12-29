@@ -87,7 +87,6 @@ class _UserListScreenState extends State<UserListScreen> {
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final user = users[index];
-        
                     return buildUserSwipeCard(user: user);
                   },
                 ),
@@ -247,13 +246,7 @@ class _UserListScreenState extends State<UserListScreen> {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        email,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      Text(email, style: const TextStyle(fontSize: 13)),
                     ],
                   ),
                 ),
@@ -275,7 +268,10 @@ class _UserListScreenState extends State<UserListScreen> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                permissionPill("Create Booking", permissions["can_book"] == "1"),
+                permissionPill(
+                  "Create Booking",
+                  permissions["can_book"] == "1",
+                ),
                 permissionPill(
                   "View Bookings",
                   permissions["can_view_bookings"] == "1",
@@ -287,7 +283,8 @@ class _UserListScreenState extends State<UserListScreen> {
                 permissionPill(
                   "Manage Users",
                   permissions["can_manage_users"] == "1",
-                ), permissionPill(
+                ),
+                permissionPill(
                   "Manage Settings",
                   permissions["can_update_setting"] == "1",
                 ),
@@ -400,10 +397,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 const SizedBox(height: 12),
 
                 /// Message
-                const Text(
-                  "Are you sure you want to delete this user?",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                const Text("Are you sure you want to delete this user?"),
 
                 const SizedBox(height: 12),
 

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../Common/app_common.dart';
 
-
 class ViewBookingScreen extends StatefulWidget {
   final int roomId;
 
@@ -43,9 +42,9 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
     } finally {
       isLoading = false;
       setState(() {});
-      if(isExit){
+      if (isExit) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pop(context, true);
+          Navigator.pop(context, true);
         });
       }
     }
@@ -112,7 +111,9 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
         .map((e) => e.value)
         .toList();
 
-    return selectedMeals.isNotEmpty ? selectedMeals.join(", ") : "No Meals Selected";
+    return selectedMeals.isNotEmpty
+        ? selectedMeals.join(", ")
+        : "No Meals Selected";
   }
 
   Widget buildBookingDetails(Map<String, dynamic> booking) {
@@ -171,10 +172,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                             "yyyy-MM-dd HH:mm:ss",
                             "dd/MM/yyyy hh:mm a",
                           ),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
@@ -202,10 +200,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                             "yyyy-MM-dd HH:mm:ss",
                             "dd/MM/yyyy hh:mm a",
                           ),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
@@ -252,7 +247,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                           Text(
                             booking["note"],
                             style: const TextStyle(
-                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: Colors.black87,
                             ),
@@ -286,16 +280,15 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                       style: const TextStyle(fontSize: 13, color: Colors.black),
                     ),
                   ),
-
                 ],
               ),
             ],
 
             Divider(color: Colors.grey.shade200, thickness: 1),
             if (AppCommon.canBook)
-            Align(
-              alignment: Alignment.centerRight,
-               child: SizedBox(
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
                   height: 40,
                   child: ElevatedButton(
                     onPressed: () async {
@@ -307,8 +300,10 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      backgroundColor:  AppCommon.colors.primaryColor.withValues(alpha: 0.1),
-                      foregroundColor:  Colors.red,
+                      backgroundColor: AppCommon.colors.primaryColor.withValues(
+                        alpha: 0.1,
+                      ),
+                      foregroundColor: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -319,15 +314,12 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                       children: [
                         Icon(Icons.cancel_outlined, size: 18),
                         const SizedBox(width: 4),
-                        Text(
-                          "Cancel Booking",
-                          style: const TextStyle(fontSize: 14),
-                        ),
+                        Text("Cancel Booking"),
                       ],
                     ),
                   ),
-                )
-            ),
+                ),
+              ),
           ],
         ),
       ),
@@ -437,10 +429,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
                 const SizedBox(height: 12),
 
                 /// Message
-                const Text(
-                  "Are you sure you want to cancel this booking?",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
+                const Text("Are you sure you want to cancel this booking?"),
 
                 const SizedBox(height: 14),
 

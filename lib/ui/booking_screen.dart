@@ -5,11 +5,13 @@ import '../service/send_sms.dart';
 
 class BookingScreen extends StatefulWidget {
   final int roomId, guestHouseId;
+  final String roomName;
 
   const BookingScreen({
     super.key,
     required this.roomId,
     required this.guestHouseId,
+    required this.roomName,
   });
 
   @override
@@ -70,8 +72,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                     label: "Guest Name",
                                     icon: Icons.person,
                                     maxLength: 20,
-                                    validator: (v) =>
-                                        v!.isEmpty ? "Guest name required" : null,
+                                    validator: (v) => v!.isEmpty
+                                        ? "Guest name required"
+                                        : null,
                                   ),
                                   inputField(
                                     controller: _mobileController,
@@ -96,8 +99,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                     controller: _arrivalController,
                                     label: "Check-in Date & Time",
                                     onTap: () => pickDateTime(true),
-                                    validator: () =>
-                                        _arrivalDate == null ? "Required" : null,
+                                    validator: () => _arrivalDate == null
+                                        ? "Required"
+                                        : null,
                                   ),
                                   dateField(
                                     controller: _departureController,
@@ -345,11 +349,10 @@ class _BookingScreenState extends State<BookingScreen> {
             arrival: _arrivalController.text,
             departure: _departureController.text,
             mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
-            note:  _remarkController.text
+            note: _remarkController.text,
           );
           AppCommon.displayToast(res["message"]);
           AppCommon.endLoadingProcess(context);
-          Navigator.pop(context, true);
         } finally {
           AppCommon.endLoadingProcess(context);
           debugPrint("failed to send SMS.");
@@ -358,11 +361,13 @@ class _BookingScreenState extends State<BookingScreen> {
         try {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
-          final emailText = '''
+          final emailText =
+              '''
               Booking has been successfully confirmed.
               
               Guest Name : ${_guestController.text}
               Mobile     : ${_mobileController.text}
+              Room No    : ${widget.roomName}
               Check-In   : ${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}
               Check-Out  : ${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}
               Meals      : ${mealText().isEmpty ? "No meals selected" : mealText()}
@@ -389,6 +394,7 @@ class _BookingScreenState extends State<BookingScreen> {
             },
           );
         } finally {
+          Navigator.pop(context, true);
           AppCommon.endLoadingProcess(context);
           debugPrint("failed to send Email.");
         }

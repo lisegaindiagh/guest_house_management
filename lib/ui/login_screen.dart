@@ -15,11 +15,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool isLoginLoad = false;
 
-  TextEditingController emailController = TextEditingController(
-    text: "",
+  final TextEditingController emailController = TextEditingController(
+    text: "cjgabani1409@gmail.com",
   );
-  TextEditingController passwordController = TextEditingController(
-    text: "",
+  final TextEditingController passwordController = TextEditingController(
+    text: "admin@123",
   );
 
   @override
@@ -52,10 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> getLoginDetails(BuildContext context) async {
     isLoginLoad = true;
-    setState(() {
-
-    });
-    try{
+    setState(() {});
+    try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "auth.php",
         "POST",
@@ -68,11 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res["success"]) {
         await setSession(res, context);
       }
-    } catch (e) {} finally {
+    } catch (e) {
+    } finally {
       isLoginLoad = false;
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -210,29 +207,31 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: double.infinity,
                           height: 48,
                           child: isLoginLoad
-                              ? const Center(child: CircularProgressIndicator()) :ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppCommon.colors.primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () async {
-                              AppCommon.sharePref.setBool(
-                                AppCommon.sessionKey.isRemember,
-                                isRemember,
-                              );
-                              await getLoginDetails(context);
-                            },
-                            child: const Text(
-                              "LOGIN",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                              ? const Center(child: CircularProgressIndicator())
+                              : ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        AppCommon.colors.primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    AppCommon.sharePref.setBool(
+                                      AppCommon.sessionKey.isRemember,
+                                      isRemember,
+                                    );
+                                    await getLoginDetails(context);
+                                  },
+                                  child: const Text(
+                                    "LOGIN",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                         ),
                       ],
                     ),
