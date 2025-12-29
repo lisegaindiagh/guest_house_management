@@ -339,30 +339,12 @@ class _BookingScreenState extends State<BookingScreen> {
         },
       );
       if (res["success"]) {
-        // for send SMS
-        try {
-          await SendSMSService().sendSMS(
-            context,
-            roomId: widget.roomId,
-            guestName: _guestController.text,
-            mobile: _mobileController.text,
-            arrival: _arrivalController.text,
-            departure: _departureController.text,
-            mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
-            note: _remarkController.text,
-          );
-          AppCommon.displayToast(res["message"]);
-          AppCommon.endLoadingProcess(context);
-        } finally {
-          AppCommon.endLoadingProcess(context);
-          debugPrint("failed to send SMS.");
-        }
         // for send Email
         try {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
           final emailText =
-              '''
+          '''
               Booking has been successfully confirmed.
               
               Guest Name : ${_guestController.text}
@@ -394,9 +376,26 @@ class _BookingScreenState extends State<BookingScreen> {
             },
           );
         } finally {
-          Navigator.pop(context, true);
-          AppCommon.endLoadingProcess(context);
           debugPrint("failed to send Email.");
+        }
+        // for send SMS
+        try {
+          await SendSMSService().sendSMS(
+            context,
+            roomId: widget.roomId,
+            guestName: _guestController.text,
+            mobile: _mobileController.text,
+            arrival: _arrivalController.text,
+            departure: _departureController.text,
+            mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
+            note: _remarkController.text,
+          );
+          AppCommon.displayToast(res["message"]);
+          AppCommon.endLoadingProcess(context);
+          Navigator.pop(context, true);
+        } finally {
+          AppCommon.endLoadingProcess(context);
+          debugPrint("failed to send SMS.");
         }
       } else {
         AppCommon.endLoadingProcess(context);
