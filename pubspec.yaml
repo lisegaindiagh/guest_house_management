@@ -46,7 +46,7 @@ dependencies:
   http:
   intl:
   #  for send sms
-  group_smskit:
+  group_smskit: ^0.0.3
   # for check permission
   permission_handler:
 
