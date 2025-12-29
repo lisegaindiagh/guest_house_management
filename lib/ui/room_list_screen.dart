@@ -119,7 +119,6 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       roomId: room["id"],
                       roomName: room["room_name"],
                       occupancyType: room["occupancy_type"],
-                      maxOccupancy: room["max_occupancy"],
                       isActive: room["is_active"] == 1,
                       isBooked: room["is_booked"] == 1,
                       guestHouseId: room["guest_house_id"],
@@ -152,7 +151,6 @@ class _RoomListScreenState extends State<RoomListScreen> {
     required int roomId,
     required String roomName,
     required String occupancyType,
-    required int maxOccupancy,
     required bool isActive,
     required bool isBooked,
     required int guestHouseId,
@@ -214,16 +212,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   const SizedBox(height: 12),
 
                   /// Occupancy Info
-                  Row(
-                    children: [
-                      infoItem(
-                        Icons.people_alt_outlined,
-                        occupancyType[0].toUpperCase() +
-                            occupancyType.substring(1),
-                      ),
-                      const SizedBox(width: 20),
-                      infoItem(Icons.person_outline, "Max $maxOccupancy"),
-                    ],
+                  infoItem(
+                    Icons.people_alt_outlined,
+                    occupancyType[0].toUpperCase() + occupancyType.substring(1),
                   ),
 
                   /// Divider

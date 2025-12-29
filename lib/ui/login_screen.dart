@@ -132,10 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          "Sign in to manage bookings",
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                        const Text("Sign in to manage bookings"),
 
                         const SizedBox(height: 30),
 

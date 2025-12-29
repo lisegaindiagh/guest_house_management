@@ -23,7 +23,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
   }
 
   Future<void> getBookingDetails() async {
-    bool isExit = false;
     try {
       var res = await AppCommon.apiProvider.getServerResponse(
         "api.php",
@@ -34,7 +33,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
         bookingDetailsList = res["bookings"];
       } else {
         bookingDetailsList = [];
-        isExit = true;
         AppCommon.displayToast(res["message"]);
       }
     } catch (e) {
@@ -42,11 +40,6 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
     } finally {
       isLoading = false;
       setState(() {});
-      if (isExit) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pop(context, true);
-        });
-      }
     }
   }
 
@@ -87,6 +80,35 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
       body: SafeArea(
         child: isLoading
             ? Center(child: CircularProgressIndicator())
+            : bookingDetailsList.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    spacing: 12,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "No upcoming bookings found. You can create a new booking for this room.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppCommon.colors.primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: Text(
+                          "Go Back",
+                          style: TextStyle(color: AppCommon.colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             : ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: bookingDetailsList.length,

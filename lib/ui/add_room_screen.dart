@@ -28,7 +28,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
 
   /// Controllers
   final TextEditingController _roomNameController = TextEditingController();
-  final TextEditingController _maxOccupancyController = TextEditingController();
 
   /// Selected occupancy type
   String? _selectedOccupancyType;
@@ -44,7 +43,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
   @override
   void dispose() {
     _roomNameController.dispose();
-    _maxOccupancyController.dispose();
     super.dispose();
   }
 
@@ -55,7 +53,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         "guest_house_id": widget.guestHouseId,
         "room_name": _roomNameController.text.trim(),
         "occupancy_type": _selectedOccupancyType,
-        "max_occupancy": int.parse(_maxOccupancyController.text.trim()),
       };
 
       try {
@@ -114,27 +111,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                             ),
 
                             dropdownField(),
-
-                            inputField(
-                              controller: _maxOccupancyController,
-                              label: "Max Occupancy",
-                              hint: "e.g. 1",
-                              icon: Icons.person_outline,
-                              keyboard: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              validator: (value) {
-                                if (value == null || value.trim().isEmpty) {
-                                  return "Max occupancy is required";
-                                }
-                                final int? number = int.tryParse(value);
-                                if (number == null || number <= 0) {
-                                  return "Enter a valid number";
-                                }
-                                return null;
-                              },
-                            ),
                           ],
                         ),
                       ),

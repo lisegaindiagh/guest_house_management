@@ -60,7 +60,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       child: Form(
                         key: _formKey,
                         child: Column(
-                          spacing: 12,
+                          spacing: 8,
                           children: [
                             sectionCard(
                               title: "Guest Details",
@@ -265,7 +265,7 @@ class _BookingScreenState extends State<BookingScreen> {
         validator: validator,
         decoration: AppCommon.inputDecoration(
           label,
-        ).copyWith(prefixIcon: Icon(icon)),
+        ).copyWith(prefixIcon: Icon(icon), counterText: ""),
       ),
     );
   }
