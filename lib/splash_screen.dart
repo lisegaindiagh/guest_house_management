@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'Common/app_common.dart';
 import 'ui/guest_house_list.dart';
@@ -86,6 +87,12 @@ class _SplashScreenState extends State<SplashScreen>
      await  Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => GuestHouseListScreen()),
+      );
+    }else{
+      Fluttertoast.showToast(msg: res["error"]);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     }
   }

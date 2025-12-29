@@ -15,12 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool isLoginLoad = false;
 
-  final TextEditingController emailController = TextEditingController(
-    text: "cjgabani1409@gmail.com",
-  );
-  final TextEditingController passwordController = TextEditingController(
-    text: "admin@123",
-  );
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -65,6 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (res["success"]) {
         await setSession(res, context);
+      }else{
+        AppCommon.displayToast(res["error"]);
       }
     } catch (e) {
     } finally {

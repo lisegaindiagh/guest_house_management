@@ -459,7 +459,7 @@ class _BookingScreenState extends State<BookingScreen> {
             mobile: _mobileController.text,
             arrival: _arrivalController.text,
             departure: _departureController.text,
-            mealOnArrival: selectedMeals.isEmpty ? "" : selectedMeals,
+            mealOnArrival: mealText().isEmpty ? "No meals selected" : mealText(),
             note: _remarkController.text,
           );
           AppCommon.displayToast(res["message"]);

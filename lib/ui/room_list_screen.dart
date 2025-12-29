@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../Common/app_common.dart';
 import 'add_room_screen.dart';
 import 'booking_screen.dart';
@@ -358,6 +359,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
       );
       if (res["success"]) {
         AppCommon.displayToast(res["message"]);
+        Navigator.pop(AppCommon.navigatorKey.currentContext!); // Close dialog
       } else {
         AppCommon.displayToast(res["error"]);
       }

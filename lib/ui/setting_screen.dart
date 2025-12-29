@@ -72,6 +72,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (res["success"]) {
         AppCommon.displayToast(res["message"]);
+        AppCommon.sharePref.setPreference({
+          AppCommon.sessionKey.notifyEmail: _emailController.text,
+          AppCommon.sessionKey.notifyMobile: _mobileController.text,
+        });
         Navigator.pop(context, true);
       } else {
         AppCommon.displayToast(res["error"]);
