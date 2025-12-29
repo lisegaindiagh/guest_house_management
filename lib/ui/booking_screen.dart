@@ -343,22 +343,92 @@ class _BookingScreenState extends State<BookingScreen> {
         try {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
           // todo: change sender & receiver
-          final emailText =
-          '''
-              Booking has been successfully confirmed.
-              
-              Guest Name : ${_guestController.text}
-              Mobile     : ${_mobileController.text}
-              Room No    : ${widget.roomName}
-              Check-In   : ${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}
-              Check-Out  : ${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}
-              Meals      : ${mealText().isEmpty ? "No meals selected" : mealText()}
-              Note       : ${_remarkController.text.isEmpty ? "" : _remarkController.text}
-              
-              BOOKING CONFIRMED
-              
-              This is an automated message from the Guest House Management App.
-              ''';
+          final String emailHtml =
+              '''
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .card {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ef6c00;
+      margin-bottom: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td {
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .label {
+      font-weight: bold;
+      width: 140px;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">Booking Confirmed</div>
+
+    <table>
+      <tr>
+        <td class="label">Guest Name</td>
+        <td>${_guestController.text}</td>
+      </tr>
+      <tr>
+        <td class="label">Mobile</td>
+        <td>${_mobileController.text}</td>
+      </tr>
+      <tr>
+        <td class="label">Room No</td>
+        <td>${widget.roomName}</td>
+      </tr>
+      <tr>
+        <td class="label">Check-In</td>
+        <td>${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}</td>
+      </tr>
+      <tr>
+        <td class="label">Check-Out</td>
+        <td>${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}</td>
+      </tr>
+      <tr>
+        <td class="label">Meals</td>
+        <td>${mealText().isEmpty ? "No meals selected" : mealText()}</td>
+      </tr>
+      ${_remarkController.text.isEmpty ? "" : '''
+          <tr>
+            <td class="label">Note</td>
+            <td>${_remarkController.text}</td>
+          </tr>
+          '''}
+    </table>
+
+    <div class="footer">
+      <p><b>BOOKING CONFIRMED</b></p>
+      <p>This is an automated message from the Guest House Management App.</p>
+    </div>
+  </div>
+</body>
+</html>
+''';
 
           var email = await AppCommon.sharePref.getString(
             AppCommon.sessionKey.email,
@@ -372,7 +442,9 @@ class _BookingScreenState extends State<BookingScreen> {
             params: {
               "sender_email": email,
               "receiver_email": notifyEmail,
-              "text": emailText,
+              "subject": "Room Booking Confirmed",
+              "message": emailHtml,
+              "is_html": "1",
             },
           );
         } finally {
