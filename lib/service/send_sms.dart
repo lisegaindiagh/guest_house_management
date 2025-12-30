@@ -5,7 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 import '../Common/app_common.dart';
 
 class SendSMSService {
-  Future<void> sendSMS(BuildContext context, {required int roomId, required String guestName, required String mobile, required String arrival, required String departure, dynamic mealOnArrival, dynamic note}) async {
+  Future<void> sendSMS(BuildContext context,
+      {required String roomName, required String guestName, required String mobile, required String arrival, required String departure, dynamic mealOnArrival, dynamic note, bool isConfirmed = true}) async {
     // Request permission before sending SMS
     await requestSmsPermission();
 
@@ -19,8 +20,9 @@ class SendSMSService {
       numbers: [notifyMobile],
       // Message body
       message:
-    "Booking has been successfully confirmed.\n"
+    "Booking ${isConfirmed ? 'has been successfully confirmed' : 'has been cancelled'}.\n"
     "Guest: $guestName\n"
+    "Room: $roomName\n"
     "Mobile: $mobile\n"
     "Check-In: $arrival\n"
     "Check-Out: $departure\n"

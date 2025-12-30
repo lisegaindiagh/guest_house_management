@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../Common/app_common.dart';
 import '../service/send_sms.dart';
 
@@ -337,37 +338,31 @@ class _BookingScreenState extends State<BookingScreen> {
         // for send Email
         try {
           //https://mediumvioletred-wallaby-126857.hostingersite.com/api/send_mailer.php
-          // todo: change sender & receiver
-          final emailText =
-          '''
-              Booking has been successfully confirmed.
-              
-              Guest Name : ${_guestController.text}
-              Mobile     : ${_mobileController.text}
-              Room No    : ${widget.roomName}
-              Check-In   : ${DateFormat("dd MMM yyyy, hh:mm a").format(dateTime)}
-              Check-Out  : ${DateFormat("dd MMM yyyy, hh:mm a").format(departureController)}
-              Meals      : ${mealText().isEmpty ? "No meals selected" : mealText()}
-              Note       : ${_remarkController.text.isEmpty ? "" : _remarkController.text}
-              
-              BOOKING CONFIRMED
-              
-              This is an automated message from the Guest House Management App.
-              ''';
-
           var email = await AppCommon.sharePref.getString(
             AppCommon.sessionKey.email,
           );
           var notifyEmail = await AppCommon.sharePref.getString(
             AppCommon.sessionKey.notifyEmail,
           );
+
+          final htmlText = bookingConfirmedHtml(
+            guestName: _guestController.text,
+            mobile: _mobileController.text,
+            roomNo: widget.roomName,
+            checkIn: DateFormat("dd MMM yyyy, hh:mm a").format(dateTime),
+            checkOut: DateFormat("dd MMM yyyy, hh:mm a").format(departureController),
+            meals: mealText().isEmpty ? "No meals selected" : mealText(),
+            note: _remarkController.text,
+          );
+
           var sendEmailResponse = await AppCommon.apiProvider.getServerResponse(
             "send_mailer.php",
             "POST",
             params: {
               "sender_email": email,
               "receiver_email": notifyEmail,
-              "text": emailText,
+              "subject": "Booking Cancelled | Guest House Management App",
+              "text": htmlText,
             },
           );
         } finally {
@@ -377,7 +372,7 @@ class _BookingScreenState extends State<BookingScreen> {
         try {
           await SendSMSService().sendSMS(
             context,
-            roomId: widget.roomId,
+            roomName: widget.roomName,
             guestName: _guestController.text,
             mobile: _mobileController.text,
             arrival: _arrivalController.text,
@@ -401,6 +396,104 @@ class _BookingScreenState extends State<BookingScreen> {
       // AppCommon.displayToast("Server error");
     }
   }
+
+  String bookingConfirmedHtml({
+    required String guestName,
+    required String mobile,
+    required String roomNo,
+    required String checkIn,
+    required String checkOut,
+    required String meals,
+    required String note,
+  }) {
+    final year = DateTime.now().year;
+    return '''
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center" style="padding:20px;">
+      
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+        
+        <!-- Header -->
+        <tr>
+          <td style="background:#0d6efd;color:#ffffff;padding:20px;text-align:center;">
+            <h2 style="margin:0;">BOOKING CONFIRMED</h2>
+          </td>
+        </tr>
+
+        <!-- Content -->
+        <tr>
+          <td style="padding:24px;color:#333333;">
+            
+            <p style="font-size:16px;">
+              <strong style="color:#198754;">Booking has been successfully confirmed.</strong>
+            </p>
+
+            <table width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse;margin-top:15px;">
+              <tr>
+                <td style="background:#f8f9fa;width:40%;"><strong>Guest Name</strong></td>
+                <td>$guestName</td>
+              </tr>
+              <tr>
+                <td style="background:#f8f9fa;"><strong>Mobile</strong></td>
+                <td>$mobile</td>
+              </tr>
+              <tr>
+                <td style="background:#f8f9fa;"><strong>Room No</strong></td>
+                <td>$roomNo</td>
+              </tr>
+              <tr>
+                <td style="background:#f8f9fa;"><strong>Check-In</strong></td>
+                <td>$checkIn</td>
+              </tr>
+              <tr>
+                <td style="background:#f8f9fa;"><strong>Check-Out</strong></td>
+                <td>$checkOut</td>
+              </tr>
+              <tr>
+                <td style="background:#f8f9fa;"><strong>Meals</strong></td>
+                <td>$meals</td>
+              </tr>
+              ${note.isEmpty ? '' : '''
+              <tr>
+                <td style="background:#f8f9fa;"><strong>Note</strong></td>
+                <td>$note</td>
+              </tr>
+              '''}
+            </table>
+
+            <p style="margin-top:25px;font-size:13px;color:#6c757d;">
+              This is an automated message from the <strong>Guest House Management App</strong>.
+            </p>
+
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#f1f3f5;padding:12px;text-align:center;font-size:12px;color:#6c757d;">
+            © $year Guest House Management App
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
+''';
+  }
+
 
   /// 📅 Date & Time Picker
   Future<void> pickDateTime(bool isArrival) async {

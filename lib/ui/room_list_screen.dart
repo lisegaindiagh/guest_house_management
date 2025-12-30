@@ -234,7 +234,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) =>
-                                    ViewBookingScreen(roomId: roomId),
+                                    ViewBookingScreen(roomId: roomId, roomName: roomName,),
                               ),
                             );
                             if (res ?? false) {
