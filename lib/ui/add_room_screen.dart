@@ -149,6 +149,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                   child: const Text(
                     "Save Room",
                     style: TextStyle(
+                      fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
