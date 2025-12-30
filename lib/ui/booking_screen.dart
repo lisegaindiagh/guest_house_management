@@ -367,7 +367,7 @@ class _BookingScreenState extends State<BookingScreen> {
             params: {
               "sender_email": email,
               "receiver_email": notifyEmail,
-              "subject": "Booking Cancelled | Guest House Management App",
+              "subject": "Booking Confirmed | Guest House Management App",
               "text": htmlText,
             },
           );
