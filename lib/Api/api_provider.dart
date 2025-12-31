@@ -9,9 +9,13 @@ import '../ui/login_screen.dart';
 * */
 class ApiProvider {
   final Dio _dio = Dio();
+  bool isLive = false;
+  String baseUrl = "";
 
-  String baseUrl =
-      "https://mediumvioletred-wallaby-126857.hostingersite.com/api/";
+  ApiProvider(){
+    baseUrl = isLive ?
+        "https://mediumvioletred-wallaby-126857.hostingersite.com/api/" : "https://darkblue-anteater-113815.hostingersite.com/api/";
+  }
 
   Future<dynamic> getServerResponse(
     String url,
