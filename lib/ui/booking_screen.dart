@@ -40,6 +40,7 @@ class _BookingScreenState extends State<BookingScreen> {
   };
 
   bool isLoading = false;
+  bool _autoValidate = false;
 
   String convertDate(String input) {
     DateTime date = DateTime.parse(input);
@@ -60,6 +61,9 @@ class _BookingScreenState extends State<BookingScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                       child: Form(
                         key: _formKey,
+                        autovalidateMode: _autoValidate
+                            ? AutovalidateMode.onUserInteraction
+                            : AutovalidateMode.disabled,
                         child: Column(
                           spacing: 8,
                           children: [
@@ -180,7 +184,10 @@ class _BookingScreenState extends State<BookingScreen> {
                               ),
                             ),
                             onPressed: () => Navigator.pop(context),
-                            child: const Text("Cancel"),
+                            child: const Text("Cancel", style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -198,7 +205,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               "Confirm Booking",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 15,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -260,6 +267,7 @@ class _BookingScreenState extends State<BookingScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: controller,
         keyboardType: keyboard,
         maxLength: maxLength,
@@ -293,11 +301,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
   /// ---------- Logic ----------
   Future<void> submit() async {
+    setState(() => _autoValidate = true);
+
     if (_formKey.currentState!.validate()) {
-      final selectedMeals = meals.entries
-          .where((e) => e.value)
-          .map((e) => e.key)
-          .toList();
       await bookedRoom();
     }
   }
@@ -361,7 +367,7 @@ class _BookingScreenState extends State<BookingScreen> {
             params: {
               "sender_email": email,
               "receiver_email": notifyEmail,
-              "subject": "Booking Cancelled | Guest House Management App",
+              "subject": "Booking Confirmed | Guest House Management App",
               "text": htmlText,
             },
           );

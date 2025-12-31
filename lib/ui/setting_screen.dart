@@ -23,6 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       TextEditingController();
 
   bool isLoading = true;
+  bool _autoValidate = false;
 
   @override
   void initState() {
@@ -56,6 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   /// Update settings
   Future<void> _updateSettings() async {
+    setState(() => _autoValidate = true);
     if (!_formKey.currentState!.validate()) return;
 
     try {
@@ -102,6 +104,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       padding: const EdgeInsets.all(16),
                       child: Form(
                         key: _formKey,
+                        autovalidateMode: _autoValidate
+                            ? AutovalidateMode.onUserInteraction
+                            : AutovalidateMode.disabled,
                         child: Column(
                           children: [
                             /// 📢 Notification Settings
@@ -243,26 +248,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, color: AppCommon.colors.primaryColor),
+              Icon(
+                icon,
+                color: AppCommon.colors.primaryColor,
+                size: 22,
+              ),
               const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(fontSize: 12, color: Colors.black),
-                  ),
-                ],
+                    Text(
+                      subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
+
           const SizedBox(height: 14),
           child,
         ],
@@ -281,6 +301,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: controller,
         keyboardType: keyboard,
         maxLength: maxLength,

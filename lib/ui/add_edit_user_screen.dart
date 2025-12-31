@@ -36,7 +36,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
 
   /// Check if screen is in edit mode
   bool get isEditMode => widget.userData != null;
-
+  bool _autoValidate = false;
   @override
   void initState() {
     super.initState();
@@ -66,6 +66,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
 
   /// Submit form
   Future<void> _submitForm() async {
+    setState(() => _autoValidate = true);
     if (_formKey.currentState!.validate()) {
       final payload = {
         "email": _emailController.text.trim(),
@@ -115,6 +116,9 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Form(
                   key: _formKey,
+                  autovalidateMode: _autoValidate
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
                   child: Column(
                     children: [
                       /// 👤 Profile Header
@@ -334,6 +338,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: controller,
         keyboardType: keyboard,
         validator: validator,

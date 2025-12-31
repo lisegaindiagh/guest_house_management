@@ -39,6 +39,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
     "triple",
     "quadruple",
   ];
+  bool _autoValidate = false;
 
   @override
   void dispose() {
@@ -48,6 +49,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
 
   /// Submit form
   Future<void> submitForm() async {
+    setState(() => _autoValidate = true);
     if (_formKey.currentState!.validate()) {
       final payload = {
         "guest_house_id": widget.guestHouseId,
@@ -88,6 +90,9 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Form(
                   key: _formKey,
+                  autovalidateMode: _autoValidate
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
                   child: Column(
                     children: [
                       /// 🛏️ Room Details
@@ -149,6 +154,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
                   child: const Text(
                     "Save Room",
                     style: TextStyle(
+                      fontSize: 16,
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
@@ -224,6 +230,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: controller,
         keyboardType: keyboard,
         inputFormatters: inputFormatters,
