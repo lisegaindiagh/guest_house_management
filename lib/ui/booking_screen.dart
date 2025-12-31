@@ -396,6 +396,7 @@ class _BookingScreenState extends State<BookingScreen> {
         AppCommon.endLoadingProcess(context);
         AppCommon.displayToast(res["error"]);
       }
+      Navigator.pop(context, true);
     } catch (e) {
       AppCommon.endLoadingProcess(context);
       Navigator.pop(context, true);

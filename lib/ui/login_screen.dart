@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text(
                           "Guest House Management App",
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
