@@ -392,11 +392,11 @@ class _BookingScreenState extends State<BookingScreen> {
           AppCommon.endLoadingProcess(context);
           debugPrint("failed to send SMS.");
         }
+        Navigator.pop(context, true);
       } else {
         AppCommon.endLoadingProcess(context);
         AppCommon.displayToast(res["error"]);
       }
-      Navigator.pop(context, true);
     } catch (e) {
       AppCommon.endLoadingProcess(context);
       Navigator.pop(context, true);

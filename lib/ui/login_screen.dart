@@ -219,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     await getLoginDetails(context);
                                   },
                                   child: const Text(
-                                    "LOGIN",
+                                    "SIGN IN",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,

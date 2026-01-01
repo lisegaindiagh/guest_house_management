@@ -360,6 +360,13 @@ class _RoomListScreenState extends State<RoomListScreen> {
       if (res["success"]) {
         AppCommon.displayToast(res["message"]);
         Navigator.pop(AppCommon.navigatorKey.currentContext!); // Close dialog
+        await AppCommon.sharePref.setString(
+          AppCommon.sessionKey.password, newPass,);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+              (route) => false,
+        );
       } else {
         AppCommon.displayToast(res["error"]);
       }
@@ -391,159 +398,166 @@ class _RoomListScreenState extends State<RoomListScreen> {
               ),
               child: Form(
                 key: dialogFormKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// 🔐 Header
-                      Row(
-                        children: [
-                          Container(
-                            height: 44,
-                            width: 44,
-                            decoration: BoxDecoration(
-                              color: AppCommon.colors.primaryColor.withValues(
-                                alpha: 0.15,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.lock_reset_outlined,
-                              color: AppCommon.colors.primaryColor,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          const Expanded(
-                            child: Text(
-                              "Change Password",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      const Text(
-                        "For security reasons, please enter your current password and set a new one.",
-                        style: TextStyle(fontSize: 13),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      /// 🔑 Current Password
-                      TextFormField(
-                        controller: currentPasswordCtrl,
-                        obscureText: isOldObscure,
-                        decoration:
-                            AppCommon.inputDecoration(
-                              "Current Password",
-                            ).copyWith(
-                              prefixIcon: const Icon(Icons.lock_outline),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  isOldObscure
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                child: SingleChildScrollView(
+                  physics: MediaQuery.of(context).viewInsets.bottom > 0
+                      ? const ClampingScrollPhysics()
+                      : const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom > 0 ? 10 : 0,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: 44,
+                              width: 44,
+                              decoration: BoxDecoration(
+                                color: AppCommon.colors.primaryColor.withValues(
+                                  alpha: 0.15,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    isOldObscure = !isOldObscure;
-                                  });
-                                },
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.lock_reset_outlined,
+                                color: AppCommon.colors.primaryColor,
                               ),
                             ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Current password is required";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(height: 14),
-
-                      /// 🔐 New Password
-                      TextFormField(
-                        controller: newPasswordCtrl,
-                        obscureText: isNewObscure,
-                        decoration: AppCommon.inputDecoration("New Password")
-                            .copyWith(
-                              prefixIcon: const Icon(Icons.lock_reset),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  isNewObscure
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                "Change Password",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    isNewObscure = !isNewObscure;
-                                  });
-                                },
                               ),
                             ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "New password is required";
-                          } else if (value.length < 6) {
-                            return "Minimum 6 characters required";
-                          }
-                          return null;
-                        },
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      /// Divider
-                      Divider(color: Colors.grey.shade200, thickness: 1),
-
-                      const SizedBox(height: 12),
-
-                      /// 🔘 Action Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text("Cancel"),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppCommon.colors.primaryColor,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 12,
+                          ],
+                        ),
+                  
+                        const SizedBox(height: 8),
+                  
+                        const Text(
+                          "For security reasons, please enter your current password and set a new one.",
+                          style: TextStyle(fontSize: 13),
+                        ),
+                  
+                        const SizedBox(height: 20),
+                  
+                        /// 🔑 Current Password
+                        TextFormField(
+                          controller: currentPasswordCtrl,
+                          obscureText: isOldObscure,
+                          decoration:
+                              AppCommon.inputDecoration(
+                                "Current Password",
+                              ).copyWith(
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    isOldObscure
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isOldObscure = !isOldObscure;
+                                    });
+                                  },
+                                ),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Current password is required";
+                            }
+                            return null;
+                          },
+                        ),
+                  
+                        const SizedBox(height: 14),
+                  
+                        /// 🔐 New Password
+                        TextFormField(
+                          controller: newPasswordCtrl,
+                          obscureText: isNewObscure,
+                          decoration: AppCommon.inputDecoration("New Password")
+                              .copyWith(
+                                prefixIcon: const Icon(Icons.lock_reset),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    isNewObscure
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isNewObscure = !isNewObscure;
+                                    });
+                                  },
+                                ),
+                              ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "New password is required";
+                            } else if (value.length < 6) {
+                              return "Minimum 6 characters required";
+                            }
+                            return null;
+                          },
+                        ),
+                  
+                        const SizedBox(height: 24),
+                  
+                        /// Divider
+                        Divider(color: Colors.grey.shade200, thickness: 1),
+                  
+                        const SizedBox(height: 12),
+                  
+                        /// 🔘 Action Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("Cancel"),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppCommon.colors.primaryColor,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (dialogFormKey.currentState!.validate()) {
+                                  resetPassword(
+                                    currentPass: currentPasswordCtrl.text,
+                                    newPass: newPasswordCtrl.text,
+                                  );
+                                }
+                              },
+                              child: Text(
+                                "Update Password",
+                                style: TextStyle(
+                                  color: AppCommon.colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                            onPressed: () {
-                              if (dialogFormKey.currentState!.validate()) {
-                                resetPassword(
-                                  currentPass: currentPasswordCtrl.text,
-                                  newPass: newPasswordCtrl.text,
-                                );
-                              }
-                            },
-                            child: Text(
-                              "Update Password",
-                              style: TextStyle(
-                                color: AppCommon.colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

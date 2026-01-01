@@ -159,10 +159,9 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// 🏢 Guest House Icon (Professional)
             Container(
-              height: 68,
-              width: 68,
+              height: 60,
+              width: 60,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
@@ -232,7 +231,7 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                       Expanded(
                         child: Text(
                           address,
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(color: Colors.grey),
                         ),
