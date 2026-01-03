@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import '../Common/app_common.dart';
 import 'login_screen.dart';
 import 'room_list_screen.dart';
@@ -87,9 +88,21 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                   );
                 }
               }
+              if(value == "Share"){
+                const String apkUrl =
+                    "https://drive.google.com/file/d/1YqoEOmx2Rnc4GfizN3mozmZ5cTmHTXT9/view?usp=sharing";
+
+                await SharePlus.instance.share(
+                  ShareParams(
+                    text: "Download Guest House Room Booking App:\n$apkUrl",
+                    subject: "Download App",
+                  ),
+                );
+              }
             },
             itemBuilder: (context) => [
               PopupMenuItem(value: "Logout", child: Text("Logout")),
+              PopupMenuItem(value: "Share", child: Text("Share")),
             ],
           ),
         ],

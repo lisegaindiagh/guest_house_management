@@ -42,6 +42,7 @@ dependencies:
   # Show toast messages
   fluttertoast: ^8.2.12
   shared_preferences: ^2.5.3
+  share_plus: ^11.0.0
 
   http:
   intl:
