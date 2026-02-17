@@ -263,6 +263,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             );
                             if (res ?? false) {
                               await getGuestHouseRoomList();
+                              AppCommon.openGuestHousePopup(context);
                             }
                           },
                         ),

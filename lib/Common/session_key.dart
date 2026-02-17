@@ -11,4 +11,5 @@ class SessionKey {
 
   String notifyEmail = "notifyEmail";
   String notifyMobile = "notifyMobile";
+  String isAgree = "guest_terms_agreed";
 }

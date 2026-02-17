@@ -89,20 +89,21 @@ class _GuestHouseListState extends State<GuestHouseListScreen> {
                 }
               }
               if(value == "Share"){
-                const String apkUrl =
-                    "https://drive.google.com/file/d/1YqoEOmx2Rnc4GfizN3mozmZ5cTmHTXT9/view?usp=sharing";
-
+                String appLink = "https://drive.google.com/drive/folders/1nkyK_zbDnmW2A78qGkbYYu9Gzwcl7K4M?usp=sharing";
                 await SharePlus.instance.share(
                   ShareParams(
-                    text: "Download Guest House Room Booking App:\n$apkUrl",
+                    text: "Download Guest House Room Booking App:\n$appLink",
                     subject: "Download App",
                   ),
                 );
+              }else if (value == 'instructions') {
+                AppCommon.openGuestHousePopup(context);
               }
             },
             itemBuilder: (context) => [
               PopupMenuItem(value: "Logout", child: Text("Logout")),
               PopupMenuItem(value: "Share", child: Text("Share")),
+              PopupMenuItem(value: "instructions", child: Text("Guest House Instructions")),
             ],
           ),
         ],

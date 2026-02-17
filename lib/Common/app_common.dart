@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Api/api_provider.dart';
+import '../ui/instraction_screen.dart';
 import '../ui/login_screen.dart';
 import 'colors.dart';
 import 'session_key.dart';
@@ -368,6 +369,28 @@ class AppCommon {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+ static void openGuestHousePopup(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: "GuestHouse",
+      transitionDuration:
+      const Duration(milliseconds: 300),
+      pageBuilder: (_, __, ___) =>
+      const GuestHouseInstructions(),
+      transitionBuilder:
+          (_, animation, __, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
         );
       },
     );
