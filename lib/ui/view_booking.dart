@@ -225,7 +225,7 @@ class _ViewBookingScreenState extends State<ViewBookingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Booking Details "),
+        title: Text("Booking Details - ${widget.roomName}"),
         leading: BackButton(
           onPressed: () {
             Navigator.pop(context, true);

@@ -50,7 +50,7 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("New Booking")),
+      appBar: AppBar(title: Text("New Booking - ${widget.roomName}")),
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
