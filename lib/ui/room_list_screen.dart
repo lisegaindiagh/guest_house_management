@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../Common/app_common.dart';
 import 'add_room_screen.dart';
 import 'booking_screen.dart';
@@ -123,6 +124,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       isActive: room["is_active"] == 1,
                       isBooked: room["is_booked"] == 1,
                       guestHouseId: room["guest_house_id"],
+                      booked_dates: room["booked_dates"],
                     );
                   },
                 ),
@@ -155,6 +157,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
     required bool isActive,
     required bool isBooked,
     required int guestHouseId,
+    required List booked_dates,
   }) {
     final Color statusColor = !isActive
         ? Colors.grey
@@ -192,7 +195,20 @@ class _RoomListScreenState extends State<RoomListScreen> {
             Positioned(
               top: 12,
               right: 12,
-              child: statusBadge(statusText, statusColor),
+              child: GestureDetector(
+                onTap: () {
+                  List<DateTime> markedDates = booked_dates
+                      .map((e) => DateTime.parse(e))
+                      .toList();
+                  showDialog(
+                    context: context,
+                    builder: (_) => ViewScheduleDialog(
+                      bookedDates: markedDates, // List<DateTime>
+                    ),
+                  );
+                },
+                child: statusBadge(statusText, statusColor),
+              ),
             ),
 
             Padding(
@@ -213,9 +229,37 @@ class _RoomListScreenState extends State<RoomListScreen> {
                   const SizedBox(height: 12),
 
                   /// Occupancy Info
-                  infoItem(
-                    Icons.people_alt_outlined,
-                    occupancyType[0].toUpperCase() + occupancyType.substring(1),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      infoItem(
+                        Icons.people_alt_outlined,
+                        occupancyType[0].toUpperCase() +
+                            occupancyType.substring(1),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          List<DateTime> markedDates = booked_dates
+                              .map((e) => DateTime.parse(e))
+                              .toList();
+                          showDialog(
+                            context: context,
+                            builder: (_) => ViewScheduleDialog(
+                              bookedDates: markedDates, // List<DateTime>
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "View Availability",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppCommon.colors.primaryColor,
+                            decoration: TextDecoration.underline,
+                            decorationColor: AppCommon.colors.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   /// Divider
@@ -233,8 +277,10 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             var res = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    ViewBookingScreen(roomId: roomId, roomName: roomName,),
+                                builder: (_) => ViewBookingScreen(
+                                  roomId: roomId,
+                                  roomName: roomName,
+                                ),
                               ),
                             );
                             if (res ?? false) {
@@ -362,11 +408,13 @@ class _RoomListScreenState extends State<RoomListScreen> {
         AppCommon.displayToast(res["message"]);
         Navigator.pop(AppCommon.navigatorKey.currentContext!); // Close dialog
         await AppCommon.sharePref.setString(
-          AppCommon.sessionKey.password, newPass,);
+          AppCommon.sessionKey.password,
+          newPass,
+        );
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
-              (route) => false,
+          (route) => false,
         );
       } else {
         AppCommon.displayToast(res["error"]);
@@ -404,7 +452,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
                       ? const ClampingScrollPhysics()
                       : const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom > 0 ? 10 : 0,
+                    bottom: MediaQuery.of(context).viewInsets.bottom > 0
+                        ? 10
+                        : 0,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
@@ -440,16 +490,16 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             ),
                           ],
                         ),
-                  
+
                         const SizedBox(height: 8),
-                  
+
                         const Text(
                           "For security reasons, please enter your current password and set a new one.",
                           style: TextStyle(fontSize: 13),
                         ),
-                  
+
                         const SizedBox(height: 20),
-                  
+
                         /// 🔑 Current Password
                         TextFormField(
                           controller: currentPasswordCtrl,
@@ -479,9 +529,9 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             return null;
                           },
                         ),
-                  
+
                         const SizedBox(height: 14),
-                  
+
                         /// 🔐 New Password
                         TextFormField(
                           controller: newPasswordCtrl,
@@ -511,14 +561,14 @@ class _RoomListScreenState extends State<RoomListScreen> {
                             return null;
                           },
                         ),
-                  
+
                         const SizedBox(height: 24),
-                  
+
                         /// Divider
                         Divider(color: Colors.grey.shade200, thickness: 1),
-                  
+
                         const SizedBox(height: 12),
-                  
+
                         /// 🔘 Action Buttons
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -566,6 +616,110 @@ class _RoomListScreenState extends State<RoomListScreen> {
           },
         );
       },
+    );
+  }
+}
+
+class ViewScheduleDialog extends StatelessWidget {
+  final List<DateTime> bookedDates;
+
+  const ViewScheduleDialog({Key? key, required this.bookedDates})
+    : super(key: key);
+
+  bool isBooked(DateTime day) {
+    return bookedDates.any((booked) => isSameDay(booked, day));
+  }
+
+  bool isDateAvailable(DateTime date) {
+    return !bookedDates.any((booked) => isSameDay(booked, date));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Booked Dates",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            TableCalendar(
+              firstDay: DateTime(2020),
+              lastDay: DateTime(2100),
+              // ✅ Always open current month
+              focusedDay: DateTime.now(),
+
+              calendarFormat: CalendarFormat.month,
+              availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+
+              // ❌ Disable selection completely
+              selectedDayPredicate: (_) => false,
+              onDaySelected: null,
+              onPageChanged: (_) {},
+
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(
+                  color: isDateAvailable(DateTime.now())
+                      ? Colors.transparent
+                      : Colors.red,
+                  shape: BoxShape.circle,
+                ),
+              ),
+
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) {
+                  if (isBooked(day)) {
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '${day.day}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }
+                  return null;
+                },
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Legend
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: const [
+                Icon(Icons.circle, color: Colors.red, size: 12),
+                SizedBox(width: 6),
+                Text("Booked"),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Close"),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

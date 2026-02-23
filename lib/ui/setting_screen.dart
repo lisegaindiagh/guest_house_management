@@ -19,8 +19,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// 📝 Controllers
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _defaultUserPassController =
-      TextEditingController();
 
   bool isLoading = true;
   bool _autoValidate = false;
@@ -43,8 +41,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (res["success"]) {
         _mobileController.text = res["settings"]["notify_mobile"] ?? "";
         _emailController.text = res["settings"]["notify_email"] ?? "";
-        _defaultUserPassController.text =
-            res["settings"]["default_user_password"] ?? "";
       } else {
         AppCommon.displayToast(res["error"]);
       }
@@ -68,7 +64,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         params: {
           "notify_mobile": _mobileController.text,
           "notify_email": _emailController.text,
-          "default_user_password": _defaultUserPassController.text,
         },
       );
 
@@ -153,27 +148,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
 
-                            /// 🔐 User Settings
-                            sectionCard(
-                              title: "User Settings",
-                              subtitle:
-                                  "Default credentials for newly created users",
-                              icon: Icons.security_outlined,
-                              child: inputField(
-                                controller: _defaultUserPassController,
-                                label: "Default Password for New Users",
-                                icon: Icons.lock_outline,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Password is required";
-                                  } else if (value.length < 6) {
-                                    return "Minimum 6 characters required";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-
                             const SizedBox(height: 80),
                           ],
                         ),
@@ -248,11 +222,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                color: AppCommon.colors.primaryColor,
-                size: 22,
-              ),
+              Icon(icon, color: AppCommon.colors.primaryColor, size: 22),
               const SizedBox(width: 10),
 
               Expanded(
@@ -272,10 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       subtitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.black),
                     ),
                   ],
                 ),

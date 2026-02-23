@@ -3,6 +3,7 @@ import '../Common/app_common.dart';
 import 'guest_house_list.dart';
 
 class LoginScreen extends StatefulWidget {
+
   const LoginScreen({super.key});
 
   @override
@@ -15,8 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool isLoginLoad = false;
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController(text: "cjgabani1409@gmail.com");
+  final TextEditingController passwordController = TextEditingController(text: "admin@123");
 
   @override
   void initState() {

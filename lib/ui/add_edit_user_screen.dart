@@ -23,6 +23,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
   /// 📝 Controllers
   late TextEditingController _emailController;
   late TextEditingController _nameController;
+  late TextEditingController _passwordController;
 
   /// Role
   String _selectedRole = "user";
@@ -37,6 +38,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
   /// Check if screen is in edit mode
   bool get isEditMode => widget.userData != null;
   bool _autoValidate = false;
+
   @override
   void initState() {
     super.initState();
@@ -48,19 +50,21 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
     _nameController = TextEditingController(
       text: widget.userData?["name"] ?? "",
     );
+    _passwordController = TextEditingController();
 
     _selectedRole = widget.userData?["role"] ?? "user";
     _canBook = widget.userData?["can_book"] == "1";
     _canViewBookings = widget.userData?["can_view_bookings"] == "1";
     _canManageRooms = widget.userData?["can_manage_rooms"] == "1";
     _canManageUsers = widget.userData?["can_manage_users"] == "1";
-    _canUpdateSetting = widget.userData?["can_update_setting"] =="1";
+    _canUpdateSetting = widget.userData?["can_update_setting"] == "1";
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _nameController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -71,12 +75,13 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
       final payload = {
         "email": _emailController.text.trim(),
         "name": _nameController.text.trim(),
+        "password": _passwordController.text.trim(),
         "role": _selectedRole,
         "can_book": _canBook ? 1 : 0,
         "can_view_bookings": _canViewBookings ? 1 : 0,
         "can_manage_rooms": _canManageRooms ? 1 : 0,
         "can_manage_users": _canManageUsers ? 1 : 0,
-        "can_update_setting":_canUpdateSetting ? 1:0,
+        "can_update_setting": _canUpdateSetting ? 1 : 0,
       };
 
       if (isEditMode) {
@@ -146,9 +151,9 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                           ),
                         ),
                       ),
-        
+
                       const SizedBox(height: 16),
-        
+
                       /// 📄 User Details
                       sectionCard(
                         title: "User Information",
@@ -177,6 +182,21 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                               validator: (value) =>
                                   value!.isEmpty ? "Name is required" : null,
                             ),
+                            if (!isEditMode)
+                              inputField(
+                                controller: _passwordController,
+                                label: "Password",
+                                icon: Icons.lock_outline,
+                                keyboard: TextInputType.visiblePassword,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Password is required";
+                                  } else if (value.length < 6) {
+                                    return "Minimum 6 characters required";
+                                  }
+                                  return null;
+                                },
+                              ),
                             DropdownButtonFormField<String>(
                               value: _selectedRole,
                               decoration: AppCommon.inputDecoration("User Role")
@@ -201,7 +221,7 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                           ],
                         ),
                       ),
-        
+
                       /// 🔐 Permissions
                       sectionCard(
                         title: "Permissions",
@@ -231,19 +251,19 @@ class _AddEditUserScreenState extends State<AddEditUserScreen> {
                             permissionTile(
                               "Manage Settings",
                               _canUpdateSetting,
-                                  (v) => setState(() => _canUpdateSetting = v),
+                              (v) => setState(() => _canUpdateSetting = v),
                             ),
                           ],
                         ),
                       ),
-        
+
                       const SizedBox(height: 80),
                     ],
                   ),
                 ),
               ),
             ),
-        
+
             /// 🔒 Sticky Action Button
             Container(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
