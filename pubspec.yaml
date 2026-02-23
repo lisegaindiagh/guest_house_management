@@ -50,6 +50,7 @@ dependencies:
   group_smskit: ^0.0.4
   # for check permission
   permission_handler:
+  table_calendar: ^3.2.0
 
 dev_dependencies:
   flutter_test:
